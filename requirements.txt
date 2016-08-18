@@ -1,4 +1,9 @@
-# Add your requirements here like:
-# numpy
-# scipy>=0.9
-
+anteater==0.0.post0.dev1+n4451817
+bandit==1.1.0
+gitdb==0.6.4
+GitPython==2.0.8
+pbr==1.10.0
+PyYAML==3.11
+six==1.10.0
+smmap==0.9.0
+stevedore==1.17.0

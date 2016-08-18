@@ -23,6 +23,7 @@ __pycache__/*
 *.eggs/
 .installed.cfg
 *.egg-info
+env
 
 # Unittest and coverage
 htmlcov/*
