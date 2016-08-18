@@ -15,26 +15,51 @@ with open('configs/anteater.yml', 'r') as ymlcfg:
     projects = (cfg['projects'])
 
 
+def url_formatter(arg):
+    pass
+
+
 def clone_all():
     # Progrss bar
     for project in projects:
         print('Cloning {0}.'.format(project))
-        sh.git.clone('https://gerrit.opnfv.org/gerrit/{0}'.format(project))
+        # Lets move the below gerrit url to a variable
+        url = 'https://gerrit.opnfv.org/gerrit/{0}'.format(project)
+        projdir = 'repos/{0}'.format(project)
+        try:
+            sh.git.clone(url, projdir)
+        except Exception, e:
+            print(e)
 
 
 def clone_project(project):
     print('Cloning: {0}'.format(project))
-    sh.git.clone('https://gerrit.opnfv.org/gerrit/{0}'.format(project))
+    url = 'https://gerrit.opnfv.org/gerrit/{0}'.format(project)
+    projdir = 'repos/{0}'.format(project)
+    try:
+        sh.git.clone(url, projdir)
+    except Exception, e:
+        print(e)
 
 
 def pull_all(project):
     print('Cloning: {0}'.format(project))
-    sh.git.clone(project)
+    url = 'https://gerrit.opnfv.org/gerrit/{0}'.format(project)
+    projdir = 'repos/{0}'.format(project)
+    try:
+        sh.git.pull(url, projdir)
+    except Exception, e:
+        print(e)
 
 
 def pull_project(project):
-    print('Cloning: {0}'.format(project))
-    sh.git.clone(project)
+    print('Performing pull on: {0}'.format(project))
+    url = 'https://gerrit.opnfv.org/gerrit/{0}'.format(project)
+    projdir = 'repos/{0}'.format(project)
+    try:
+        sh.git.pull(projdir)
+    except Exception, e:
+        print(e)
 
 
 def audit_all(project):
