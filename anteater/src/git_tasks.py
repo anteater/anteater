@@ -60,16 +60,6 @@ def pull_project(project):
         print(e)
 
 
-def audit_all(project):
-        print('Cloning: {0}'.format(project))
-        sh.git.clone(project)
-
-
-def audit_project(project):
-        print('Cloning: {0}'.format(project))
-        sh.git.clone(project)
-
-
 if __name__ == "__main__":
     project = 'https://github.com/lukehinds/dotfiles'
     clone_project(project)
