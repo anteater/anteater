@@ -4,6 +4,9 @@ Anteater
 
 Security Audit System for OPNFV Projects.
 
+![alt tag](http://www.pd4pic.com/images800_/sketch-cartoon-ant-eater-anteater-animal-giant.png)
+
+
 Description
 -----------
 
