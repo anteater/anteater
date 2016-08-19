@@ -55,5 +55,5 @@ def run_bandit(project, projdir):
     print ('Performing Bandit Scan on: {0}'.format(projdir))
     try:
         sh.bandit('-r', '-f', 'html', '-o', report, projdir)
-    except sh.ErrorReturnCode_1:
-        pass
+    except sh.ErrorReturnCode, e:
+        print(e.stderr)
