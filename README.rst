@@ -15,6 +15,24 @@ Security Code Audit system (used on the OPNFV project).
 
 * Allows easy clone, pull operations from a single CLI.
 
+Examples:
+
+    $ anteater clone all
+    Cloning inspector.
+    Cloning doctor.
+    Cloning promise.
+
+    $ anteater pull all
+    Performing pull on: inspector
+    Performing pull on: doctor
+    Performing pull on: promise
+
+    $ anteater pull inspector
+    Performing pull on: inspector
+
+    $ anteater audit inspector
+    Performing Bandit scan against inspector
+
 Note
 ----
 
