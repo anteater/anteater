@@ -18,7 +18,7 @@ with open('configs/anteater.yml', 'r') as ymlcfg:
 
 def audit_all():
     for project in projects:
-        print('Scanning {0}.'.format(project))
+        audit_project(project)
 
 
 def audit_project(project):
