@@ -4,7 +4,7 @@ Anteater
 
 Security Audit System for OPNFV Projects.
 
-![Alt text](http://i.imgur.com/BPvV3Gz.png "Anteater")
+![anteater](http://i.imgur.com/BPvV3Gz.png)
 
 Description
 -----------
