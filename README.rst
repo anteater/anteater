@@ -15,6 +15,8 @@ Security Code Audit system (used on the OPNFV project).
 
 * Allows easy clone, pull operations from a single CLI.
 
+* Peforms checks required to insure Linux Foundation Badge Requirements
+
 Examples:
 
     $ anteater clone all
@@ -38,7 +40,7 @@ Examples:
     Performing pull on: inspector
 
     $ anteater audit inspector
-    
+
     Performing Bandit scan against inspector
 
 Note
