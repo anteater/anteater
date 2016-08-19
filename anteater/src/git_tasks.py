@@ -4,7 +4,6 @@
 from __future__ import division, print_function, absolute_import
 import sh
 import yaml
-import time
 
 __author__ = "Luke Hinds"
 __copyright__ = "Luke Hinds"
@@ -42,22 +41,21 @@ def clone_project(project):
         print(e)
 
 
-def pull_all(project):
-    print('Cloning: {0}'.format(project))
-    url = 'https://gerrit.opnfv.org/gerrit/{0}'.format(project)
-    projdir = 'repos/{0}'.format(project)
-    try:
-        sh.git.pull(url, projdir)
-    except Exception, e:
-        print(e)
+def pull_all():
+    for project in projects:
+        print('Performing pull on: {0}'.format(project))
+        projdir = 'repos/{0}'.format(project)
+        try:
+            sh.git('-C', projdir, 'pull')
+        except Exception, e:
+            print(e)
 
 
 def pull_project(project):
     print('Performing pull on: {0}'.format(project))
-    url = 'https://gerrit.opnfv.org/gerrit/{0}'.format(project)
     projdir = 'repos/{0}'.format(project)
     try:
-        sh.git.pull(projdir)
+        sh.git('-C', projdir, 'pull')
     except Exception, e:
         print(e)
 
