@@ -16,12 +16,12 @@ with open('configs/anteater.yml', 'r') as ymlcfg:
     projects = (cfg['projects'])
 
 
-def audit_all():
+def scan_all():
     for project in projects:
-        audit_project(project)
+        scan_project(project)
 
 
-def audit_project(project):
+def scan_project(project):
     '''
     Passed project name and declares repo directory 'projdir'.
     Performs recursive search to find file extensions.

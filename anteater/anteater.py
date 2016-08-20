@@ -4,8 +4,8 @@
 """Anteater.
 
 Usage:
-  anteater audit all
-  anteater audit <project>
+  anteater scan all
+  anteater scan <project>
   anteater clone all
   anteater clone <project>
   anteater pull all
@@ -23,7 +23,7 @@ import logging
 # from anteater import __version__
 from src.git_tasks import clone_all, clone_project
 from src.git_tasks import pull_all, pull_project
-from src.scan_tasks import audit_all, audit_project
+from src.scan_tasks import scan_all, scan_project
 
 __author__ = "Luke Hinds"
 __copyright__ = "Luke Hinds"
@@ -40,11 +40,11 @@ def main():
             clone_all()
         elif arguments['<project>']:
             clone_project(arguments['<project>'])
-    elif arguments['audit']:
+    elif arguments['scan']:
         if arguments['all']:
-            audit_all()
+            scan_all()
         elif arguments['<project>']:
-            audit_project(arguments['<project>'])
+            scan_project(arguments['<project>'])
     elif arguments['pull']:
         if arguments['all']:
             pull_all()
@@ -59,12 +59,13 @@ if __name__ == "__main__":
 
 
 '''
+docopts reference
 {'--help': False,
  '--version': False,
  '<project>': 'inspector',
  'all': False,
  'anteater': False,
- 'audit': False,
+ 'scan': False,
  'clone': True,
  'pull': False}
 '''
