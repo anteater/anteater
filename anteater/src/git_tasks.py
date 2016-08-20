@@ -58,8 +58,3 @@ def pull_project(project):
         sh.git('-C', projdir, 'pull')
     except Exception, e:
         print(e)
-
-
-if __name__ == "__main__":
-    project = 'https://github.com/lukehinds/dotfiles'
-    clone_project(project)
