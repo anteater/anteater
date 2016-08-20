@@ -34,25 +34,26 @@ def scan_project(reports_dir, project):
     projdir = 'repos/{0}'.format(project)
     for dirname, dirnames, filenames in os.walk(projdir):
         for filename in filenames:
-            if filename.endswith('.py'):
+            if filename.endswith('.c'):
+                c = True
+                # break
+            elif filename.endswith('.py'):
                 py = True
-                break
+                # break
             elif filename.endswith('.sh'):
                 shell = True
-                break
+                # break
             elif filename.endswith('.java'):
                 java = True
-                break
-            elif filename.endswith('.c'):
-                c = True
-                break
-    if py:
+                # break
+
+    if c and py:
+        run_rats(reports_dir, project, projdir)
+    elif py:
         run_bandit(reports_dir, project, projdir)
     elif shell:
         pass
     elif java:
-        pass
-    elif c:
         pass
 
 
@@ -61,5 +62,14 @@ def run_bandit(reports_dir, project, projdir):
     print ('Performing Bandit Scan on: {0}'.format(projdir))
     try:
         sh.bandit('-r', '-f', 'html', '-o', reports_dir + report, projdir)
+    except sh.ErrorReturnCode, e:
+        print(e.stderr)
+
+
+def run_rats(reports_dir, project, projdir):
+    report = ('{0}_report.html'.format(project))
+    print ('Performing Rats Scan on: {0}'.format(projdir))
+    try:
+        sh.rats('--html', projdir, '>', _out=(reports_dir + report))
     except sh.ErrorReturnCode, e:
         print(e.stderr)

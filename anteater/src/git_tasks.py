@@ -27,8 +27,8 @@ def clone_all():
         projdir = 'repos/{0}'.format(project)
         try:
             sh.git.clone(url, projdir)
-        except Exception, e:
-            print(e)
+        except sh.ErrorReturnCode, e:
+            print(e.stderr)
 
 
 def clone_project(project):
@@ -37,8 +37,8 @@ def clone_project(project):
     projdir = 'repos/{0}'.format(project)
     try:
         sh.git.clone(url, projdir)
-    except Exception, e:
-        print(e)
+    except sh.ErrorReturnCode, e:
+        print(e.stderr)
 
 
 def pull_all():
@@ -47,8 +47,8 @@ def pull_all():
         projdir = 'repos/{0}'.format(project)
         try:
             sh.git('-C', projdir, 'pull')
-        except Exception, e:
-            print(e)
+        except sh.ErrorReturnCode, e:
+            print(e.stderr)
 
 
 def pull_project(project):
@@ -56,5 +56,5 @@ def pull_project(project):
     projdir = 'repos/{0}'.format(project)
     try:
         sh.git('-C', projdir, 'pull')
-    except Exception, e:
-        print(e)
+    except sh.ErrorReturnCode, e:
+        print(e.stderr)
