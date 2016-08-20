@@ -9,7 +9,7 @@ __author__ = "Luke Hinds"
 __copyright__ = "Luke Hinds"
 __license__ = "none"
 
-with open('configs/anteater.yml', 'r') as ymlcfg:
+with open('configs/projects.yml', 'r') as ymlcfg:
     cfg = yaml.safe_load(ymlcfg)
     projects = (cfg['projects'])
 

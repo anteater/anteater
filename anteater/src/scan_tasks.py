@@ -8,20 +8,20 @@ import yaml
 
 __author__ = "Luke Hinds"
 __copyright__ = "Luke Hinds"
-__license__ = "none"
+__license__ = "apache2.0"
 
 
-with open('configs/anteater.yml', 'r') as ymlcfg:
+with open('configs/projects.yml', 'r') as ymlcfg:
     cfg = yaml.safe_load(ymlcfg)
     projects = (cfg['projects'])
 
 
-def scan_all():
+def scan_all(reports_dir):
     for project in projects:
         scan_project(project)
 
 
-def scan_project(project):
+def scan_project(reports_dir, project):
     '''
     Passed project name and declares repo directory 'projdir'.
     Performs recursive search to find file extensions.
@@ -47,7 +47,7 @@ def scan_project(project):
                 c = True
                 break
     if py:
-        run_bandit(project, projdir)
+        run_bandit(reports_dir, project, projdir)
     elif shell:
         pass
     elif java:
@@ -56,10 +56,10 @@ def scan_project(project):
         pass
 
 
-def run_bandit(project, projdir):
+def run_bandit(reports_dir, project, projdir):
     report = ('{0}_report.html'.format(project))
     print ('Performing Bandit Scan on: {0}'.format(projdir))
     try:
-        sh.bandit('-r', '-f', 'html', '-o', report, projdir)
+        sh.bandit('-r', '-f', 'html', '-o', reports_dir + report, projdir)
     except sh.ErrorReturnCode, e:
         print(e.stderr)

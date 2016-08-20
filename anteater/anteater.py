@@ -18,8 +18,8 @@ Options:
   --version     Show version.
 """
 from docopt import docopt
-
-import logging
+import os
+import ConfigParser
 # from anteater import __version__
 from src.git_tasks import clone_all, clone_project
 from src.git_tasks import pull_all, pull_project
@@ -29,7 +29,11 @@ __author__ = "Luke Hinds"
 __copyright__ = "Luke Hinds"
 __license__ = "none"
 
-_logger = logging.getLogger(__name__)
+wk_dir = os.path.dirname(os.path.realpath('__file__'))
+
+config = ConfigParser.RawConfigParser()
+config.read('anteater.conf')
+reports_dir = config.get('config', 'reports_dir')
 
 
 def main():
@@ -42,16 +46,14 @@ def main():
             clone_project(arguments['<project>'])
     elif arguments['scan']:
         if arguments['all']:
-            scan_all()
+            scan_all(reports_dir)
         elif arguments['<project>']:
-            scan_project(arguments['<project>'])
+            scan_project(reports_dir, arguments['<project>'])
     elif arguments['pull']:
         if arguments['all']:
             pull_all()
         elif arguments['<project>']:
             pull_project(arguments['<project>'])
-    else:
-        print "didnae find nothing pal"
 
 
 if __name__ == "__main__":
