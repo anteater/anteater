@@ -22,32 +22,38 @@ def audit_all():
 
 
 def audit_project(project):
-    # Counter for the amount of Python Files
-    py = 0
-    # Counter for the amount of shell scripts
-    shell = 0
-    # Counter for the amount of Java files
-    java = 0
-    # Counter for the amount of C source files
-    c = 0
+    '''
+    Passed project name and declares repo directory 'projdir'.
+    Performs recursive search to find file extensions.
+    When extension matches, it breaks loop with True and runs related scanner
+    '''
+    py = False
+    shell = False
+    java = False
+    c = False
     projdir = 'repos/{0}'.format(project)
     for dirname, dirnames, filenames in os.walk(projdir):
         for filename in filenames:
-            # check if python file
             if filename.endswith('.py'):
-                py = py + 1
+                py = True
                 break
             elif filename.endswith('.sh'):
-                shell = shell + 1
+                shell = True
                 break
             elif filename.endswith('.java'):
-                java = java + 1
+                java = True
                 break
             elif filename.endswith('.c'):
-                c = c + 1
+                c = True
                 break
-    if py > 1:
+    if py:
         run_bandit(project, projdir)
+    elif shell:
+        pass
+    elif java:
+        pass
+    elif c:
+        pass
 
 
 def run_bandit(project, projdir):
