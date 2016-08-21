@@ -2,17 +2,15 @@
 Anteater
 ========
 
-Security Audit System for OPNFV Projects.
-
 ![anteater](http://i.imgur.com/BPvV3Gz.png)
-
-Description
------------
-
-Note: Tool is still under active development.
 
 Security Code Audit system
 ---------------------------
+
+Note: Tool is still under active development.
+
+Description
+-----------
 
 A multi lanuague secure code linter, insecure library check, and assurity of
 meeting Linux Foundation Core Infrastructure Security Badge Programme.
