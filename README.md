@@ -4,7 +4,7 @@ Anteater
 
 ![anteater](http://i.imgur.com/BPvV3Gz.png)
 
-Security Code Audit system
+Mutlti Lang Code Auditing System
 ---------------------------
 
 Note: Tool is still under active development.
