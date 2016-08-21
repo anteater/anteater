@@ -11,39 +11,62 @@ Description
 
 Security Code Audit system (used on the OPNFV project).
 
-* Audits current libaries used, to allow an inventory check for known CVE's
+* [WP] Audits current libaries used, to allow an inventory check for known CVE's
 
-* Performs code scanning (currently using Bandit and Rats).
+* Performs code scanning with auto recgonition of lanuague used (scanners
+    include Bandit (python), PMD (Java), Rats (C / C++))
 
-* Allows easy clone, pull operations from a single CLI.
+* Allows easy git clone, pull operations from a single CLI.
 
-* Peforms checks required to insure Linux Foundation Badge Requirements
+* [WP]Peforms checks required to insure Linux Foundation Badge Requirements
+
+[WP] Still pending work
 
 Examples:
 
+Clone all projects (listed within /configs/projects.yml)
+
     $ anteater clone all
 
-    Cloning inspector.
+    Cloning <project A>
 
-    Cloning doctor.
+    Cloning <project B>
 
-    Cloning promise.
+    Cloning <project C>
+
+    <snip>
+
+Pull (update all projects)
 
     $ anteater pull all
 
-    Performing pull on: inspector
+    Performing pull on: <project A>
 
-    Performing pull on: doctor
+    Performing pull on: <project B>
 
-    Performing pull on: promise
+    Performing pull on: <project C>
 
-    $ anteater pull inspector
+    <snip>
 
-    Performing pull on: inspector
+Pull just a single project
 
-    $ anteater audit inspector
+    $ anteater pull <project A>
 
-    Performing Bandit scan against inspector
+    Performing pull on: <project b>
+
+Perform secure coding scan
+
+    $ anteater audit <python project>
+
+    Performing Bandit scan against <python project>
+
+    $ anteater audit <java project>
+
+    Performing PMD Scan on: <java project>
+
+    $ anteater audit <C / C++ project>
+
+    Performing Rats Scan on: <C / C++ project>
 
 Note
 ----
