@@ -10,6 +10,7 @@ __author__ = "Luke Hinds"
 __copyright__ = "Luke Hinds"
 __license__ = "apache2.0"
 
+wk_dir = os.path.dirname(os.path.realpath('__file__')) + '/'
 
 with open('configs/projects.yml', 'r') as ymlcfg:
     cfg = yaml.safe_load(ymlcfg)
@@ -49,12 +50,12 @@ def scan_project(reports_dir, project):
 
     if c and py:
         run_rats(reports_dir, project, projdir)
+    elif java and py:
+            run_pmd(reports_dir, project, projdir)
     elif py:
         run_bandit(reports_dir, project, projdir)
     elif shell:
         pass
-    elif java and py:
-        print('PMD!')
 
 
 def run_bandit(reports_dir, project, projdir):
@@ -75,9 +76,18 @@ def run_rats(reports_dir, project, projdir):
         print(e.stderr)
 
 
-def run_pmd(arg):
-    pass
-    '''
-    ./run.sh pmd -dir /full/path/code -f html -rulesets java-basic,java-design
-    > report.html
-    '''
+# Change to direct java call
+def run_pmd(reports_dir, project, projdir):
+    report = ('{0}_report.html'.format(project))
+    print ('Performing PMD Scan on: {0}'.format(projdir))
+    full_string = (wk_dir + 'utils/pmd/bin/run.sh', '-dir', wk_dir + projdir,
+                   '-f', 'html', '-rulesets', 'java-basic', '>',
+                   reports_dir + report)
+    # print(full_string)
+    try:
+        # https://amoffat.github.io/sh/ (try a pipe!)
+        sh.command(wk_dir + 'utils/pmd/bin/run.sh', 'pmd', '-dir',
+                   wk_dir + projdir, '-f', 'html', '-rulesets', 'java-basic',
+                   '-reportfile', reports_dir + report)
+    except sh.ErrorReturnCode, e:
+        print(e.stderr)
