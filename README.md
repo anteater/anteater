@@ -36,9 +36,13 @@ Clone all projects (listed within /configs/projects.yml)
 
     Cloning <project B>
 
-    Cloning <project C>
-
     <snip>
+
+Clone a single project
+
+    $ anteater clone all
+
+    Cloning <project A>
 
 Pull (update all projects)
 
@@ -48,11 +52,9 @@ Pull (update all projects)
 
     Performing pull on: <project B>
 
-    Performing pull on: <project C>
-
     <snip>
 
-Pull just a single project
+Pull a single project
 
     $ anteater pull <project A>
 
@@ -71,9 +73,3 @@ Perform secure coding scan
     $ anteater audit <C / C++ project>
 
     Performing Rats Scan on: <C / C++ project>
-
-Note
-----
-
-This project has been set up using PyScaffold 2.5.6. For details and usage
-information on PyScaffold see http://pyscaffold.readthedocs.org/.
