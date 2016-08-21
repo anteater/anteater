@@ -12,8 +12,9 @@ Note: Tool is still under active development.
 Description
 -----------
 
-A multi lanuague secure code linter, insecure library check, and assurity of
-meeting Linux Foundation Core Infrastructure Security Badge Programme.
+A multi language tool to perform secure code linting, insecure library check,
+and provide assurity of meeting the Linux Foundation Core Infrastructure
+Security Badge Programme.
 
 * Audits current libaries used, to allow an inventory check for known CVE's [WP]
 
