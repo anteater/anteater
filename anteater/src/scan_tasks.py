@@ -53,8 +53,8 @@ def scan_project(reports_dir, project):
         run_bandit(reports_dir, project, projdir)
     elif shell:
         pass
-    elif java:
-        pass
+    elif java and py:
+        print('PMD!')
 
 
 def run_bandit(reports_dir, project, projdir):
@@ -73,3 +73,11 @@ def run_rats(reports_dir, project, projdir):
         sh.rats('--html', projdir, '>', _out=(reports_dir + report))
     except sh.ErrorReturnCode, e:
         print(e.stderr)
+
+
+def run_pmd(arg):
+    pass
+    '''
+    ./run.sh pmd -dir /full/path/code -f html -rulesets java-basic,java-design
+    > report.html
+    '''

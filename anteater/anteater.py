@@ -29,11 +29,16 @@ __author__ = "Luke Hinds"
 __copyright__ = "Luke Hinds"
 __license__ = "none"
 
+
 wk_dir = os.path.dirname(os.path.realpath('__file__'))
 
 config = ConfigParser.RawConfigParser()
 config.read('anteater.conf')
 reports_dir = config.get('config', 'reports_dir')
+
+os.environ["JAVA_HOME"] = (config.get('config', 'JAVA_HOME'))
+
+print os.environ["JAVA_HOME"]
 
 
 def main():
