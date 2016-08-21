@@ -9,16 +9,22 @@ Security Audit System for OPNFV Projects.
 Description
 -----------
 
-Security Code Audit system (used on the OPNFV project).
+Note: Tool is still under active development.
 
-* [WP] Audits current libaries used, to allow an inventory check for known CVE's
+Security Code Audit system
+---------------------------
+
+A multi lanuague secure code linter, insecure library check, and assurity of
+meeting Linux Foundation Core Infrastructure Security Badge Programme.
+
+* Audits current libaries used, to allow an inventory check for known CVE's [WP]
 
 * Performs code scanning with auto recgonition of lanuague used (scanners
     include Bandit (python), PMD (Java), Rats (C / C++))
 
 * Allows easy git clone, pull operations from a single CLI.
 
-* [WP]Peforms checks required to insure Linux Foundation Badge Requirements
+* Peforms checks required to insure Linux Foundation Badge Requirements [WP]
 
 [WP] Still pending work
 
