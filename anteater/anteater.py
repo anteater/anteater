@@ -33,7 +33,7 @@ __license__ = "none"
 config = ConfigParser.RawConfigParser()
 config.read('anteater.conf')
 reports_dir = config.get('config', 'reports_dir')
-
+repo_url = config.get('config', 'repo_url')
 os.environ["JAVA_HOME"] = (config.get('config', 'JAVA_HOME'))
 
 
@@ -42,9 +42,9 @@ def main():
     # print('Args: {0}'.format(arguments))
     if arguments['clone']:
         if arguments['all']:
-            clone_all()
+            clone_all(repo_url)
         elif arguments['<project>']:
-            clone_project(arguments['<project>'])
+            clone_project(arguments[repo_url, '<project>'])
     elif arguments['scan']:
         if arguments['all']:
             scan_all(reports_dir)

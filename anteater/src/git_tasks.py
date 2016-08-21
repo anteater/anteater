@@ -18,12 +18,12 @@ def url_formatter(arg):
     pass
 
 
-def clone_all():
+def clone_all(repo_url):
     # Progrss bar
     for project in projects:
         print('Cloning {0}.'.format(project))
         # Lets move the below gerrit url to a variable
-        url = 'https://gerrit.opnfv.org/gerrit/{0}'.format(project)
+        url = repo_url + '/{0}'.format(project)
         projdir = 'repos/{0}'.format(project)
         try:
             sh.git.clone(url, projdir)
@@ -31,9 +31,9 @@ def clone_all():
             print(e.stderr)
 
 
-def clone_project(project):
+def clone_project(repo_url, project):
     print('Cloning: {0}'.format(project))
-    url = 'https://gerrit.opnfv.org/gerrit/{0}'.format(project)
+    url = repo_url + '/{0}'.format(project)
     projdir = 'repos/{0}'.format(project)
     try:
         sh.git.clone(url, projdir)

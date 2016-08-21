@@ -18,16 +18,33 @@ Security Badge Programme.
 
 * Audits current libaries used, to allow an inventory check for known CVE's [WP]
 
-* Performs code scanning with auto recgonition of lanuague used (scanners
-    include Bandit (python), PMD (Java), Rats (C / C++))
+* Performs vulnerability code scanning with auto recgonition of language:
+    * Bandit (Python)
+    * PMD (Java)
+    * Rats (C / C++)
 
-* Allows easy git clone, pull operations from a single CLI.
+
+* Easy git clone, pull operations to assist quick scanning of repositories.
 
 * Peforms checks required to insure Linux Foundation Badge Requirements [WP]
 
 [WP] Still pending work
 
 Examples:
+
+Perform secure coding scan
+
+    $ anteater audit <python project>
+
+    Performing Bandit scan of: <python project>
+
+    $ anteater audit <java project>
+
+    Performing PMD Scan of: <java project>
+
+    $ anteater audit <C / C++ project>
+
+    Performing Rats Scan of: <C / C++ project>
 
 Clone all projects (listed within /configs/projects.yml)
 
@@ -60,17 +77,3 @@ Pull a single project
     $ anteater pull <project A>
 
     Performing pull on: <project b>
-
-Perform secure coding scan
-
-    $ anteater audit <python project>
-
-    Performing Bandit scan against <python project>
-
-    $ anteater audit <java project>
-
-    Performing PMD Scan on: <java project>
-
-    $ anteater audit <C / C++ project>
-
-    Performing Rats Scan on: <C / C++ project>
