@@ -44,7 +44,7 @@ def main():
         if arguments['all']:
             clone_all(repo_url)
         elif arguments['<project>']:
-            clone_project(arguments[repo_url, '<project>'])
+            clone_project(repo_url, arguments['<project>'])
     elif arguments['scan']:
         if arguments['all']:
             scan_all(reports_dir)

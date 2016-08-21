@@ -32,8 +32,8 @@ def clone_all(repo_url):
 
 
 def clone_project(repo_url, project):
-    print('Cloning: {0}'.format(project))
     url = repo_url + '/{0}'.format(project)
+    print('Cloning: {0}'.format(url))
     projdir = 'repos/{0}'.format(project)
     try:
         sh.git.clone(url, projdir)
