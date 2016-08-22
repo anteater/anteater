@@ -58,7 +58,7 @@ Clone all projects (listed within /configs/projects.yml)
 
 Clone a single project
 
-    $ anteater clone all
+    $ anteater clone <project A>
 
     Cloning <project A>
 
