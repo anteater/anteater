@@ -19,7 +19,7 @@ with open('configs/projects.yml', 'r') as ymlcfg:
 
 def scan_all(reports_dir):
     for project in projects:
-        scan_project(project)
+        scan_project(reports_dir, project)
 
 
 def scan_project(reports_dir, project):

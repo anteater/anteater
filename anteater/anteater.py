@@ -25,11 +25,6 @@ from src.git_tasks import clone_all, clone_project
 from src.git_tasks import pull_all, pull_project
 from src.scan_tasks import scan_all, scan_project
 
-__author__ = "Luke Hinds"
-__copyright__ = "Luke Hinds"
-__license__ = "none"
-
-
 config = ConfigParser.RawConfigParser()
 config.read('anteater.conf')
 reports_dir = config.get('config', 'reports_dir')
