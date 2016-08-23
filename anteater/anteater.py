@@ -25,6 +25,10 @@ from src.git_tasks import clone_all, clone_project
 from src.git_tasks import pull_all, pull_project
 from src.scan_tasks import scan_all, scan_project
 
+__author__ = "Luke Hinds"
+__copyright__ = "Luke Hinds"
+__license__ = "none"
+
 config = ConfigParser.RawConfigParser()
 config.read('anteater.conf')
 reports_dir = config.get('config', 'reports_dir')
@@ -32,7 +36,17 @@ repo_url = config.get('config', 'repo_url')
 os.environ["JAVA_HOME"] = (config.get('config', 'JAVA_HOME'))
 
 
+def check_dir(reports_dir):
+    print('making dir')
+    try:
+        os.makedirs(reports_dir)
+    except OSError:
+        if not os.path.isdir(reports_dir):
+            raise
+
+
 def main():
+    check_dir(reports_dir)
     arguments = docopt(__doc__, version='Anteater 0.1')
     # print('Args: {0}'.format(arguments))
     if arguments['clone']:
