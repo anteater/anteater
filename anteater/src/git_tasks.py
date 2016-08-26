@@ -4,10 +4,9 @@
 from __future__ import division, print_function, absolute_import
 import sh
 import yaml
+import anteater.utils.anteater_logger as antlog
 
-__author__ = "Luke Hinds"
-__copyright__ = "Luke Hinds"
-__license__ = "none"
+logger = antlog.Logger(__name__).getLogger()
 
 with open('configs/projects.yml', 'r') as ymlcfg:
     cfg = yaml.safe_load(ymlcfg)
@@ -21,40 +20,40 @@ def url_formatter(arg):
 def clone_all(repo_url):
     # Progrss bar
     for project in projects:
-        print('Cloning {0}.'.format(project))
+        logger.info('Cloning {0}.'.format(project))
         # Lets move the below gerrit url to a variable
         url = repo_url + '/{0}'.format(project)
         projdir = 'repos/{0}'.format(project)
         try:
             sh.git.clone(url, projdir)
         except sh.ErrorReturnCode, e:
-            print(e.stderr)
+            logger.error(e.stderr)
 
 
 def clone_project(repo_url, project):
     url = repo_url + '/{0}'.format(project)
-    print('Cloning: {0}'.format(url))
+    logger.info('Cloning: {0}'.format(url))
     projdir = 'repos/{0}'.format(project)
     try:
         sh.git.clone(url, projdir)
     except sh.ErrorReturnCode, e:
-        print(e.stderr)
+        logger.error(e.stderr)
 
 
-def pull_all():
+def pull_all(repo_url):
     for project in projects:
-        print('Performing pull on: {0}'.format(project))
+        logger.info('Performing pull on: {0}'.format(project))
         projdir = 'repos/{0}'.format(project)
         try:
             sh.git('-C', projdir, 'pull')
         except sh.ErrorReturnCode, e:
-            print(e.stderr)
+            logger.error(e.stderr)
 
 
-def pull_project(project):
-    print('Performing pull on: {0}'.format(project))
+def pull_project(repo_url, project):
+    logger.info('Performing pull on: {0}'.format(project))
     projdir = 'repos/{0}'.format(project)
     try:
         sh.git('-C', projdir, 'pull')
     except sh.ErrorReturnCode, e:
-        print(e.stderr)
+        logger.error(e.stderr)
