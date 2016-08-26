@@ -1,26 +1,4 @@
 #!/usr/bin/env python
-#
-# jose.lausuch@ericsson.com
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Apache License, Version 2.0
-# which accompanies this distribution, and is available at
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Logging levels:
-#  Level     Numeric value
-#  CRITICAL  50
-#  ERROR     40
-#  WARNING   30
-#  INFO      20
-#  DEBUG     10
-#  NOTSET    0
-#
-# Usage:
-#  import functest_logger as fl
-#  logger = fl.Logger("script_name").getLogger()
-#  logger.info("message to be shown with - INFO - ")
-#  logger.debug("message to be shown with - DEBUG -")
-
 import logging
 
 

@@ -79,7 +79,7 @@ def run_pmd(reports_dir, project, projdir):
     report = ('{0}_report.html'.format(project))
     logger.info('Performing PMD Scan on: {0}'.format(projdir))
     try:
-        sh.command(wk_dir + 'utils/pmd/bin/run.sh', 'pmd', '-dir',
+        sh.command(wk_dir + 'anteater/utils/pmd/bin/run.sh', 'pmd', '-dir',
                    wk_dir + projdir, '-f', 'html', '-rulesets', 'java-basic',
                    '-reportfile', reports_dir + report)
     except sh.ErrorReturnCode, e:
