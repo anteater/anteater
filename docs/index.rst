@@ -11,9 +11,6 @@ Contents
    :maxdepth: 2
 
    installation
-   license
-   authors
-   changelog
 
 Indices and tables
 ==================
