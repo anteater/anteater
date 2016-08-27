@@ -5,7 +5,7 @@ User Guide
 Configuration
 -------------
 
-Most of anteaters configuration exists witin anteater.conf
+Most of anteaters configuration exists witin anteater.conf::
 
     reports_dir = /tmp/reports/
     JAVA_HOME = /usr/bin/java

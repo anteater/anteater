@@ -21,7 +21,7 @@ VirtualEnv::
 
     sudo dnf install python-virtualenv
 
-Git:
+Git::
 
     sudo dnf install git
 
