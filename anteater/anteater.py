@@ -6,6 +6,7 @@
 Usage:
   anteater scan all
   anteater scan <project>
+  anteater scan <project> --scanner <scanner>
   anteater audit all
   anteater audit <project>
   anteater clone all
@@ -51,9 +52,7 @@ def check_dir(reports_dir):
 
 
 def main():
-    '''
-    Main function, mostly for passing arguments
-    '''
+    """ Main function, mostly for passing arguments """
     check_dir(reports_dir)
     arguments = docopt(__doc__, version='Anteater 0.1')
     # http://goo.gl/dEhAQ6
@@ -66,7 +65,8 @@ def main():
         if arguments['all']:
             scan_all(reports_dir)
         elif arguments['<project>']:
-            scan_project(reports_dir, arguments['<project>'])
+            scan_project(reports_dir, arguments['<project>'],
+                         arguments['<scanner>'])
     elif arguments['audit']:
         if arguments['all']:
             audit_all(reports_dir)

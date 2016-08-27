@@ -18,7 +18,7 @@ def url_formatter(arg):
 
 
 def clone_all(repo_url):
-    # Progrss bar
+    """ git clone all repositories listed in projects.yml """
     for project in projects:
         logger.info('Cloning {0}.'.format(project))
         # Lets move the below gerrit url to a variable
@@ -31,6 +31,7 @@ def clone_all(repo_url):
 
 
 def clone_project(repo_url, project):
+    """ git clone repository given as arg """
     url = repo_url + '/{0}'.format(project)
     logger.info('Cloning: {0}'.format(url))
     projdir = 'repos/{0}'.format(project)
@@ -41,6 +42,7 @@ def clone_project(repo_url, project):
 
 
 def pull_all(repo_url):
+    """ git pull all repositories listed in projects.yml """
     for project in projects:
         logger.info('Performing pull on: {0}'.format(project))
         projdir = 'repos/{0}'.format(project)
@@ -51,6 +53,7 @@ def pull_all(repo_url):
 
 
 def pull_project(repo_url, project):
+    """ git pull repository given as arg """
     logger.info('Performing pull on: {0}'.format(project))
     projdir = 'repos/{0}'.format(project)
     try:

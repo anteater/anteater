@@ -20,43 +20,55 @@ def scan_all(reports_dir):
         scan_project(reports_dir, project)
 
 
-def scan_project(reports_dir, project):
-    '''
-    Passed project name and declares repo directory 'projdir'.
+def scan_project(reports_dir, project, scanner):
+    """ Passed project name and declares repo directory 'projdir'.
     Performs recursive search to find file extensions.
     When extension matches, it breaks loop with True and runs related scanner
-    '''
+    """
     py = False
     shell = False
     java = False
     c = False
     projdir = 'repos/{0}'.format(project)
-    for dirname, dirnames, filenames in os.walk(projdir):
-        for filename in filenames:
-            if filename.endswith('.c'):
-                c = True
-                # break
-            elif filename.endswith('.py'):
-                py = True
-                # break
-            elif filename.endswith('.sh'):
-                shell = True
-                # break
-            elif filename.endswith('.java'):
-                java = True
-                # break
-
-    if c and py:
-        run_rats(reports_dir, project, projdir)
-    elif java and py:
+    if scanner:
+        if scanner == 'bandit':
+            run_bandit(reports_dir, project, projdir)
+        elif scanner == 'pmd':
             run_pmd(reports_dir, project, projdir)
-    elif py:
-        run_bandit(reports_dir, project, projdir)
-    elif shell:
-        pass
+        elif scanner == 'rats':
+            run_rats(reports_dir, project, projdir)
+        else:
+            logger.error("%s is not a recognised scanner tool", scanner)
+    else:
+        """Let's try to guess which scanner to use,
+        by file extensions"""
+        for dirname, dirnames, filenames in os.walk(projdir):
+            for filename in filenames:
+                if filename.endswith('.c'):
+                    c = True
+                    # break
+                elif filename.endswith('.py'):
+                    py = True
+                    # break
+                elif filename.endswith('.sh'):
+                    shell = True
+                    # break
+                elif filename.endswith('.java'):
+                    java = True
+                    # break
+
+        if c and py:
+            run_rats(reports_dir, project, projdir)
+        elif java and py:
+                run_pmd(reports_dir, project, projdir)
+        elif py:
+            run_bandit(reports_dir, project, projdir)
+        elif shell:
+            pass
 
 
 def run_bandit(reports_dir, project, projdir):
+    """Run's Bandit Python Scanner"""
     report = ('{0}_report.html'.format(project))
     logger.info('Performing Bandit Scan on: {0}'.format(projdir))
     try:
@@ -66,6 +78,7 @@ def run_bandit(reports_dir, project, projdir):
 
 
 def run_rats(reports_dir, project, projdir):
+    """Run's RATS C / Python Scanner"""
     report = ('{0}_report.html'.format(project))
     logger.info('Performing Rats Scan on: {0}'.format(projdir))
     try:
@@ -76,6 +89,7 @@ def run_rats(reports_dir, project, projdir):
 
 # Change to direct java call
 def run_pmd(reports_dir, project, projdir):
+    """Run's PMD Java Scanner"""
     report = ('{0}_report.html'.format(project))
     logger.info('Performing PMD Scan on: {0}'.format(projdir))
     try:
