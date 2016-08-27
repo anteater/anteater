@@ -11,6 +11,7 @@ Contents
    :maxdepth: 2
 
    installation
+   user_guide
 
 Indices and tables
 ==================
