@@ -31,14 +31,14 @@ Scanning
 All scans will self determine the language and scanner to use, unless the flag
 --scanner is passed as an argument.
 
-Self select scan of a Project:
+Self select scan of a Project::
 
     anteater scan <project>
 
-Scan project while nominating a scanner
+Scan project while nominating a scanner::
 
     anteater scan <project> --scanner <bandit | pmd | rats>
 
-Scan all projects using self selecting scan type:
+Scan all projects using self selecting scan type::
 
     anteater scan all
