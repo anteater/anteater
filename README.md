@@ -2,6 +2,8 @@
 Anteater
 ========
 
+[![Documentation Status](https://readthedocs.org/projects/anteater/badge/?version=latest)](http://anteater.readthedocs.io/en/latest/?badge=latest)
+
 ![anteater](http://i.imgur.com/BPvV3Gz.png)
 
 Multi Lang Code Auditing System
