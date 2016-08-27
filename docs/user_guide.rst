@@ -5,13 +5,13 @@ User Guide
 Configuration
 -------------
 
-Most of anteaters configuration exists witin anteater.conf::
+Most of anteaters configuration exists witin ``anteater.conf``::
 
     reports_dir = /tmp/reports/
     JAVA_HOME = /usr/bin/java
     repo_url = https://github.com/lukehinds
 
-Projects are set within config/projects.yml
+Projects are set within ``config/projects.yml``
 
 Git Operations
 --------------
