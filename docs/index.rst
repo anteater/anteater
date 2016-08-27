@@ -9,7 +9,7 @@ Contents
 
 .. toctree::
    :maxdepth: 2
-   Installation<installation>
+   Installation <installation>
    License <license>
    Authors <authors>
    Changelog <changes>
