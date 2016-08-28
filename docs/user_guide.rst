@@ -13,8 +13,7 @@ Most of anteaters configuration exists witin ``anteater.conf``::
 
 * ``reports_dir``: location for scanners to send HTML reports
 * ``JAVA_HOME``: Standard Java Edition is fine
-* ``root_url``: Used as base URL for each project in projects.yml (see 'Project
-Wide Operations')
+* ``root_url``: Base URL for projects.yml and working with a user wide account.
 
 Methods of Operation
 --------------------
