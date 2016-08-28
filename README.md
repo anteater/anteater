@@ -21,10 +21,9 @@ Security Badge Programme.
 * Audits current libaries used, to allow an inventory check for known CVE's [WP]
 
 * Performs vulnerability code scanning with auto recgonition of language:
-    * Bandit (Python)
-    * PMD (Java)
-    * Rats (C / C++)
-
+    * Bandit (Python) https://github.com/openstack/bandit
+    * PMD (Java) https://pmd.github.io/
+    * Rats (C / C++) https://code.google.com/archive/p/rough-auditing-tool-for-security/
 
 * Easy git clone, pull operations to assist quick scanning of repositories.
 
