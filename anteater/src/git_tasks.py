@@ -18,12 +18,12 @@ def url_formatter(arg):
     pass
 
 
-def clone_all(repo_url):
+def clone_all(root_url):
     """ git clone all repositories listed in projects.yml """
     for project in projects:
         logger.info('Cloning {0}.'.format(project))
         # Lets move the below gerrit url to a variable
-        url = repo_url + '/{0}'.format(project)
+        url = root_url + '/{0}'.format(project)
         projdir = 'repos/{0}'.format(project)
         try:
             sh.git.clone(url, projdir)
@@ -31,9 +31,9 @@ def clone_all(repo_url):
             logger.error(e.stderr)
 
 
-def clone_project(repo_url, project):
+def clone_project(root_url, project):
     """ git clone repository given as arg """
-    url = repo_url + '/{0}'.format(project)
+    url = root_url + '/{0}'.format(project)
     logger.info('Cloning: {0}'.format(url))
     projdir = 'repos/{0}'.format(project)
     try:
@@ -53,7 +53,7 @@ def clone_project_url(url):
         logger.error(e.stderr)
 
 
-def pull_all(repo_url):
+def pull_all(root_url):
     """ git pull all repositories listed in projects.yml """
     for project in projects:
         logger.info('Performing pull on: {0}'.format(project))
@@ -64,7 +64,7 @@ def pull_all(repo_url):
             logger.error(e.stderr)
 
 
-def pull_project(repo_url, project):
+def pull_project(root_url, project):
     """ git pull repository given as arg """
     logger.info('Performing pull on: {0}'.format(project))
     projdir = 'repos/{0}'.format(project)

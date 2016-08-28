@@ -34,7 +34,7 @@ import utils.anteater_logger as antlog
 config = ConfigParser.RawConfigParser()
 config.read('anteater.conf')
 reports_dir = config.get('config', 'reports_dir')
-repo_url = config.get('config', 'repo_url')
+root_url = config.get('config', 'root_url')
 
 logger = antlog.Logger(__name__).getLogger()
 
@@ -59,9 +59,9 @@ def main():
     # http://goo.gl/dEhAQ6
     if arguments['clone']:
         if arguments['all']:
-            clone_all(repo_url)
+            clone_all(root_url)
         elif arguments['<project>']:
-            clone_project(repo_url, arguments['<project>'])
+            clone_project(root_url, arguments['<project>'])
         elif arguments['<url>']:
             clone_project_url(arguments['<url>'])
     elif arguments['scan']:
@@ -77,9 +77,9 @@ def main():
             audit_project(reports_dir, arguments['<project>'])
     elif arguments['pull']:
         if arguments['all']:
-            pull_all(repo_url)
+            pull_all(root_url)
         elif arguments['<project>']:
-            pull_project(repo_url, arguments['<project>'])
+            pull_project(root_url, arguments['<project>'])
 
 
 if __name__ == "__main__":
