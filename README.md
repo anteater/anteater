@@ -9,6 +9,8 @@ Anteater
 Multi Lang Code Auditing System
 ---------------------------
 
+[![asciicast](https://asciinema.org/a/5juc3lxf8p4dene8h8y8r68le.png)](https://asciinema.org/a/5juc3lxf8p4dene8h8y8r68le)
+
 Note: Tool is still under active development.
 
 Description
