@@ -11,6 +11,10 @@ Most of anteaters configuration exists witin ``anteater.conf``::
     JAVA_HOME = /usr/bin/java
     repo_url = https://github.com/lukehinds
 
+* ``reports_dir``: location for scanners to send HTML reports
+* ``JAVA_HOME``: Standard Java Edition is fine
+* ``repo_url``: Used as base URL for each project in projects.yml
+
 Projects are set within ``config/projects.yml``
 
 Git Operations
@@ -19,7 +23,6 @@ Git Operations
 Clone an individual project::
 
     anteater clone <project>
-
 
 Clone all project::
 

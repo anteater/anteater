@@ -19,6 +19,7 @@ __pycache__/*
 .idea
 repos
 *.html
+anteater.conf
 
 # Package files
 *.egg
