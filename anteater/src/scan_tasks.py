@@ -15,9 +15,9 @@ with open('configs/projects.yml', 'r') as ymlcfg:
     projects = (cfg['projects'])
 
 
-def scan_all(reports_dir):
+def scan_all(reports_dir, scanner):
     for project in projects:
-        scan_project(reports_dir, project)
+        scan_project(reports_dir, project, scanner)
 
 
 def scan_project(reports_dir, project, scanner):
@@ -26,7 +26,6 @@ def scan_project(reports_dir, project, scanner):
     When extension matches, it breaks loop with True and runs related scanner
     """
     py = False
-    shell = False
     java = False
     c = False
     projdir = 'repos/{0}'.format(project)
@@ -40,31 +39,27 @@ def scan_project(reports_dir, project, scanner):
         else:
             logger.error("%s is not a recognised scanner tool", scanner)
     else:
-        """Let's try to guess which scanner to use,
-        by file extensions"""
-        for dirname, dirnames, filenames in os.walk(projdir):
-            for filename in filenames:
-                if filename.endswith('.c'):
+        """Let's try to guess which scanner to use, by file extension"""
+        for root, dirs, files in os.walk(projdir):
+            for file in files:
+                if file.endswith(".c"):
                     c = True
-                    # break
-                elif filename.endswith('.py'):
+                elif file.endswith(".py"):
                     py = True
-                    # break
-                elif filename.endswith('.sh'):
-                    shell = True
-                    # break
-                elif filename.endswith('.java'):
+                elif file.endswith(".java"):
                     java = True
-                    # break
-
-        if c and py:
-            run_rats(reports_dir, project, projdir)
-        elif java and py:
-                run_pmd(reports_dir, project, projdir)
-        elif py:
+        # Project contains only python files
+        if py and not (java or c):
             run_bandit(reports_dir, project, projdir)
-        elif shell:
-            pass
+        # Project contains c files
+        if c and not (java):
+            run_rats(reports_dir, project, projdir)
+        # Project contains only java files
+        if java and not (py or c):
+            run_pmd(reports_dir, project, projdir)
+        # Project contains a mix of c and python
+        if c and py and not (java):
+            run_rats(reports_dir, project, projdir)
 
 
 def run_bandit(reports_dir, project, projdir):

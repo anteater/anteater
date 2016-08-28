@@ -5,10 +5,9 @@
 
 Usage:
   anteater scan all
+  anteater scan all --scanner <scanner>
   anteater scan <project>
   anteater scan <project> --scanner <scanner>
-  anteater audit all
-  anteater audit <project>
   anteater clone all
   anteater clone <project>
   anteater clone --url <url>
@@ -66,7 +65,7 @@ def main():
             clone_project_url(arguments['<url>'])
     elif arguments['scan']:
         if arguments['all']:
-            scan_all(reports_dir)
+            scan_all(reports_dir, arguments['<project>'])
         elif arguments['<project>']:
             scan_project(reports_dir, arguments['<project>'],
                          arguments['<scanner>'])

@@ -20,6 +20,7 @@ __pycache__/*
 repos
 *.html
 anteater.conf
+scrapbin
 
 # Package files
 *.egg
