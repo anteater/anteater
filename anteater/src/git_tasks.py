@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import division, print_function, absolute_import
+import os
 import sh
 import yaml
 import anteater.utils.anteater_logger as antlog
@@ -37,6 +38,17 @@ def clone_project(repo_url, project):
     projdir = 'repos/{0}'.format(project)
     try:
         sh.git.clone(url, projdir)
+    except sh.ErrorReturnCode, e:
+        logger.error(e.stderr)
+
+
+def clone_project_url(url):
+    print(url)
+    """ git clone full URL  """
+    projdir = 'repos/'
+    try:
+        os.chdir(projdir)
+        sh.git.clone(url)
     except sh.ErrorReturnCode, e:
         logger.error(e.stderr)
 

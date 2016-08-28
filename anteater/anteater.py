@@ -11,6 +11,7 @@ Usage:
   anteater audit <project>
   anteater clone all
   anteater clone <project>
+  anteater clone --url <url>
   anteater pull all
   anteater pull <project>
   anteater(-h | --help)
@@ -24,7 +25,7 @@ from docopt import docopt
 import ConfigParser
 import os
 # from anteater import __version__
-from src.git_tasks import clone_all, clone_project
+from src.git_tasks import clone_all, clone_project, clone_project_url
 from src.git_tasks import pull_all, pull_project
 from src.scan_tasks import scan_all, scan_project
 from src.audit_tasks import audit_all, audit_project
@@ -61,6 +62,8 @@ def main():
             clone_all(repo_url)
         elif arguments['<project>']:
             clone_project(repo_url, arguments['<project>'])
+        elif arguments['<url>']:
+            clone_project_url(arguments['<url>'])
     elif arguments['scan']:
         if arguments['all']:
             scan_all(reports_dir)
