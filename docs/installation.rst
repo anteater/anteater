@@ -43,7 +43,7 @@ Create a virtualenv::
 
 Source (activate) the virtualenv::
 
-    source env/bin/activate::
+    source env/bin/activate
 
 Install requirements::
 
