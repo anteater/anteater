@@ -43,9 +43,9 @@ def clone_project(root_url, project):
 
 
 def clone_project_url(url):
-    print(url)
     """ git clone full URL  """
     projdir = 'repos/'
+    logger.info('Cloning: {0}'.format(url))
     try:
         os.chdir(projdir)
         sh.git.clone(url)
