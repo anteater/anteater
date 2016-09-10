@@ -33,6 +33,6 @@ Security Badge Programme.
 
 [WP] Still pending work
 
-Consult the [Documentation](https://readthedocs.org/projects/anteater/badge/?version=latest) on how to use 
+Consult the [Documentation](https://readthedocs.org/projects/anteater/) on how to use 
 
     
