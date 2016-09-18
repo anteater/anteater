@@ -21,6 +21,10 @@ VirtualEnv::
 
     sudo dnf install python-virtualenv
 
+Python Pip::
+
+    sudo dnf install python-pip
+
 Git::
 
     sudo dnf install git

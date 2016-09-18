@@ -2,6 +2,17 @@
 User Guide
 ==========
 
+Anteater is a wrapper framework around the following security lint scanners:
+
+* Bandit (Python) https://github.com/openstack/bandit
+* PMD (Java) https://pmd.github.io/
+* Rats (C / C++) https://code.google.com/archive/p/rough-auditing-tool-for-security/
+
+Anteater allows a user to quickly git clone / pull projects and then scan those
+projects. Anteater will analyse the project files, and select the more suited
+scanner to run (for example python projects are scanned with Bandit, C/C++ with
+Rats Scanner).
+
 Configuration
 -------------
 
@@ -9,11 +20,9 @@ Most of anteaters configuration exists witin ``anteater.conf``::
 
     reports_dir = /tmp/reports/
     JAVA_HOME = /usr/bin/java
-    root_url = https://github.com/lukehinds
 
 * ``reports_dir``: location for scanners to send HTML reports
 * ``JAVA_HOME``: Standard Java Edition is fine
-* ``root_url``: Base URL for projects.yml and working with a user wide account.
 
 Methods of Operation
 --------------------
@@ -23,10 +32,17 @@ There are two ways of working with repositories / scanning in aneater.
 Project Wide Operations
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-If you wish to scan an entire organization / user, then you can set ``root_url``
-in ``anteater.conf``.  This will then allow you to set a list projects in
-``configs/projects.yml`` and perform 'all' operations, such as
-``aneater clone all`` or ``anteater pull <project>``, ``anteater scan all``
+If you wish to clone an entire github user account to scan, then you can pass
+``--ghuser`` argument to the commmand ``anteater clone all``.  This will then
+pull all repositories under that github user account into the anteater/repos
+directory.
+
+Once a clone has taken place, the user can then scan all repositories with the
+command ``anteater scan all``.
+
+Alternatively a single repository can be scanned, by passing the repository
+name with ``anteater scan <project>``
+
 
 Single Repo Operations
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -34,18 +50,7 @@ Single Repo Operations
 A individual project can be cherry picked by passing the ``--url`` argument,
 for example::
 
-    anteater clone --url https://github.com/lukehinds/anteater
-
-Git Operations
---------------
-
-Clone an individual project::
-
-    anteater clone <project>
-
-Clone all project::
-
-    anteater clone all
+    anteater clone --url https://github.com/lukehinds/insecure-python
 
 Scanning
 --------

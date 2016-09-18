@@ -13,9 +13,7 @@ MarkupSafe==0.23
 netaddr==0.7.18
 oslo.i18n==3.9.0
 pbr==1.10.0
-PyGithub==1.28
 pytz==2016.6.1
-PyYAML==3.11
 requests==2.11.1
 rfc3986==0.3.1
 sh==1.11
