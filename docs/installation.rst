@@ -32,7 +32,9 @@ Git::
 Ubuntu / Debian
 ---------------
 
-    sudo apt-get install rats
+Work in progress:
+
+    sudo apt-get install git, python-virtualenv, python-pip, rats
 
 Install Anteater
 ----------------
