@@ -50,7 +50,6 @@ def print_symbol():
     ██║  ██║██║ ╚████║   ██║   ███████╗██║  ██║   ██║   ███████╗██║  ██║
     ╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
     Multi Lang Code Auditing System https://github.com/lukehinds/anteater
-
     """)
 
 
