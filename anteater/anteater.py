@@ -8,8 +8,8 @@ Usage:
   anteater scan all --scanner <scanner>
   anteater scan <project>
   anteater scan <project> --scanner <scanner>
-  anteater clone all
-  anteater clone <project>
+  anteater clone all --ghuser <ghuser>
+  anteater clone --ghuser <ghuser> --project <project>
   anteater clone --url <url>
   anteater pull all
   anteater pull <project>
@@ -27,7 +27,6 @@ import os
 from src.git_tasks import clone_all, clone_project, clone_project_url
 from src.git_tasks import pull_all, pull_project
 from src.scan_tasks import scan_all, scan_project
-from src.audit_tasks import audit_all, audit_project
 import utils.anteater_logger as antlog
 
 config = ConfigParser.RawConfigParser()
@@ -38,6 +37,21 @@ root_url = config.get('config', 'root_url')
 logger = antlog.Logger(__name__).getLogger()
 
 os.environ["JAVA_HOME"] = (config.get('config', 'JAVA_HOME'))
+
+
+def print_symbol():
+    print("""\
+
+
+     █████╗ ███╗   ██╗████████╗███████╗ █████╗ ████████╗███████╗██████╗
+    ██╔══██╗████╗  ██║╚══██╔══╝██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗
+    ███████║██╔██╗ ██║   ██║   █████╗  ███████║   ██║   █████╗  ██████╔╝
+    ██╔══██║██║╚██╗██║   ██║   ██╔══╝  ██╔══██║   ██║   ██╔══╝  ██╔══██╗
+    ██║  ██║██║ ╚████║   ██║   ███████╗██║  ██║   ██║   ███████╗██║  ██║
+    ╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
+    Multi Lang Code Auditing System https://github.com/lukehinds/anteater
+
+    """)
 
 
 def check_dir(reports_dir):
@@ -52,15 +66,16 @@ def check_dir(reports_dir):
 
 
 def main():
+    print_symbol()
     """ Main function, mostly for passing arguments """
     check_dir(reports_dir)
     arguments = docopt(__doc__, version='Anteater 0.1')
     # http://goo.gl/dEhAQ6
     if arguments['clone']:
         if arguments['all']:
-            clone_all(root_url)
-        elif arguments['<project>']:
-            clone_project(root_url, arguments['<project>'])
+            clone_all(arguments['<ghuser>'])
+        elif arguments['<ghuser>']:
+            clone_project(arguments['<ghuser>'], arguments['<project>'])
         elif arguments['<url>']:
             clone_project_url(arguments['<url>'])
     elif arguments['scan']:
@@ -69,14 +84,9 @@ def main():
         elif arguments['<project>']:
             scan_project(reports_dir, arguments['<project>'],
                          arguments['<scanner>'])
-    elif arguments['audit']:
-        if arguments['all']:
-            audit_all(reports_dir)
-        elif arguments['<project>']:
-            audit_project(reports_dir, arguments['<project>'])
     elif arguments['pull']:
         if arguments['all']:
-            pull_all(root_url)
+            pull_all()
         elif arguments['<project>']:
             pull_project(root_url, arguments['<project>'])
 

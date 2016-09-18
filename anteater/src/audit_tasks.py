@@ -4,7 +4,6 @@
 import os
 import re
 import sys
-import yaml
 
 # terminal colors
 START = "\x1b["
@@ -22,11 +21,6 @@ BOLDRED = START + BOLD + RED
 UNKNOWN = START + BOLD + YELLOW
 TITLE = START + BOLD + PURPLE
 MESSAGE = START + BOLD + BLUE
-
-
-with open('configs/projects.yml', 'r') as ymlcfg:
-    cfg = yaml.safe_load(ymlcfg)
-    projects = (cfg['projects'])
 
 
 def audit_all(project):

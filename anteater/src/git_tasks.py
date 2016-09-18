@@ -3,35 +3,30 @@
 
 from __future__ import division, print_function, absolute_import
 import os
+import requests
 import sh
-import yaml
 import anteater.utils.anteater_logger as antlog
 
 logger = antlog.Logger(__name__).getLogger()
-
-with open('configs/projects.yml', 'r') as ymlcfg:
-    cfg = yaml.safe_load(ymlcfg)
-    projects = (cfg['projects'])
+wk_dir = os.path.dirname(os.path.realpath('__file__')) + '/'
 
 
-def url_formatter(arg):
-    pass
-
-
-def clone_all(root_url):
+def clone_all(ghuser):
     """ git clone all repositories listed in projects.yml """
-    for project in projects:
-        logger.info('Cloning {0}.'.format(project))
-        # Lets move the below gerrit url to a variable
-        url = root_url + '/{0}'.format(project)
-        projdir = 'repos/{0}'.format(project)
+    req = requests.get('https://api.github.com/users/' + ghuser + '/repos')
+    repos = req.json()
+    for repo in repos:
+        html_url = repo['html_url']
+        repo = repo['name']
+        logger.info('Cloning {0}.'.format(repo))
+        projdir = 'repos/{0}'.format(repo)
         try:
-            sh.git.clone(url, projdir)
+            sh.git.clone(html_url, projdir)
         except sh.ErrorReturnCode, e:
             logger.error(e.stderr)
 
 
-def clone_project(root_url, project):
+def clone_project(ghuser, project):
     """ git clone repository given as arg """
     url = root_url + '/{0}'.format(project)
     logger.info('Cloning: {0}'.format(url))
@@ -53,9 +48,10 @@ def clone_project_url(url):
         logger.error(e.stderr)
 
 
-def pull_all(root_url):
-    """ git pull all repositories listed in projects.yml """
-    for project in projects:
+def pull_all():
+    """ need to change to work on project folders"""
+    repo_dir = wk_dir + '/repos/'
+    for project in os.listdir(repo_dir):
         logger.info('Performing pull on: {0}'.format(project))
         projdir = 'repos/{0}'.format(project)
         try:

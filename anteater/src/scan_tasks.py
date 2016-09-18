@@ -4,19 +4,15 @@
 from __future__ import division, print_function, absolute_import
 import os
 import sh
-import yaml
 import anteater.utils.anteater_logger as antlog
 
 logger = antlog.Logger(__name__).getLogger()
 wk_dir = os.path.dirname(os.path.realpath('__file__')) + '/'
 
-with open('configs/projects.yml', 'r') as ymlcfg:
-    cfg = yaml.safe_load(ymlcfg)
-    projects = (cfg['projects'])
-
 
 def scan_all(reports_dir, scanner):
-    for project in projects:
+    repo_dir = wk_dir + '/repos/'
+    for project in os.listdir(repo_dir):
         scan_project(reports_dir, project, scanner)
 
 
@@ -69,7 +65,8 @@ def run_bandit(reports_dir, project, projdir):
     try:
         sh.bandit('-r', '-f', 'html', '-o', reports_dir + report, projdir)
     except sh.ErrorReturnCode, e:
-        logger.error(e.stderr)
+        # logger.error(e.stderr)
+        pass
 
 
 def run_rats(reports_dir, project, projdir):
