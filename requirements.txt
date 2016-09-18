@@ -1,4 +1,3 @@
-anteater==0.0.post0.dev60+n510a34f
 Babel==2.3.4
 bandit==1.1.0
 debtcollector==1.8.0
