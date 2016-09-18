@@ -28,7 +28,7 @@ Git::
 Ubuntu / Debian
 ---------------
 
-<PENDING>
+    sudo apt-get install rats
 
 Install Anteater
 ----------------
