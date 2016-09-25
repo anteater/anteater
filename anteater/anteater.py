@@ -32,11 +32,11 @@ import utils.anteater_logger as antlog
 config = ConfigParser.RawConfigParser()
 config.read('anteater.conf')
 reports_dir = config.get('config', 'reports_dir')
-root_url = config.get('config', 'root_url')
 
 logger = antlog.Logger(__name__).getLogger()
 
 os.environ["JAVA_HOME"] = (config.get('config', 'JAVA_HOME'))
+__version__ = "0.1.0"
 
 
 def print_symbol():
