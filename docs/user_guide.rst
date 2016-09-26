@@ -19,9 +19,11 @@ Configuration
 Most of anteaters configuration exists witin ``anteater.conf``::
 
     reports_dir = /tmp/reports/
+    repos_dir = /tmp/repos
     JAVA_HOME = /usr/bin/java
 
 * ``reports_dir``: location for scanners to send HTML reports
+* ``repos_dir``: location where git repositories are cloned to. 
 * ``JAVA_HOME``: Standard Java Edition is fine
 
 Methods of Operation

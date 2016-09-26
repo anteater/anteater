@@ -10,13 +10,13 @@ logger = antlog.Logger(__name__).getLogger()
 wk_dir = os.path.dirname(os.path.realpath('__file__')) + '/'
 
 
-def scan_all(reports_dir, scanner):
-    repo_dir = wk_dir + '/repos/'
-    for project in os.listdir(repo_dir):
-        scan_project(reports_dir, project, scanner)
+def scan_all(reports_dir, repos_dir):
+    scanner = ''
+    for project in os.listdir(repos_dir):
+        scan_project(reports_dir, project, scanner, repos_dir)
 
 
-def scan_project(reports_dir, project, scanner):
+def scan_project(reports_dir, project, scanner, repos_dir):
     """ Passed project name and declares repo directory 'projdir'.
     Performs recursive search to find file extensions.
     When extension matches, it breaks loop with True and runs related scanner
@@ -24,7 +24,7 @@ def scan_project(reports_dir, project, scanner):
     py = False
     java = False
     c = False
-    projdir = 'repos/{0}'.format(project)
+    projdir = repos_dir + project
     if scanner:
         if scanner == 'bandit':
             run_bandit(reports_dir, project, projdir)
@@ -86,7 +86,7 @@ def run_pmd(reports_dir, project, projdir):
     logger.info('Performing PMD Scan on: {0}'.format(projdir))
     try:
         sh.command(wk_dir + 'anteater/utils/pmd/bin/run.sh', 'pmd', '-dir',
-                   wk_dir + projdir, '-f', 'html', '-rulesets', 'java-basic',
+                   projdir, '-f', 'html', '-rulesets', 'java-basic',
                    '-reportfile', reports_dir + report)
     except sh.ErrorReturnCode, e:
         logger.error(e.stderr)
