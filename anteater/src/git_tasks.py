@@ -56,7 +56,7 @@ def pull_all(repos_dir):
         logger.info('Performing pull on: {0}'.format(project))
         try:
             os.chdir(repos_dir)
-            sh.git('-C', repos_dir, 'pull')
+            sh.git('-C', project, 'pull')
         except sh.ErrorReturnCode, e:
             logger.error(e.stderr)
 
