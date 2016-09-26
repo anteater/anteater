@@ -18,7 +18,7 @@ Get the latest Dockerfile::
 
     https://raw.githubusercontent.com/lukehinds/anteater/master/docker/Dockerfile
 
-Build the Image:
+Build the Image::
 
     docker build -t anteater .
 
