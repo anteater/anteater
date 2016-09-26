@@ -26,6 +26,7 @@ def scan_project(reports_dir, project, scanner, repos_dir):
     c = False
     rb = False
     php = False
+    perl = False
     projdir = repos_dir + project
     if scanner:
         if scanner == 'bandit':
@@ -50,6 +51,8 @@ def scan_project(reports_dir, project, scanner, repos_dir):
                     rb = True
                 elif file.endswith(".php"):
                     php = True
+                elif file.endswith(".pl"):
+                    perl = True
         # Project contains only python files
         if py and not (java or c):
             run_bandit(reports_dir, project, projdir)
@@ -62,9 +65,8 @@ def scan_project(reports_dir, project, scanner, repos_dir):
         # Project contains a mix of c and python
         if c and py and not (java):
             run_rats(reports_dir, project, projdir)
-        if rb or php:
+        if rb or php or perl:
             run_rats(reports_dir, project, projdir)
-
 
 
 def run_bandit(reports_dir, project, projdir):
