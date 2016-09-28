@@ -17,7 +17,7 @@ Description
 Performs vulnerability code scanning with auto recgonition of language:
 
 * Bandit (Python) https://github.com/openstack/bandit
-* PMD (Java) https://pmd.github.io/
+* PMD v 5.5.1 (Java) https://pmd.github.io/
 * Rats (C / C++, Ruby, Perl, PHP) https://code.google.com/archive/p/rough-auditing-tool-for-security/
 
 Features:
