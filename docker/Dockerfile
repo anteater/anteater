@@ -16,7 +16,6 @@ rats \
 -y
 
 # Commands to clone and install
-RUN git config --global http.sslVerify false
 RUN git clone  https://github.com/lukehinds/anteater.git
 WORKDIR "anteater"
 RUN pip install -r requirements.txt
