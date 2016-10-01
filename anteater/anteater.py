@@ -20,11 +20,11 @@ Options:
   -h --help     Show this screen.
   --version     Show version.
 """
-from docopt import docopt
+
 import ConfigParser
-import os
-# from anteater import __version__
+from docopt import docopt
 from src.git_tasks import clone_all, clone_project, clone_project_url
+import os
 from src.git_tasks import pull_all, pull_project
 from src.scan_tasks import scan_all, scan_project
 import utils.anteater_logger as antlog
