@@ -4,6 +4,8 @@
 """Anteater.
 
 Usage:
+  anteater pull all
+  anteater pull <project>
   anteater scan all
   anteater scan all --scanner <scanner>
   anteater scan <project>
@@ -11,8 +13,6 @@ Usage:
   anteater clone all --ghuser <ghuser>
   anteater clone --ghuser <ghuser> --project <project>
   anteater clone --url <url>
-  anteater pull all
-  anteater pull <project>
   anteater(-h | --help)
   anteater --version
 
@@ -76,8 +76,12 @@ def main():
     """ Main function, mostly for passing arguments """
     check_dir()
     arguments = docopt(__doc__, version='Anteater 0.1')
-    # http://goo.gl/dEhAQ6
-    if arguments['clone']:
+    if arguments['pull']:
+        if arguments['all']:
+            pull_all(repos_dir)
+        elif arguments['<project>']:
+            pull_project(arguments['<project>'], repos_dir)
+    elif arguments['clone']:
         if arguments['all']:
             clone_all(arguments['<ghuser>'], repos_dir)
         elif arguments['<ghuser>']:
@@ -94,11 +98,6 @@ def main():
             else:
                 scan_project(reports_dir, arguments['<project>'],
                              arguments['<scanner>'], repos_dir)
-    elif arguments['pull']:
-        if arguments['all']:
-            pull_all(repos_dir)
-        elif arguments['<project>']:
-            pull_project(root_url, arguments['<project>'])
 
 
 if __name__ == "__main__":
