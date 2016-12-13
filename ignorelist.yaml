@@ -1,0 +1,9 @@
+# Default ignore file expressions. This could be file extension, folder name or POSIX path
+
+defaults:
+  files: [pdf,png,jpeg,jpg,idx,pack]
+
+# Projet waivers go below. Project name must be the same as the git repo naming. 
+
+functest:
+  files: []

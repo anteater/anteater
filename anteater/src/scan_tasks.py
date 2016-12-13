@@ -4,7 +4,10 @@
 from __future__ import division, print_function, absolute_import
 import os
 import sh
+import re
+import yaml
 import anteater.utils.anteater_logger as antlog
+from binaryornot.check import is_binary
 
 logger = antlog.Logger(__name__).getLogger()
 wk_dir = os.path.dirname(os.path.realpath('__file__')) + '/'
@@ -56,17 +59,22 @@ def scan_project(reports_dir, project, scanner, repos_dir):
         # Project contains only python files
         if py and not (java or c):
             run_bandit(reports_dir, project, projdir)
+            run_binfind(project, projdir)
         # Project contains c files
         if c and not (java):
             run_rats(reports_dir, project, projdir)
+            run_binfind(project, projdir)
         # Project contains only java files
         if java and not (py or c):
             run_pmd(reports_dir, project, projdir)
+            run_binfind(project, projdir)
         # Project contains a mix of c and python
         if c and py and not (java):
             run_rats(reports_dir, project, projdir)
+            run_binfind(project, projdir)
         if rb or php or perl:
             run_rats(reports_dir, project, projdir)
+            run_binfind(project, projdir)
 
 
 def run_bandit(reports_dir, project, projdir):
@@ -101,3 +109,20 @@ def run_pmd(reports_dir, project, projdir):
                    '-reportfile', reports_dir + report)
     except sh.ErrorReturnCode, e:
         logger.error(e.stderr)
+
+
+def run_binfind(project, projdir):
+    ignorelist = os.path.join(wk_dir + 'ignorelist.yaml')
+    with open(ignorelist, 'r') as f:
+       yl = yaml.safe_load(f)
+       defaultlist = (yl['defaults']['files'])
+       projlist = (yl[project]['files'])
+       masterlist = defaultlist + projlist
+       logger.info('Checking for Binary files in project: {0}'.format(project))
+       for root, dirs, files in os.walk(projdir):
+           for file in files:
+               fullpath = os.path.join(root, file)
+               bincheck = is_binary(fullpath)
+               words_re = re.compile("|".join(masterlist))
+               if not words_re.search(fullpath) and bincheck:
+                   logger.error('Non white listed binary found in repo: {0}'.format(fullpath)) 
