@@ -125,4 +125,7 @@ def run_binfind(project, projdir):
                bincheck = is_binary(fullpath)
                words_re = re.compile("|".join(masterlist))
                if not words_re.search(fullpath) and bincheck:
-                   logger.error('Non white listed binary found in repo: {0}'.format(fullpath)) 
+                   logger.error('Non white listed binary found: {0}'.format(fullpath))
+                   with open("anteater.log", "a") as gatereport:
+                       gatereport.write('Non white listed binary found: {0}'.format(fullpath))
+
