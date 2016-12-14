@@ -3,6 +3,7 @@
 
 from __future__ import division, print_function, absolute_import
 import os
+import sys
 import sh
 import re
 import yaml
@@ -116,16 +117,22 @@ def run_binfind(project, projdir):
     with open(ignorelist, 'r') as f:
        yl = yaml.safe_load(f)
        defaultlist = (yl['defaults']['files'])
-       projlist = (yl[project]['files'])
-       masterlist = defaultlist + projlist
+       try:
+           projlist = (yl[project]['files'])
+           masterlist = defaultlist + projlist
+       except:
+           logger.error('Cannot find entry for {0} in ignorelist.yaml'.format(project))
+           sys.exit(0)
        logger.info('Checking for Binary files in project: {0}'.format(project))
+
        for root, dirs, files in os.walk(projdir):
            for file in files:
                fullpath = os.path.join(root, file)
                bincheck = is_binary(fullpath)
                words_re = re.compile("|".join(masterlist))
+
                if not words_re.search(fullpath) and bincheck:
                    logger.error('Non white listed binary found: {0}'.format(fullpath))
+
                    with open("anteater.log", "a") as gatereport:
                        gatereport.write('Non white listed binary found: {0}'.format(fullpath))
-
