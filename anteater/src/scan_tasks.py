@@ -135,4 +135,4 @@ def run_binfind(project, projdir):
                    logger.error('Non white listed binary found: {0}'.format(fullpath))
 
                    with open("anteater.log", "a") as gatereport:
-                       gatereport.write('Non white listed binary found: {0}'.format(fullpath))
+                       gatereport.write('Non white listed binary found: {0}\n'.format(fullpath))
