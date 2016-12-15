@@ -9,8 +9,6 @@ Anteater
 Multi Lang Code Auditing System
 -------------------------------
 
-[![asciicast](https://asciinema.org/a/73c6c2clre155ph99ouhzejj1.png)](https://asciinema.org/a/73c6c2clre155ph99ouhzejj1)
-
 Description
 -----------
 
@@ -19,6 +17,12 @@ Performs vulnerability code scanning with auto recgonition of language:
 * Bandit (Python) https://github.com/openstack/bandit
 * PMD v 5.5.1 (Java) https://pmd.github.io/
 * Rats (C / C++, Ruby, Perl, PHP) https://code.google.com/archive/p/rough-auditing-tool-for-security/
+
+Searchs repositories for compiled binaries, private keys, passwords and senstive strings
+
+Provides exeception / waiver lists to whitelist files, data.
+
+Provides option to add own file types for white / blacklisting
 
 Features:
 
