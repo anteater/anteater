@@ -167,16 +167,17 @@ def run_secretsearch(project, projdir):
                 fullpath = os.path.join(root, items)
                 file_names_re = re.compile("|".join(file_names), flags=re.IGNORECASE)
                 file_contents_re = re.compile("|".join(file_contents), flags=re.IGNORECASE)
+                waviers_re = re.compile("|".join(waivers), flags=re.IGNORECASE)
 
-                if file_names_re.search(fullpath): 
+                if file_names_re.search(fullpath):
                     logger.info('Found what looks like a sensitive file: {0}'.format(fullpath))
 
                     with open("anteater.log", "a") as gatereport:
                         gatereport.write('Found what looks like a sensitive file: {0}\n'.format(fullpath))
                 if not is_binary(fullpath):
-                    fo = open(fullpath, 'r') 
+                    fo = open(fullpath, 'r')
                     lines=fo.readlines()
                     for line in lines:
-                        if file_contents_re.search(line):
+                        if not waviers_re.search(line) and file_contents_re.search(line):
                             logger.info('The file `{0}` contains the string "{1}" which is blacklisted'.format(items, line.rstrip()))
                     fo.close()
