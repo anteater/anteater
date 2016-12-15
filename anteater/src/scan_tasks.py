@@ -4,8 +4,8 @@
 from __future__ import division, print_function, absolute_import
 import os
 import sys
-import sh
 import re
+import sh
 import yaml
 import anteater.utils.anteater_logger as antlog
 from binaryornot.check import is_binary
@@ -15,6 +15,8 @@ wk_dir = os.path.dirname(os.path.realpath('__file__')) + '/'
 
 
 def scan_all(reports_dir, repos_dir):
+    """ As it says on the tin. Performs complete scan of allocated
+    repos found under `repos_dir`"""
     scanner = ''
     for project in os.listdir(repos_dir):
         scan_project(reports_dir, project, scanner, repos_dir)
@@ -118,6 +120,8 @@ def run_pmd(reports_dir, project, projdir):
 
 
 def run_binfind(project, projdir):
+    """Find binaries within a repo, unless the binary
+    is listed in the ignorelist"""
     ignorelist = os.path.join(wk_dir + 'binaries.yaml')
     with open(ignorelist, 'r') as f:
         yl = yaml.safe_load(f)
@@ -134,10 +138,9 @@ def run_binfind(project, projdir):
             for items in files:
                fullpath = os.path.join(root, items)
                bincheck = is_binary(fullpath)
-               words_re = re.compile("|".join(masterlist))
+               words_re = re.compile("|".join(masterlist), flags=re.IGNORECASE)
 
                if not words_re.search(fullpath) and bincheck:
-<<<<<<< HEAD
                    logger.info('Non white listed binary found: {0}'.format(fullpath))
 
                    with open("anteater.log", "a") as gatereport:
@@ -145,6 +148,8 @@ def run_binfind(project, projdir):
 
 
 def run_secretsearch(project, projdir):
+    """Searchs for banned strings and files that are listed
+    in secretlist.yaml """
     secretlist = os.path.join(wk_dir + 'secretlist.yaml')
     with open(secretlist, 'r') as f:
         yl = yaml.safe_load(f)
@@ -160,8 +165,8 @@ def run_secretsearch(project, projdir):
         for root, dirs, files in os.walk(projdir):
             for items in files:
                 fullpath = os.path.join(root, items)
-                file_names_re = re.compile("|".join(file_names))
-                file_contents_re = re.compile("|".join(file_contents))
+                file_names_re = re.compile("|".join(file_names), flags=re.IGNORECASE)
+                file_contents_re = re.compile("|".join(file_contents), flags=re.IGNORECASE)
 
                 if file_names_re.search(fullpath): 
                     logger.info('Found what looks like a sensitive file: {0}'.format(fullpath))

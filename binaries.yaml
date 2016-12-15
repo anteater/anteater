@@ -1,7 +1,7 @@
 # Default ignore file expressions. This could be file extension, folder name or POSIX path
 
 defaults:
-  files: [pdf,png,jpeg,jpg,idx,pack]
+  files: [.pdf,.png,.jpeg,.jpg,idx,.pack,.git/objects,.git/index]
 
 # Project waivers go below. Project name must be the same as the git repo naming. 
 
