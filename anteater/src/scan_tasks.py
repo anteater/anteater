@@ -137,6 +137,7 @@ def run_binfind(project, projdir):
                words_re = re.compile("|".join(masterlist))
 
                if not words_re.search(fullpath) and bincheck:
+<<<<<<< HEAD
                    logger.info('Non white listed binary found: {0}'.format(fullpath))
 
                    with open("anteater.log", "a") as gatereport:
