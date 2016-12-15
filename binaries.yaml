@@ -3,7 +3,10 @@
 defaults:
   files: [pdf,png,jpeg,jpg,idx,pack]
 
-# Projet waivers go below. Project name must be the same as the git repo naming. 
+# Project waivers go below. Project name must be the same as the git repo naming. 
 
-functest:
+dodgy-repo:
+  files: []
+
+insecure-python:
   files: []

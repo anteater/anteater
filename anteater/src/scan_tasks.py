@@ -3,6 +3,7 @@
 
 from __future__ import division, print_function, absolute_import
 import os
+import sys
 import sh
 import re
 import yaml
@@ -60,21 +61,26 @@ def scan_project(reports_dir, project, scanner, repos_dir):
         if py and not (java or c):
             run_bandit(reports_dir, project, projdir)
             run_binfind(project, projdir)
+            run_secretsearch(project, projdir)
         # Project contains c files
-        if c and not (java):
+        if c and not java:
             run_rats(reports_dir, project, projdir)
             run_binfind(project, projdir)
+            run_secretsearch(project, projdir)
         # Project contains only java files
         if java and not (py or c):
             run_pmd(reports_dir, project, projdir)
             run_binfind(project, projdir)
+            run_secretsearch(project, projdir)
         # Project contains a mix of c and python
-        if c and py and not (java):
+        if c and py and not java:
             run_rats(reports_dir, project, projdir)
             run_binfind(project, projdir)
+            run_secretsearch(project, projdir)
         if rb or php or perl:
             run_rats(reports_dir, project, projdir)
             run_binfind(project, projdir)
+            run_secretsearch(project, projdir)
 
 
 def run_bandit(reports_dir, project, projdir):
@@ -112,20 +118,59 @@ def run_pmd(reports_dir, project, projdir):
 
 
 def run_binfind(project, projdir):
-    ignorelist = os.path.join(wk_dir + 'ignorelist.yaml')
+    ignorelist = os.path.join(wk_dir + 'binaries.yaml')
     with open(ignorelist, 'r') as f:
-       yl = yaml.safe_load(f)
-       defaultlist = (yl['defaults']['files'])
-       projlist = (yl[project]['files'])
-       masterlist = defaultlist + projlist
-       logger.info('Checking for Binary files in project: {0}'.format(project))
-       for root, dirs, files in os.walk(projdir):
-           for file in files:
-               fullpath = os.path.join(root, file)
+        yl = yaml.safe_load(f)
+        defaultlist = (yl['defaults']['files'])
+        try:
+            projlist = (yl[project]['files'])
+            masterlist = defaultlist + projlist
+        except:
+            logger.error('Cannot find entry for {0} in ignorelist.yaml'.format(project))
+            sys.exit(0)
+        logger.info('Checking for Binary files in project: {0}'.format(project))
+
+        for root, dirs , files in os.walk(projdir):
+            for items in files:
+               fullpath = os.path.join(root, items)
                bincheck = is_binary(fullpath)
                words_re = re.compile("|".join(masterlist))
-               if not words_re.search(fullpath) and bincheck:
-                   logger.error('Non white listed binary found: {0}'.format(fullpath))
-                   with open("anteater.log", "a") as gatereport:
-                       gatereport.write('Non white listed binary found: {0}'.format(fullpath))
 
+               if not words_re.search(fullpath) and bincheck:
+                   logger.info('Non white listed binary found: {0}'.format(fullpath))
+
+                   with open("anteater.log", "a") as gatereport:
+                       gatereport.write('Non white listed binary found: {0}\n'.format(fullpath))
+
+
+def run_secretsearch(project, projdir):
+    secretlist = os.path.join(wk_dir + 'secretlist.yaml')
+    with open(secretlist, 'r') as f:
+        yl = yaml.safe_load(f)
+        try:
+            file_names = (yl['secrets']['file_names'])
+            file_contents = (yl['secrets']['file_contents'])
+            waivers = (yl['waivers'][project])
+        except KeyError, e:
+             print ('I got a KeyError - reason "{0}"').format(str(e))
+        except IndexError, e:
+            print ('I got an IndexError - reason "{0}"').format(str(e))
+        logger.info('Checking for blacklisted files in project: {0}'.format(project))
+        for root, dirs, files in os.walk(projdir):
+            for items in files:
+                fullpath = os.path.join(root, items)
+                file_names_re = re.compile("|".join(file_names))
+                file_contents_re = re.compile("|".join(file_contents))
+
+                if file_names_re.search(fullpath): 
+                    logger.info('Found what looks like a sensitive file: {0}'.format(fullpath))
+
+                    with open("anteater.log", "a") as gatereport:
+                        gatereport.write('Found what looks like a sensitive file: {0}\n'.format(fullpath))
+                if not is_binary(fullpath):
+                    fo = open(fullpath, 'r') 
+                    lines=fo.readlines()
+                    for line in lines:
+                        if file_contents_re.search(line):
+                            logger.info('The file `{0}` contains the string "{1}" which is blacklisted'.format(items, line.rstrip()))
+                    fo.close()
