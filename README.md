@@ -18,9 +18,9 @@ Performs vulnerability code scanning with auto recgonition of language:
 * PMD v 5.5.1 (Java) https://pmd.github.io/
 * Rats (C / C++, Ruby, Perl, PHP) https://code.google.com/archive/p/rough-auditing-tool-for-security/
 
-Searchs repositories for compiled binaries, private keys, passwords and senstive strings
+Searches repositories for compiled binaries, private keys, passwords and senstive strings
 
-Provides exeception / waiver lists to whitelist files, data.
+Provides exception / waiver lists to whitelist files, data.
 
 Provides option to add own file types for white / blacklisting
 
