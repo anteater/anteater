@@ -121,24 +121,24 @@ def run_pmd(reports_dir, project, projdir):
 
 def run_binfind(project, projdir):
     """Find binaries within a repo, unless the binary
-    is listed in the ignorelist"""
-    ignorelist = os.path.join(wk_dir + 'binaries.yaml')
-    with open(ignorelist, 'r') as f:
+    is listed in the binaries"""
+    binaries = os.path.join(wk_dir + 'binaries.yaml')
+    with open(binaries, 'r') as f:
         yl = yaml.safe_load(f)
-        defaultlist = (yl['defaults']['files'])
+        waiverlist = (yl['defaults']['files'])
         try:
             projlist = (yl[project]['files'])
-            masterlist = defaultlist + projlist
-        except:
-            logger.error('Cannot find entry for {0} in ignorelist.yaml'.format(project))
-            sys.exit(0)
+            if projlist:
+                waiverlist = waiverlist + projlist
+        except KeyError, e:
+            logger.info('No project waivers for project: {0}'.format(project))
         logger.info('Checking for Binary files in project: {0}'.format(project))
 
         for root, dirs , files in os.walk(projdir):
             for items in files:
                fullpath = os.path.join(root, items)
                bincheck = is_binary(fullpath)
-               words_re = re.compile("|".join(masterlist), flags=re.IGNORECASE)
+               words_re = re.compile("|".join(waiverlist), flags=re.IGNORECASE)
 
                if not words_re.search(fullpath) and bincheck:
                    logger.info('Non white listed binary found: {0}'.format(fullpath))
@@ -151,33 +151,59 @@ def run_secretsearch(project, projdir):
     """Searchs for banned strings and files that are listed
     in secretlist.yaml """
     secretlist = os.path.join(wk_dir + 'secretlist.yaml')
+
     with open(secretlist, 'r') as f:
         yl = yaml.safe_load(f)
+        file_names = (yl['secrets']['file_names'])
+        file_contents = (yl['secrets']['file_contents'])
         try:
-            file_names = (yl['secrets']['file_names'])
-            file_contents = (yl['secrets']['file_contents'])
             waivers = (yl['waivers'][project])
-        except KeyError, e:
-             print ('I got a KeyError - reason "{0}"').format(str(e))
-        except IndexError, e:
-            print ('I got an IndexError - reason "{0}"').format(str(e))
-        logger.info('Checking for blacklisted files in project: {0}'.format(project))
+            if waivers:
+                waiver_files = file_names + (yl['waivers'][project],['file_names'])
+                waiver_contents = file_content + (yl['waivers'][project],['file_contents'])
+        except:
+            logger.info('No waivers found for project: {0}'.format(project))
+
+        # Set up re.compile strings
+        file_names_re = re.compile("|".join(file_names), flags=re.IGNORECASE)
+        file_contents_re = re.compile("|".join(file_contents), flags=re.IGNORECASE)
+        try:
+            if waiver_files:
+                waviers_files_re = re.compile("|".join(waiver_files), flags=re.IGNORECASE)
+            if waiver_content:
+                waviers_content_re = re.compile("|".join(waiver_contents), flags=re.IGNORECASE)
+        except:
+            pass
+
+        logger.info('Checking for blacklisted files & secrets in project: {0}'.format(project))
+
         for root, dirs, files in os.walk(projdir):
             for items in files:
                 fullpath = os.path.join(root, items)
-                file_names_re = re.compile("|".join(file_names), flags=re.IGNORECASE)
-                file_contents_re = re.compile("|".join(file_contents), flags=re.IGNORECASE)
-                waviers_re = re.compile("|".join(waivers), flags=re.IGNORECASE)
-
-                if file_names_re.search(fullpath):
-                    logger.info('Found what looks like a sensitive file: {0}'.format(fullpath))
-
-                    with open("anteater.log", "a") as gatereport:
-                        gatereport.write('Found what looks like a sensitive file: {0}\n'.format(fullpath))
+                try:
+                    if waviers_files_re:
+                        if not waviers_files_re.search(line) and file_names_re.search(fullpath):
+                            logger.info('Found what looks like a sensitive file: {0}'.format(fullpath))
+                            with open("anteater.log", "a") as gatereport:
+                                gatereport.write('Found what looks like a sensitive file: {0}\n'.format(fullpath))
+                        else:
+                            print("ELSE!!")
+                            if file_names_re.search(fullpath):
+                                logger.info('Found what looks like a sensitive file: {0}'.format(fullpath))
+                                with open("anteater.log", "a") as gatereport:
+                                    gatereport.write('Found what looks like a sensitive file: {0}\n'.format(fullpath))
+                except:
+                    pass
                 if not is_binary(fullpath):
                     fo = open(fullpath, 'r')
                     lines=fo.readlines()
                     for line in lines:
-                        if not waviers_re.search(line) and file_contents_re.search(line):
-                            logger.info('The file `{0}` contains the string "{1}" which is blacklisted'.format(items, line.rstrip()))
+                        try:
+                            if waviers_content_re:
+                                if not waiver_content_re.search(line) and file_contents_re.search(line):
+                                    logger.info('The file `{0}` contains the string "{1}" which is blacklisted'.format(items, line.rstrip()))
+                                    with open("anteater.log", "a") as gatereport:
+                                        gatereport.write('The file `{0}` contains the string "{1}" which is blacklisted'.format(items, line.rstrip()))
+                        except:
+                            pass
                     fo.close()
