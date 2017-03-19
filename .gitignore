@@ -20,6 +20,7 @@ lib64
 env
 repos
 anteater.log
+anteater-gate.log
 # Installer logs
 pip-log.txt
 

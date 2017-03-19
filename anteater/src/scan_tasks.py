@@ -146,7 +146,7 @@ def run_binfind(project, projdir):
                if not words_re.search(fullpath) and bincheck:
                    logger.info('Non white listed binary found: {0}'.format(fullpath))
 
-                   with open("anteater.log", "a") as gatereport:
+                   with open("anteater-gate.log", "a") as gatereport:
                        gatereport.write('Non white listed binary found: {0}\n'.format(fullpath))
 
 
@@ -186,12 +186,12 @@ def run_secretsearch(project, projdir):
                 if waiver_files_set:
                     if not waiver_files_re.search(fullpath) and file_names_re.search(fullpath):
                        logger.info('Found what looks like a blacklisted file: {0}'.format(fullpath))
-                       with open("anteater.log", "a") as gatereport:
+                       with open("anteater-gate.log", "a") as gatereport:
                            gatereport.write('Found what looks like a blacklisted file: {0}\n'.format(fullpath))
                 else:
                     if file_names_re.search(fullpath):
                         logger.info('Found what looks like a blacklisted file: {0}'.format(fullpath))
-                        with open("anteater.log", "a") as gatereport:
+                        with open("anteater-gate.log", "a") as gatereport:
                            gatereport.write('Found what looks like a blacklisted file: {0}\n'.format(fullpath))
 
                 if not is_binary(fullpath):
@@ -202,11 +202,13 @@ def run_secretsearch(project, projdir):
                             if not waiver_contents_re.search(line) and file_contents_re.search(line):
                                 logger.info('Found what looks like a blacklisted string in: {0}'.format(fullpath))
                                 logger.info('String: {0}'.format(line))
-                                with open("anteater.log", "a") as gatereport:
-                                    gatereport.write('Found what looks like a blacklisted string in: {0}\n'.format(fullpath))
+                                with open("anteater-gate.log", "a") as gatereport:
+                                    gatereport.write('Found what looks like a blacklisted string in: {0}:\n'.format(fullpath))
+                                    gatereport.write('String: {0}'.format(line))
                         else:
                             if file_contents_re.search(line):
                                 logger.info('Found what looks like a blacklisted string in: {0}'.format(fullpath))
                                 logger.info('String: {0}'.format(line))
-                                with open("anteater.log", "a") as gatereport:
-                                    gatereport.write('Found what looks like a blacklisted string in: {0}\n'.format(fullpath))
+                                with open("anteater-gate.log", "a") as gatereport:
+                                    gatereport.write('Found what looks like a blacklisted string in: {0}:\n'.format(fullpath))
+                                    gatereport.write('String: {0}'.format(line))
