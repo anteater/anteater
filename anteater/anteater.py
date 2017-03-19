@@ -29,16 +29,6 @@ from src.git_tasks import pull_all, pull_project
 from src.scan_tasks import scan_all, scan_project
 import utils.anteater_logger as antlog
 
-config = ConfigParser.RawConfigParser()
-config.read('anteater.conf')
-reports_dir = config.get('config', 'reports_dir')
-repos_dir = config.get('config', 'repos_dir')
-wk_dir = os.path.dirname(os.path.realpath('__file__')) + '/'
-logger = antlog.Logger(__name__).getLogger()
-
-os.environ["JAVA_HOME"] = (config.get('config', 'JAVA_HOME'))
-__version__ = "0.1.0"
-
 
 def print_symbol():
     print("""\
@@ -72,6 +62,15 @@ def check_dir():
 
 
 def main():
+    config = ConfigParser.RawConfigParser()
+    config.read('anteater.conf')
+    reports_dir = config.get('config', 'reports_dir')
+    repos_dir = config.get('config', 'repos_dir')
+    wk_dir = os.path.dirname(os.path.realpath('__file__')) + '/'
+    logger = antlog.Logger(__name__).getLogger()
+    os.environ["JAVA_HOME"] = (config.get('config', 'JAVA_HOME'))
+    __version__ = "0.1.0"
+
     print_symbol()
     """ Main function, mostly for passing arguments """
     check_dir()
