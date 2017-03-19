@@ -3,11 +3,12 @@
 defaults:
   files: [.pdf,.png,.jpeg,.jpg,idx,.pack,.git/objects,.git/index]
 
-# Project waivers go below. Project name must be the same as the git repo naming. 
+# Project waivers go below. Project name must be the same as the git repo naming.
 
 dodgy-repo:
   files: []
 
 insecure-python:
   files: []
-  
+lsoapi:
+  files: []

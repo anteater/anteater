@@ -92,8 +92,8 @@ def run_bandit(reports_dir, project, projdir):
     try:
         sh.bandit('-r', '-f', 'html', '-o', reports_dir + report, projdir)
     except sh.ErrorReturnCode, e:
-        # logger.error(e.stderr)
-        pass
+        if e.exit_code != 4:
+            logger.error(e.stderr)
 
 
 def run_rats(reports_dir, project, projdir):
@@ -103,7 +103,8 @@ def run_rats(reports_dir, project, projdir):
     try:
         sh.rats('--html', projdir, '>', _out=(reports_dir + report))
     except sh.ErrorReturnCode, e:
-        logger.error(e.stderr)
+        if e.exit_code != 4:
+            logger.error(e.stderr)
 
 
 # Change to direct java call
@@ -116,7 +117,8 @@ def run_pmd(reports_dir, project, projdir):
                    projdir, '-f', 'html', '-rulesets', 'java-basic',
                    '-reportfile', reports_dir + report)
     except sh.ErrorReturnCode, e:
-        logger.error(e.stderr)
+        if e.exit_code != 4:
+            logger.error(e.stderr)
 
 
 def run_binfind(project, projdir):
@@ -127,6 +129,7 @@ def run_binfind(project, projdir):
         yl = yaml.safe_load(f)
         waiverlist = (yl['defaults']['files'])
         try:
+
             projlist = (yl[project]['files'])
             if projlist:
                 waiverlist = waiverlist + projlist
@@ -156,54 +159,55 @@ def run_secretsearch(project, projdir):
         yl = yaml.safe_load(f)
         file_names = (yl['secrets']['file_names'])
         file_contents = (yl['secrets']['file_contents'])
-        try:
-            waivers = (yl['waivers'][project])
-            if waivers:
-                waiver_files = file_names + (yl['waivers'][project],['file_names'])
-                waiver_contents = file_content + (yl['waivers'][project],['file_contents'])
-        except:
-            logger.info('No waivers found for project: {0}'.format(project))
-
-        # Set up re.compile strings
         file_names_re = re.compile("|".join(file_names), flags=re.IGNORECASE)
         file_contents_re = re.compile("|".join(file_contents), flags=re.IGNORECASE)
+
         try:
-            if waiver_files:
-                waviers_files_re = re.compile("|".join(waiver_files), flags=re.IGNORECASE)
-            if waiver_content:
-                waviers_content_re = re.compile("|".join(waiver_contents), flags=re.IGNORECASE)
+             waiver_files = (yl['waivers'][project]['file_names'])
+             if waiver_files:
+                 waiver_files_re = re.compile("|".join(waiver_files), flags=re.IGNORECASE)
+                 waiver_files_set = True
         except:
-            pass
+            logger.info('No waiver files exist for project: {0}'.format(project))
+            waiver_files_set = False
+
+        try:
+             waiver_contents = (yl['waivers'][project]['file_contents'])
+             if waiver_contents:
+                 waiver_contents_re = re.compile("|".join(waiver_contents), flags=re.IGNORECASE)
+                 waiver_contents_set = True
+        except:
+            logger.info('No waiver contents exist for project: {0}'.format(project))
+            waiver_contents_set = False
 
         logger.info('Checking for blacklisted files & secrets in project: {0}'.format(project))
 
         for root, dirs, files in os.walk(projdir):
             for items in files:
                 fullpath = os.path.join(root, items)
-                try:
-                    if waviers_files_re:
-                        if not waviers_files_re.search(line) and file_names_re.search(fullpath):
+                if waiver_files_set:
+                    if not waiver_files_re.search(fullpath) and file_names_re.search(fullpath):
+                       logger.info('Found what looks like a sensitive file: {0}'.format(fullpath))
+                       with open("anteater.log", "a") as gatereport:
+                           gatereport.write('Found what looks like a sensitive file: {0}\n'.format(fullpath))
+                else:
+                    if file_names_re.search(fullpath):
+                        with open("anteater.log", "a") as gatereport:
                             logger.info('Found what looks like a sensitive file: {0}'.format(fullpath))
-                            with open("anteater.log", "a") as gatereport:
-                                gatereport.write('Found what looks like a sensitive file: {0}\n'.format(fullpath))
-                        else:
-                            print("ELSE!!")
-                            if file_names_re.search(fullpath):
-                                logger.info('Found what looks like a sensitive file: {0}'.format(fullpath))
-                                with open("anteater.log", "a") as gatereport:
-                                    gatereport.write('Found what looks like a sensitive file: {0}\n'.format(fullpath))
-                except:
-                    pass
+
                 if not is_binary(fullpath):
                     fo = open(fullpath, 'r')
-                    lines=fo.readlines()
+                    lines = fo.readlines()
                     for line in lines:
-                        try:
-                            if waviers_content_re:
-                                if not waiver_content_re.search(line) and file_contents_re.search(line):
-                                    logger.info('The file `{0}` contains the string "{1}" which is blacklisted'.format(items, line.rstrip()))
-                                    with open("anteater.log", "a") as gatereport:
-                                        gatereport.write('The file `{0}` contains the string "{1}" which is blacklisted'.format(items, line.rstrip()))
-                        except:
-                            pass
-                    fo.close()
+                        if waiver_contents_set:
+                            if not waiver_contents_re.search(line) and file_contents_re.search(line):
+                                logger.info('Found what looks like suspicious strings: {0}'.format(fullpath))
+                                logger.info('String: {0}'.format(line))
+                                with open("anteater.log", "a") as gatereport:
+                                    gatereport.write('Found what looks like suspicious strings: {0}\n'.format(fullpath))
+                        else:
+                            if file_contents_re.search(line):
+                                logger.info('Found what looks like suspicious strings: {0}'.format(fullpath))
+                                logger.info('String: {0}'.format(line))
+                                with open("anteater.log", "a") as gatereport:
+                                    gatereport.write('Found what looks like suspicious strings: {0}\n'.format(fullpath))
