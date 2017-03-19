@@ -168,7 +168,6 @@ def run_secretsearch(project, projdir):
                  waiver_files_re = re.compile("|".join(waiver_files), flags=re.IGNORECASE)
                  waiver_files_set = True
         except:
-            logger.info('No waiver files exist for project: {0}'.format(project))
             waiver_files_set = False
 
         try:
@@ -177,7 +176,6 @@ def run_secretsearch(project, projdir):
                  waiver_contents_re = re.compile("|".join(waiver_contents), flags=re.IGNORECASE)
                  waiver_contents_set = True
         except:
-            logger.info('No waiver contents exist for project: {0}'.format(project))
             waiver_contents_set = False
 
         logger.info('Checking for blacklisted files & secrets in project: {0}'.format(project))

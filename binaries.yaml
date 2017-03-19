@@ -1,14 +1,11 @@
-# Default ignore file expressions. This could be file extension, folder name or POSIX path
+# Default ignore list for binaries. This could be file extension or
+# filename or POSIX path
+# Full regular expressions can be used.
 
 defaults:
-  files: [.pdf,.png,.jpeg,.jpg,idx,.pack,.git/objects,.git/index]
+  files: [\.pdf,\.png,\.jpeg,\.jpg,\.idx,\.pack,\.git/objects,\.git/index]
 
 # Project waivers go below. Project name must be the same as the git repo naming.
 
-dodgy-repo:
-  files: []
-
-insecure-python:
-  files: []
-lsoapi:
+example_project:
   files: []
