@@ -34,6 +34,7 @@ def scan_project(reports_dir, project, scanner, repos_dir):
     php = False
     perl = False
     projdir = repos_dir + project
+    global lang
     if scanner:
         if scanner == 'bandit':
             run_bandit(reports_dir, project, projdir)
@@ -61,14 +62,17 @@ def scan_project(reports_dir, project, scanner, repos_dir):
                     perl = True
         # Project contains only python files
         if py and not (java or c):
+            lang = "pybash"
             run_bandit(reports_dir, project, projdir)
             run_binfind(project, projdir)
             run_secretsearch(project, projdir)
+            run_licence_check(project, projdir)
         # Project contains c files
         if c and not java:
             run_rats(reports_dir, project, projdir)
             run_binfind(project, projdir)
             run_secretsearch(project, projdir)
+            run_licence_check(project, projdir)
         # Project contains only java files
         if java and not (py or c):
             run_pmd(reports_dir, project, projdir)
@@ -124,6 +128,7 @@ def run_pmd(reports_dir, project, projdir):
 def run_binfind(project, projdir):
     """Find binaries within a repo, unless the binary
     is listed in the binaries"""
+    logger.info('Checking for Binary files in project: {0}'.format(project))
     binaries = os.path.join(wk_dir + 'binaries.yaml')
     with open(binaries, 'r') as f:
         yl = yaml.safe_load(f)
@@ -133,9 +138,10 @@ def run_binfind(project, projdir):
             projlist = (yl[project]['files'])
             if projlist:
                 waiverlist = waiverlist + projlist
+                logger.info('Project waivers found for project: {0}'.format(project))
+                logger.info('Applying for the following file waivers list: {0}'.format(projlist))
         except KeyError, e:
             logger.info('No project waivers for project: {0}'.format(project))
-        logger.info('Checking for Binary files in project: {0}'.format(project))
 
         for root, dirs , files in os.walk(projdir):
             for items in files:
@@ -144,7 +150,7 @@ def run_binfind(project, projdir):
                words_re = re.compile("|".join(waiverlist), flags=re.IGNORECASE)
 
                if not words_re.search(fullpath) and bincheck:
-                   logger.info('Non white listed binary found: {0}'.format(fullpath))
+                   logger.error('Non white listed binary found: {0}'.format(fullpath))
 
                    with open("anteater-gate.log", "a") as gatereport:
                        gatereport.write('Non white listed binary found: {0}\n'.format(fullpath))
@@ -178,7 +184,7 @@ def run_secretsearch(project, projdir):
         except:
             waiver_contents_set = False
 
-        logger.info('Checking for blacklisted files & secrets in project: {0}'.format(project))
+        logger.info('Checking for blaclisted file types and senstive data in project: {0}'.format(project))
 
         for root, dirs, files in os.walk(projdir):
             for items in files:
@@ -200,15 +206,38 @@ def run_secretsearch(project, projdir):
                     for line in lines:
                         if waiver_contents_set:
                             if not waiver_contents_re.search(line) and file_contents_re.search(line):
-                                logger.info('Found what looks like a blacklisted string in: {0}'.format(fullpath))
-                                logger.info('String: {0}'.format(line))
+                                logger.info('Found what looks like a senstive content in: {0}'.format(fullpath))
                                 with open("anteater-gate.log", "a") as gatereport:
-                                    gatereport.write('Found what looks like a blacklisted string in: {0}:\n'.format(fullpath))
+                                    gatereport.write('Found what looks like senstive data: {0}:\n'.format(fullpath))
                                     gatereport.write('String: {0}'.format(line))
                         else:
                             if file_contents_re.search(line):
-                                logger.info('Found what looks like a blacklisted string in: {0}'.format(fullpath))
-                                logger.info('String: {0}'.format(line))
+                                logger.info('Found what looks like senstive data: {0}'.format(fullpath))
                                 with open("anteater-gate.log", "a") as gatereport:
-                                    gatereport.write('Found what looks like a blacklisted string in: {0}:\n'.format(fullpath))
+                                    gatereport.write('Found what looks like senstive data in: {0}:\n'.format(fullpath))
                                     gatereport.write('String: {0}'.format(line))
+
+
+def run_licence_check(project, projdir):
+    logger.info('Running Licence Check on: {0}'.format(project))
+    licence_templates = os.path.join(wk_dir + 'licence-templates.yaml')
+    with open(licence_templates, 'r') as f:
+           yl = yaml.safe_load(f)
+    template = (yl[lang])
+    for root, dirs, files in os.walk(projdir):
+        for item in files:
+            if item.endswith(('.py', '.sh')):
+                template = (yl['pybash'])
+                fullpath = os.path.join(root, item)
+                fo = open(fullpath, 'r')
+                content = fo.read()
+                processed = re.sub(r'(?<=2017 )(.*)(?=and others)', '', content) # use a re.compile here
+                if template in processed:
+                    logger.info('Licence Check passed for: {0}'.format(fullpath))
+                else:
+                    logger.error('No License file within: {0}'.format(fullpath))
+                    with open("anteater-gate.log", "a") as gatereport:
+                        gatereport.write('No License File found within: {0}\n'.format(fullpath))
+
+
+

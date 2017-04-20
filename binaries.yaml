@@ -9,3 +9,6 @@ defaults:
 
 example_project:
   files: []
+
+insecure-python:
+  files: [testfile]
