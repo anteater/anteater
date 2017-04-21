@@ -40,7 +40,6 @@ def scan_project(reports_dir, project, scanner, repos_dir):
     run_licence_check(project, projdir)
 
     if scanner:
-        print ("IS SCANNER")
         if scanner == 'bandit':
             run_bandit(reports_dir, project, projdir)
         elif scanner == 'pmd':
@@ -51,7 +50,6 @@ def scan_project(reports_dir, project, scanner, repos_dir):
         else:
             logger.error("%s is not a recognised scanner tool", scanner)
     else:
-        print("NOT SCANNER")
         """Let's try to guess which scanner to use, by file extension"""
         for root, dirs, files in os.walk(projdir):
             for file in files:
@@ -238,10 +236,11 @@ def license_regex(fullpath, item, file_type):
     with open(licence_templates, 'r') as f:
         yl = yaml.safe_load(f)
     template = (yl[file_type])
-
+    print("template\n")
+    print(template)
     fo = open(fullpath, 'r')
     content = fo.read()
-    processed = re.sub(r'(?<=2017 )(.*)(?=and others)', '', content) # use a re.compile here
+    processed = re.sub(r'(?<=2017 )(.*)(?=and others)', '', content)
     if template in processed:
         logger.info('Licence Check passed for: {0}'.format(fullpath))
     else:
