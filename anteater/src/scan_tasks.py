@@ -37,7 +37,6 @@ def scan_project(reports_dir, project, scanner, repos_dir):
     # Perform rudimentary scans
     run_binfind(project, projdir)
     run_secretsearch(project, projdir)
-    run_licence_check(project, projdir)
 
     if scanner:
         if scanner == 'bandit':
@@ -165,8 +164,10 @@ def run_secretsearch(project, projdir):
             if waiver_files:
                 waiver_files_re = re.compile("|".join(waiver_files), flags=re.IGNORECASE)
                 waiver_files_set = True
+
         except:
             waiver_files_set = False
+            logger.info('No project secret waivers files_names for project: {0}'.format(project))
 
         try:
             waiver_contents = (yl['waivers'][project]['file_contents'])
@@ -175,6 +176,7 @@ def run_secretsearch(project, projdir):
                 waiver_contents_set = True
         except:
             waiver_contents_set = False
+            logger.info('No project secret waivers contents for project: {0}'.format(project))
 
         logger.info('Checking for blaclisted file types and senstive data in project: {0}'.format(project))
 
@@ -196,54 +198,20 @@ def run_secretsearch(project, projdir):
                     fo = open(fullpath, 'r')
                     lines = fo.readlines()
                     for line in lines:
+                        # Check for sensitive content in file contents
                         if waiver_contents_set:
                             if not waiver_contents_re.search(line) and file_contents_re.search(line):
-                                logger.info('Found what looks like a senstive content in: {0}'.format(fullpath))
+                                logger.info('Found what looks like a senstive content (1) in: {0}'.format(fullpath))
+                                logger.info('Flagged String: {0}'.format(line))
                                 with open("anteater-gate.log", "a") as gatereport:
                                     gatereport.write('Found what looks like senstive data: {0}:\n'.format(fullpath))
-                                    gatereport.write('String: {0}'.format(line))
+                                    gatereport.write('Flagged String: {0}'.format(line))
                         else:
                             if file_contents_re.search(line):
-                                logger.info('Found what looks like senstive data: {0}'.format(fullpath))
+                                logger.info('Found what looks like senstive content (2): {0}'.format(fullpath))
+                                logger.info('Flagged String: {0}'.format(line))
                                 with open("anteater-gate.log", "a") as gatereport:
                                     gatereport.write('Found what looks like senstive data in: {0}:\n'.format(fullpath))
-                                    gatereport.write('String: {0}'.format(line))
+                                    gatereport.write('Flagged String: {0}'.format(line))
 
 
-def run_licence_check(project, projdir):
-    logger.info('Running Licence Check on: {0}'.format(project))
-    for root, dirs, files in os.walk(projdir):
-        for item in files:
-            fullpath = os.path.join(root, item)
-            if item.endswith(('.py', '.sh')):
-                file_type = 'pybash'
-                license_regex(fullpath, item, file_type)
-            elif item.endswith(('.c', '.cc', '.cpp', '.h', '.java')):
-                file_type = 'cjava'
-                license_regex(fullpath, item, file_type)
-            elif item.endswith('xml'):
-                file_type = 'xml'
-                license_regex(fullpath, item, file_type)
-            elif item.endswith('patch'):
-                file_type = 'patch'
-                license_regex(fullpath, item, file_type)
-            elif item.endswith('rst'):
-                file_type = 'rst'
-                license_regex(fullpath, item, file_type)
-
-
-def license_regex(fullpath, item, file_type):
-    with open(licence_templates, 'r') as f:
-        yl = yaml.safe_load(f)
-    template = (yl[file_type])
-    print("template\n")
-    print(template)
-    fo = open(fullpath, 'r')
-    content = fo.read()
-    processed = re.sub(r'(?<=2017 )(.*)(?=and others)', '', content)
-    if template in processed:
-        logger.info('Licence Check passed for: {0}'.format(fullpath))
-    else:
-        logger.error('No License file within: {0}'.format(fullpath))
-        with open("anteater-gate.log", "a") as gatereport:
-            gatereport.write('No License File found within: {0}\n'.format(fullpath))
