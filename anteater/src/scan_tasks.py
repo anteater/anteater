@@ -37,6 +37,7 @@ def scan_project(reports_dir, project, scanner, repos_dir):
     # Perform rudimentary scans
     run_binfind(project, projdir)
     run_secretsearch(project, projdir)
+    # run_licence_check(project, projdir)
 
     if scanner:
         if scanner == 'bandit':
@@ -215,3 +216,42 @@ def run_secretsearch(project, projdir):
                                     gatereport.write('Flagged String: {0}'.format(line))
 
 
+def run_licence_check(project, projdir):
+    """ Establish which licence format to use"""
+    logger.info('Running Licence Check on: {0}'.format(project))
+    for root, dirs, files in os.walk(projdir):
+        for item in files:
+            fullpath = os.path.join(root, item)
+            if item.endswith(('.py', '.sh')):
+                file_type = 'pybash'
+                license_regex(fullpath, item, file_type)
+            elif item.endswith(('.c', '.cc', '.cpp', '.h', '.java')):
+                file_type = 'cjava'
+                license_regex(fullpath, item, file_type)
+            elif item.endswith('xml'):
+                file_type = 'xml'
+                license_regex(fullpath, item, file_type)
+            elif item.endswith('patch'):
+                file_type = 'patch'
+                license_regex(fullpath, item, file_type)
+            elif item.endswith('rst'):
+                file_type = 'rst'
+                license_regex(fullpath, item, file_type)
+
+
+def license_regex(fullpath, item, file_type):
+    """ Perform regex search """
+    with open(licence_templates, 'r') as f:
+        yl = yaml.safe_load(f)
+    template = (yl[file_type])
+    print("template\n")
+    print(template)
+    fo = open(fullpath, 'r')
+    content = fo.read()
+    processed = re.sub(r'(?<=2017 )(.*)(?=and others)', '', content)
+    if template in processed:
+        logger.info('Licence Check passed for: {0}'.format(fullpath))
+    else:
+        logger.error('No License file within: {0}'.format(fullpath))
+        with open("anteater-gate.log", "a") as gatereport:
+            gatereport.write('No License File found within: {0}\n'.format(fullpath))
