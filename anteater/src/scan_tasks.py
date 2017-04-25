@@ -37,6 +37,7 @@ def scan_project(reports_dir, project, scanner, repos_dir):
     # Perform rudimentary scans
     run_binfind(project, projdir)
     run_secretsearch(project, projdir)
+    run_licence_check(project, projdir)
 
     if scanner:
         if scanner == 'bandit':
@@ -64,6 +65,7 @@ def scan_project(reports_dir, project, scanner, repos_dir):
                     php = True
                 elif file.endswith(".pl"):
                     perl = True
+        # Select lint scanner based on language use
         # Project contains only python files
         if py and not (java or c):
             run_bandit(reports_dir, project, projdir)
@@ -76,6 +78,7 @@ def scan_project(reports_dir, project, scanner, repos_dir):
         # Project contains a mix of c and python
         if c and py and not java:
             run_rats(reports_dir, project, projdir)
+        # Project contains a mix of php and perl
         if rb or php or perl:
             run_rats(reports_dir, project, projdir)
 
@@ -88,7 +91,7 @@ def run_bandit(reports_dir, project, projdir):
         sh.bandit('-r', '-f', 'html', '-o', reports_dir + report, projdir)
     except sh.ErrorReturnCode, e:
         if e.exit_code != 4:
-            logger.error(e.stderr)
+            pass # Temp until sh exception handling resolved
 
 
 def run_rats(reports_dir, project, projdir):
@@ -148,7 +151,7 @@ def run_binfind(project, projdir):
 
 
 def run_secretsearch(project, projdir):
-    """Searchs for banned strings and files that are listed
+    """Searches for banned strings and files that are listed
     in secretlist.yaml """
     secretlist = os.path.join(wk_dir + 'secretlist.yaml')
 
@@ -201,17 +204,35 @@ def run_secretsearch(project, projdir):
                         # Check for sensitive content in file contents
                         if waiver_contents_set:
                             if not waiver_contents_re.search(line) and file_contents_re.search(line):
-                                logger.info('Found what looks like a senstive content (1) in: {0}'.format(fullpath))
+                                logger.info('Found what looks like a senstive content in: {0}'.format(fullpath))
                                 logger.info('Flagged String: {0}'.format(line))
                                 with open("anteater-gate.log", "a") as gatereport:
                                     gatereport.write('Found what looks like senstive data: {0}:\n'.format(fullpath))
                                     gatereport.write('Flagged String: {0}'.format(line))
                         else:
                             if file_contents_re.search(line):
-                                logger.info('Found what looks like senstive content (2): {0}'.format(fullpath))
+                                logger.info('Found what looks like senstive content: {0}'.format(fullpath))
                                 logger.info('Flagged String: {0}'.format(line))
                                 with open("anteater-gate.log", "a") as gatereport:
                                     gatereport.write('Found what looks like senstive data in: {0}:\n'.format(fullpath))
                                     gatereport.write('Flagged String: {0}'.format(line))
 
 
+def run_licence_check(project, projdir):
+    """ Establish which licence format to use"""
+    logger.info('Running Licence Check on: {0}'.format(project))
+    licence_strs = ['copyright','spdx', 'apache']
+    ignore_dirs = ['.git']
+    for root, dirs, files in os.walk(projdir):
+        dirs[:] = [d for d in dirs if d not in ignore_dirs]
+        for file in files:
+            fullpath = os.path.join(root, file)
+            if not is_binary(fullpath):
+                fo = open(fullpath, 'r')
+                content = fo.read()
+                if re.search("copyright", content, re.IGNORECASE):
+                    logger.info('Contains needed Licence string: {0}'.format(fullpath))
+                elif re.search("spdx", content, re.IGNORECASE):
+                    logger.info('Contains needed Licence string: {0}'.format(fullpath))
+                else:
+                    logger.error('Licence file missing in file: {0}'.format(fullpath))
