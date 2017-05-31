@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 import re
 import sys
-from setuptools import setup
 from setuptools.command.test import test as TestCommand
 from setuptools import setup, find_packages
 
 REQUIRES = [
     'docopt',
 ]
-
 
 
 class PyTest(TestCommand):
@@ -49,12 +47,12 @@ def read(fname):
 
 setup(
     name='anteater',
-    version="0.1.0",
+    version="0.1",
     description='anteater',
-    long_description=read("README.rst"),
+    long_description=read("README.md"),
     author='Luke Hinds',
     author_email='lhinds@redhat.com',
-    url='https://github.com/lukehinds/anteater',
+    url='https://gerrit.opnfv.org/gerrit/gitweb?p=releng-anteater.git',
     install_requires=REQUIRES,
     license=read("LICENSE"),
     zip_safe=False,
@@ -62,7 +60,7 @@ setup(
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
+        'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
         "Programming Language :: Python :: 2",
         'Programming Language :: Python :: 2.7',
