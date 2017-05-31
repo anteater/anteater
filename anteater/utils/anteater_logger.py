@@ -1,12 +1,20 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+##############################################################################
+# Copyright (c) 2017 jose.lausuch@ericsson.com
 #
-# jose.lausuch@ericsson.com
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Apache License, Version 2.0
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
+##############################################################################
 
+import ConfigParser
 import logging
+
+config = ConfigParser.RawConfigParser()
+config.read('anteater.conf')
+anteater_log = config.get('config', 'anteater_log')
 
 
 class Logger:
@@ -22,10 +30,10 @@ class Logger:
         ch.setLevel(logging.DEBUG)
         self.logger.addHandler(ch)
 
-        hdlr = logging.FileHandler('/tmp/anteater.log')
-        hdlr.setFormatter(formatter)
-        hdlr.setLevel(logging.DEBUG)
-        self.logger.addHandler(hdlr)
+        handler = logging.FileHandler(anteater_log)
+        handler.setFormatter(formatter)
+        handler.setLevel(logging.DEBUG)
+        self.logger.addHandler(handler)
 
     def getLogger(self):
         return self.logger
