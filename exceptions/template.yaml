@@ -1,0 +1,13 @@
+---
+# When adding projects all `arrays: []` sections must have
+# a value, Use 'nullvalue' if no waivers are available.
+#
+# This file uses standard regular expression syntax,  however be mindful
+# of escaping YAML delimiters too (such as `:`) using double quotes "".
+
+binaries:
+  binary_ignore: [nullvalue]
+
+file_audits:
+  file_names: [nullvalue]
+  file_contents: [nullvalue]

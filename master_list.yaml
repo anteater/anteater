@@ -1,0 +1,230 @@
+---
+# This file uses standard regular expression syntax,  however be mindful
+# of escaping YAML delimiters too (such as `:`) using double quotes "".
+
+binaries:
+  binary_ignore:
+    - \.git/(index|objects)
+
+file_audits:
+  file_names:
+    - \.asc
+    - \.gpg
+    - \.key
+    - \.md(2|3|4|5)
+    - \.sha1
+    - \.sig
+    - \.pcap
+    - \.kdb
+    - \.pypirc
+    - \.pem
+    - \.cer
+    - \.der
+    - \.crt
+    - \.crl
+    - \.p7b
+    - \.p7r
+    - \.spc
+    - \.sst
+    - \.stl
+    - \.pfx
+    - \.p12
+    - _rsa
+    - _dsa
+    - (irb|plsq|mysql|bash|zsh)_history
+    - (zsh|bash)rc-secrets
+    - \.vimrc
+    - \.gem\/credentials
+    - configuration\.user\.xpl
+    - \.dockercfg
+    - \.npmrc
+    - key(store|ring)
+    - ovpn
+    - secret_token\.rb
+    - omniauth\.rb
+    - carrierwave\.rb
+    - schema\.rb
+    - database\.yml
+    - settings\.py
+    - keychain
+    - backup
+    - credentials\.xml
+    - htpasswd
+    - kwallet
+    - aws_access_key_id
+    - aws_secret_access_key
+
+  file_contents:
+    private_key:
+      regex: -----BEGIN\sRSA\sPRIVATE\sKEY----
+      desc: "This looks like it could be a private key"
+
+    password:
+      regex: (password|passwd)(.*:|.*=.*)
+      desc: "Possible hardcoded password"
+
+    curl:
+      regex: \bcurl\b
+      desc: "Curl can be used for retrieving objects from untrusted sources"
+
+    clone:
+      regex: git.*clone
+      desc: "clone blocked as using an non approved external source"
+
+    dual_ec_drbg:
+      regex: dual_ec_drbg
+      desc: "Insecure cryptographic algorithm"
+
+    base64_decode:
+      regex: base64_decode
+      desc: "Insecure cryptographic algorithm"
+
+    gost:
+      regex: gost
+      desc: "Insecure cryptographic algorithm"
+
+    md245:
+      regex: md[245]
+      desc: "Insecure hashing algorithm"
+
+    panama:
+      regex: panama
+      desc: "Insecure cryptographic algorithm"
+
+    private_key2:
+      regex: private_key
+      desc: "This looks like it could be a private key"
+
+    rc4:
+      regex: rc4
+      desc: "Rivest Cipher 4 is an insecure stream cipher"
+
+    ripemd:
+      regex: ripemd
+      desc: "RACE Message Digest is an insecure hashing algorithm"
+
+    secret:
+      regex: secret
+      desc: "Possible leak of sensitive information"
+
+    sha:
+      regex: sha[01]
+      desc: "Insecure hashing algorithm"
+
+    snefru:
+      regex: snefru
+      desc: "Insecure hashing algorithm"
+
+    ssh_key:
+      regex: ssh_key
+      desc: "Possible leak of private SSH key"
+
+    sslv:
+      regex: sslv[12]
+      desc: "Insecure SSL Version"
+
+    streebog:
+      regex: sslv[12]
+      desc: "Insecure cryptographic hashing algorithm"
+
+    tlsv1:
+      regex: tlsv1
+      desc: "Insecure TLS Version"
+
+    wget:
+      regex: wget
+      desc: "WGET is blocked to unknown / untrusted destinations"
+
+    run_as_root:
+      regex: run_as_root.*=.*True
+      desc: "Its better to use sudo or a rootwrapper"
+
+    exec:
+      regex: \sexec\s*(\"|\().+(\"|\))
+      desc: "Exec can be dangerous when used with arbitrary, untrusted code."
+
+    eval:
+      regex: \beval\b
+      desc: "Eval can be dangerous when used with arbitrary, untrusted code."
+
+    apprun:
+      regex: app\.run\s*\(.*debug.*=.*True.*\)
+      desc: |
+        "Running flask in debug mode can give away sensitive data"
+
+    autoescape:
+      regex: autoescape.*=.*False
+      desc: "Not escaping HTML input is vulnerable to XSS attacks."
+
+    safestring:
+      regex: safestring\.mark_safe.*\(.*\)
+      desc: "Not escaping HTML input is vulnerable to XSS attacks."
+
+    shelltrue:
+      regex: shell.*=.*True
+      desc: "Shell=True can lead to dangerous shell escapes"
+
+    tmp:
+      regex: \/tmp\/
+      desc: |
+        "tmp directories are risky. They are world writable and easily guessed"
+
+    yamlload:
+      regex: \yaml\.load
+      desc: |
+        "Avoid dangerous file parsing & serialization libs, use yaml.safe_load"
+
+    telnet:
+      regex: telnet
+      desc: "Avoid coms applications that transmit credentials in clear text"
+
+    ftp:
+      regex: \bftp\b
+      desc: "Avoid coms applications that transmit credentials in clear text"
+
+    finger:
+      regex: \bfinger\b
+      desc: "Avoid coms applications that transmit credentials in clear text"
+    allint:
+      regex: 0\.0\.0\.0
+      desc: "Interface listening on all addresses - may break security zones"
+
+file_ignore:
+  - '.rst'
+  - '.md'
+
+licence:
+  licence_ext:
+    - '.java'
+    - '.md'
+    - '.py'
+    - '.rb'
+    - '.rst'
+    - '.sh'
+  licence_ignore:
+    - '__init__.py'
+
+project_exceptions:
+  - apex: exceptions/apex.yaml
+  - armband: exceptions/armband.yaml
+  - bamboo: exceptions/bamboo.yaml
+  - barometer: exceptions/barometer.yaml
+  - bottlenecks: exceptions/bottlenecks.yaml
+  - calipso: exceptions/calipso.yaml
+  - compass4nfv: exceptions/compass4nfv.yaml
+  - conductor: exceptions/conductor.yaml
+  - copper: exceptions/copper.yaml
+  - cperf: exceptions/cperf.yaml
+  - daisy: exceptions/daisy.yaml
+  - doctor: exceptions/doctor.yaml
+  - dovetail: exceptions/dovetail.yaml
+  - dpacc: exceptions/dpacc.yaml
+  - enfv: exceptions/enfv.yaml
+  - escalator: exceptions/escalator.yaml
+  - fds: exceptions/fds.yaml
+  - functest: exceptions/functest.yaml
+  - octopus: exceptions/octopus.yaml
+  - pharos: exceptions/pharos.yaml
+  - releng: exceptions/releng.yaml
+  - sandbox: exceptions/sandbox.yaml
+  - yardstick: exceptions/yardstick.yaml

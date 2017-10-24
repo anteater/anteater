@@ -16,19 +16,23 @@
 """
 
 from __future__ import division, print_function, absolute_import
-import ConfigParser
+import hashlib
+import six.moves.configparser
 import os
 import re
-import anteater.utils.anteater_logger as antlog
-import anteater.src.get_lists as get_lists
+import logging
 from binaryornot.check import is_binary
 
-logger = antlog.Logger(__name__).getLogger()
-config = ConfigParser.RawConfigParser()
+from . import get_lists
+
+logger = logging.getLogger(__name__)
+config = six.moves.configparser.RawConfigParser()
 config.read('anteater.conf')
 reports_dir = config.get('config', 'reports_dir')
-gate_checks = config.get('config', 'gate_checks')
+master_list = config.get('config', 'master_list')
+ignore_list = config.get('config', 'master_list')
 ignore_dirs = ['.git']
+hasher = hashlib.sha256()
 
 
 def prepare_project(project, project_dir):
@@ -38,30 +42,34 @@ def prepare_project(project, project_dir):
     lists = get_lists.GetLists()
 
     # Get binary white list
-    binary_list, binary_project_list = lists.binary_list(project)
+    binary_list = lists.binary_list(project)
 
     # Get file name black list and project waivers
     file_audit_list, file_audit_project_list = lists.file_audit_list(project)
 
     # Get file content black list and project waivers
-    file_content_list, project_content_list = lists.file_content_list(project)
+    master_list, ignore_list = lists.file_content_list(project)
+
+    # Get File Ignore Lists
+    file_ignore = lists.file_ignore()
 
     # Get Licence Lists
     licence_ext = lists.licence_extensions()
     licence_ignore = lists.licence_ignore()
 
     # Perform rudimentary scans
-    scan_file(project_dir, project, binary_list, binary_project_list,
-              file_audit_list, file_audit_project_list, file_content_list,
-              project_content_list)
+    scan_file(project_dir, project, binary_list,file_audit_list,
+              file_audit_project_list, master_list, ignore_list,
+              file_ignore)
 
     # Perform licence header checks
     licence_check(licence_ext, licence_ignore, project, project_dir)
+    licence_root_check(project_dir, project)
 
 
-def scan_file(project_dir, project, binary_list, binary_project_list,
-              file_audit_list, file_audit_project_list, file_content_list,
-              project_content_list):
+def scan_file(project_dir, project, binary_list, file_audit_list,
+              file_audit_project_list, master_list, ignore_list,
+              file_ignore):
     """Searches for banned strings and files that are listed """
     for root, dirs, files in os.walk(project_dir):
         # Filter out ignored directories from list.
@@ -72,10 +80,8 @@ def scan_file(project_dir, project, binary_list, binary_project_list,
             if file_audit_list.search(full_path) and not \
                     file_audit_project_list.search(full_path):
                 match = file_audit_list.search(full_path)
-                logger.error('Blacklisted filename: {0}'.
-                             format(full_path))
-                logger.error('Matched String: {0}'.
-                             format(match.group()))
+                logger.error('Blacklisted filename: %s', full_path)
+                logger.error('Matched String: %s', match.group())
                 with open(reports_dir + "file-names_" + project + ".log",
                           "a") as gate_report:
                             gate_report. \
@@ -85,23 +91,51 @@ def scan_file(project_dir, project, binary_list, binary_project_list,
                                 write('Matched String: {0}'.
                                       format(match.group()))
 
-            if not is_binary(full_path):
-                fo = open(full_path, 'r')
-                lines = fo.readlines()
-                for line in lines:
-                    # Check for sensitive content in project files
-                    if file_content_list.search(line) and not \
-                            project_content_list.search(line):
-                        match = file_content_list.search(line)
-                        logger.error('File contains violation: {0}'.
-                                     format(full_path))
-                        logger.error('Flagged Content: {0}'.
-                                     format(line.rstrip()))
-                        logger.error('Matched String: {0}'.
-                                     format(match.group()))
-                        with open(reports_dir + "contents_" + project + ".log",
-                                  "a") \
-                                as gate_report:
+            # Check if Binary is whitelisted
+            hashlist = get_lists.GetLists()
+            binary_hash = hashlist.binary_hash(project, full_path)
+
+            if is_binary(full_path) and not binary_list.search(full_path):
+                with open(full_path, 'rb') as afile:
+                    buf = afile.read()
+                    hasher.update(buf)
+                if hasher.hexdigest() in binary_hash:
+                    logger.info('Found matching file hash for file: %s',
+                                    full_path)
+                else:
+                    logger.error('Non Whitelisted Binary file: %s',
+                                 full_path)
+                    logger.error('Please submit patch with this hash: %s',
+                                 hasher.hexdigest())
+                    with open(reports_dir + "binaries-" + project + ".log",
+                              "a") as gate_report:
+                            gate_report.write('Non Whitelisted Binary: {0}\n'.
+                                              format(full_path))
+
+            else:
+                if not items.endswith(tuple(file_ignore)):
+                    try:
+                        fo = open(full_path, 'r')
+                        lines = fo.readlines()
+                    except IOError:
+                        logger.error('%s does not exist', full_path)
+
+                    for line in lines:
+                        # Check for sensitive content in project files
+                        for key, value in master_list.iteritems():
+                            regex = value['regex']
+                            desc = value['desc']
+                            if re.search(regex, line) and not re.search(
+                                    ignore_list, line):
+                                logger.error('File contains violation: %s',
+                                             full_path)
+                                logger.error('Flagged Content: %s',
+                                             line.rstrip())
+                                logger.error('Matched Regular Exp: %s', regex)
+                                logger.error('Rationale: %s', desc.rstrip())
+                                with open(reports_dir + "contents-" + project
+                                                  + ".log", "a") \
+                                        as gate_report:
                                     gate_report. \
                                         write('File contains violation: {0}\n'.
                                               format(full_path))
@@ -109,19 +143,24 @@ def scan_file(project_dir, project, binary_list, binary_project_list,
                                         write('Flagged Content: {0}'.
                                               format(line))
                                     gate_report. \
-                                        write('Matched String: {0}\n'.
-                                              format(match.group()))
-            else:
-                # Check if Binary is whitelisted
-                if not binary_list.search(full_path) \
-                        and not binary_project_list.search(full_path):
-                    logger.error('Non Whitelisted Binary: {0}'.
-                                 format(full_path))
-                    with open(reports_dir + "binaries-" + project + ".log",
-                              "a") \
-                            as gate_report:
-                        gate_report.write('Non Whitelisted Binary: {0}\n'.
-                                          format(full_path))
+                                        write('Matched Regular Exp: {0}'.
+                                              format(regex))
+                                    gate_report. \
+                                        write('Rationale: {0}\n'.
+                                              format(desc.rstrip()))
+
+
+
+def licence_root_check(project_dir, project):
+    if os.path.isfile(project_dir + '/LICENSE'):
+        logger.info('LICENSE file present in: %s', project_dir)
+    else:
+        logger.error('LICENSE file missing in: %s', project_dir)
+        with open(reports_dir + "licence-" + project + ".log",
+                  "a") \
+                as gate_report:
+            gate_report.write('LICENSE file missing in: {0}\n'.
+                              format(project_dir))
 
 
 def licence_check(licence_ext, licence_ignore, project, project_dir):
@@ -138,15 +177,12 @@ def licence_check(licence_ext, licence_ignore, project, project_dir):
                     # Note: Hardcoded use of 'copyright' & 'spdx' is the result
                     # of a decision made at 2017 plugfest to limit searches to
                     # just these two strings.
-                    if re.search("copyright", content, re.IGNORECASE):
-                        logger.info('Licence string present: {0}'.
-                                    format(full_path))
-                    elif re.search("spdx", content, re.IGNORECASE):
-                        logger.info('Licence string present: {0}'.
-                                    format(full_path))
+                    patterns = ['copyright', 'spdx',
+                                'http://creativecommons.org/licenses/by/4.0']
+                    if any(i in content.lower() for i in patterns):
+                        logger.info('Licence string present: %s', full_path)
                     else:
-                        logger.error('Licence header missing: {0}'.
-                                     format(full_path))
+                        logger.error('Licence header missing: %s', full_path)
                         with open(reports_dir + "licence-" + project + ".log",
                                   "a") \
                                 as gate_report:
