@@ -56,7 +56,7 @@ setup(
     long_description=read("README.md"),
     author='Luke Hinds',
     author_email='lhinds@redhat.com',
-    url='https://gerrit.opnfv.org/gerrit/gitweb?p=releng-anteater.git',
+    url='https://github.com/lukehinds/anteater',
     install_requires=REQUIRES,
     license=read("LICENSE"),
     zip_safe=False,
