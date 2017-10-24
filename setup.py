@@ -51,7 +51,7 @@ def read(fname):
 
 setup(
     name='anteater',
-    version="0.1",
+    version="0.3",
     description='anteater',
     long_description=read("README.md"),
     author='Luke Hinds',
