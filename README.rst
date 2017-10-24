@@ -1,10 +1,8 @@
-# Anteater
-
 Anteater - CI Validation Framework
-----------------------------------
+==================================
 
 Description
------------
+===========
 
 Anteater performs scanning of any commited patches sent to a gerrit code review
 site. Each time a patch is pushed to a repository, jenkins instantiates
