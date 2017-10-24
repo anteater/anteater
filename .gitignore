@@ -35,7 +35,7 @@ nosetests.xml
 # Mr Developer
 .project
 .pydevproject
-/.idea
+.idea
 
 # Complexity
 output/*.html
