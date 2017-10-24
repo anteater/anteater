@@ -1,4 +1,4 @@
 include LICENSE README.md
 include anteater.conf
 include master_list.yaml
-exclude exceptions/*
+include ignore_list.yaml

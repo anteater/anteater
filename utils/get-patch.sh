@@ -1,6 +1,6 @@
 #!/bin/bash
 ##############################################################################
-# Copyright (c) 2017 Luke Hinds <lhinds@redhat.com>, Red Hat
+# Copyright (c) 2017 Luke Hinds <lukehinds@gmail.com>
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Apache License, Version 2.0
