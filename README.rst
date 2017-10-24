@@ -1,7 +1,5 @@
 # Anteater
 
-![anteater](http://i.imgur.com/BPvV3Gz.png)
-
 Anteater - CI Validation Framework
 ----------------------------------
 
