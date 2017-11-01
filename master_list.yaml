@@ -205,26 +205,4 @@ licence:
     - '__init__.py'
 
 project_exceptions:
-  - apex: exceptions/apex.yaml
-  - armband: exceptions/armband.yaml
-  - bamboo: exceptions/bamboo.yaml
-  - barometer: exceptions/barometer.yaml
-  - bottlenecks: exceptions/bottlenecks.yaml
-  - calipso: exceptions/calipso.yaml
-  - compass4nfv: exceptions/compass4nfv.yaml
-  - conductor: exceptions/conductor.yaml
-  - copper: exceptions/copper.yaml
-  - cperf: exceptions/cperf.yaml
-  - daisy: exceptions/daisy.yaml
-  - doctor: exceptions/doctor.yaml
-  - dovetail: exceptions/dovetail.yaml
-  - dpacc: exceptions/dpacc.yaml
-  - enfv: exceptions/enfv.yaml
-  - escalator: exceptions/escalator.yaml
-  - fds: exceptions/fds.yaml
-  - functest: exceptions/functest.yaml
-  - octopus: exceptions/octopus.yaml
-  - pharos: exceptions/pharos.yaml
-  - releng: exceptions/releng.yaml
-  - sandbox: exceptions/sandbox.yaml
-  - yardstick: exceptions/yardstick.yaml
+  - example: exceptions/template.yaml
