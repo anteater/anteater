@@ -226,4 +226,3 @@ licence:
 
 project_exceptions:
   - template: exceptions/template.yaml
-
