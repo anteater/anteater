@@ -1,0 +1,9 @@
+---
+binaries:
+  binary_ignore: [nullvalue]
+
+file_audits:
+  file_names: [nullvalue]
+  file_contents:
+    - ^#
+    - git clone.+\.github\.com\lukehinds\/

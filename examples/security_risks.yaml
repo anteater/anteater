@@ -213,16 +213,5 @@ file_ignore:
   - '.rst'
   - '.md'
 
-licence:
-  licence_ext:
-    - '.java'
-    - '.md'
-    - '.py'
-    - '.rb'
-    - '.rst'
-    - '.sh'
-  licence_ignore:
-    - '__init__.py'
-
 project_exceptions:
   - template: exceptions/template.yaml
