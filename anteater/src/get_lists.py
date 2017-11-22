@@ -18,7 +18,6 @@ from __future__ import absolute_import
 import logging
 import six.moves.configparser
 import copy
-import os
 import yaml
 import re
 
@@ -94,7 +93,6 @@ class GetLists(object):
             binary_hash = 'null'
             return binary_hash
 
-
     def file_audit_list(self, project):
         project_list = False
         self.load_project_exception_file(ml.get('project_exceptions'), project)
@@ -140,11 +138,16 @@ class GetLists(object):
         except KeyError:
             logger.info('No file_contents waivers found  for %s', project)
 
-        ignore_list_merge = project_list + ignore_list
+        if project_list:
+            ignore_list_merge = project_list + ignore_list
 
-        ignore_list_re = re.compile("|".join(ignore_list_merge), flags=re.IGNORECASE)
+            ignore_list_re = re.compile("|".join(ignore_list_merge), flags=re.IGNORECASE)
 
-        return flag_list, ignore_list_re
+            return flag_list, ignore_list_re
+        else:
+            ignore_list_re = re.compile("|".join(ignore_list),
+                                        flags=re.IGNORECASE)
+            return flag_list, ignore_list_re
 
     def file_ignore(self):
         try:
@@ -152,17 +155,3 @@ class GetLists(object):
         except KeyError:
             logger.error('Key Error processing file_ignore list values')
         return file_ignore
-
-    def licence_extensions(self):
-        try:
-            licence_extensions = (ml['licence']['licence_ext'])
-        except KeyError:
-            logger.error('Key Error processing licence_extensions list values')
-        return licence_extensions
-
-    def licence_ignore(self):
-        try:
-            licence_ignore = (ml['licence']['licence_ignore'])
-        except KeyError:
-            logger.error('Key Error processing licence_ignore list values')
-        return licence_ignore
