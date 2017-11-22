@@ -53,18 +53,10 @@ def prepare_project(project, project_dir):
     # Get File Ignore Lists
     file_ignore = lists.file_ignore()
 
-    # Get Licence Lists
-    licence_ext = lists.licence_extensions()
-    licence_ignore = lists.licence_ignore()
-
     # Perform rudimentary scans
     scan_file(project_dir, project, binary_list,file_audit_list,
               file_audit_project_list, master_list, ignore_list,
               file_ignore)
-
-    # Perform licence header checks
-    licence_check(licence_ext, licence_ignore, project, project_dir)
-    licence_root_check(project_dir, project)
 
 
 def scan_file(project_dir, project, binary_list, file_audit_list,
@@ -149,43 +141,3 @@ def scan_file(project_dir, project, binary_list, file_audit_list,
                                     gate_report. \
                                         write('Rationale: {0}\n'.
                                               format(desc.rstrip()))
-
-
-
-def licence_root_check(project_dir, project):
-    if os.path.isfile(project_dir + '/LICENSE'):
-        logger.info('LICENSE file present in: %s', project_dir)
-    else:
-        logger.error('LICENSE file missing in: %s', project_dir)
-        with open(reports_dir + "licence-" + project + ".log",
-                  "a") \
-                as gate_report:
-            gate_report.write('LICENSE file missing in: {0}\n'.
-                              format(project_dir))
-
-
-def licence_check(licence_ext, licence_ignore, project, project_dir):
-    """ Peform basic checks for the presence of licence strings """
-    for root, dirs, files in os.walk(project_dir):
-        dirs[:] = [d for d in dirs if d not in ignore_dirs]
-        for file in files:
-            if file.endswith(tuple(licence_ext)) \
-                    and file not in licence_ignore:
-                full_path = os.path.join(root, file)
-                if not is_binary(full_path):
-                    fo = open(full_path, 'r')
-                    content = fo.read()
-                    # Note: Hardcoded use of 'copyright' & 'spdx' is the result
-                    # of a decision made at 2017 plugfest to limit searches to
-                    # just these two strings.
-                    patterns = ['copyright', 'spdx',
-                                'http://creativecommons.org/licenses/by/4.0']
-                    if any(i in content.lower() for i in patterns):
-                        logger.info('Licence string present: %s', full_path)
-                    else:
-                        logger.error('Licence header missing: %s', full_path)
-                        with open(reports_dir + "licence-" + project + ".log",
-                                  "a") \
-                                as gate_report:
-                            gate_report.write('Licence header missing: {0}\n'.
-                                              format(full_path))

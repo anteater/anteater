@@ -52,10 +52,6 @@ def prepare_patchset(project, patchset):
     # Get File Ignore Lists
     file_ignore = lists.file_ignore()
 
-    # Get Licence Lists
-    licence_ext = lists.licence_extensions()
-    licence_ignore = lists.licence_ignore()
-
     # Open patch set to get file list
     try:
         fo = open(patchset, 'r')
@@ -69,8 +65,7 @@ def prepare_patchset(project, patchset):
         # Perform binary and file / content checks
         scan_patch(project, patch_file, binary_list,
                    file_audit_list, file_audit_project_list,
-                   master_list, ignore_list, licence_ext,
-                   file_ignore, licence_ignore)
+                   master_list, ignore_list, file_ignore)
 
     # Process each file in patch set using waivers generated above
     # Process final result
@@ -79,7 +74,7 @@ def prepare_patchset(project, patchset):
 
 def scan_patch(project, patch_file, binary_list, file_audit_list,
                file_audit_project_list, master_list,
-               ignore_list, licence_ext, file_ignore, licence_ignore):
+               ignore_list, file_ignore):
     """ Scan actions for each commited file in patch set """
     global failure
     if is_binary(patch_file):
@@ -135,7 +130,6 @@ def scan_patch(project, patch_file, binary_list, file_audit_list,
                             ignore_list, line):
                         logger.error('File contains violation: %s', patch_file)
                         logger.error('Flagged Content: %s', line.rstrip())
-                        logger.error('Matched Regular Exp: %s', regex)
                         logger.error('Rationale: %s', desc.rstrip())
                         failure = True
                         with open(reports_dir + "contents_" + project + ".log",
@@ -148,37 +142,10 @@ def scan_patch(project, patch_file, binary_list, file_audit_list,
                                               format(regex))
                             gate_report.write('Rationale: {0}\n'.
                                               format(desc.rstrip()))
-            # Run license check
-            licence_check(project, licence_ext, licence_ignore, patch_file)
-
-
-def licence_check(project, licence_ext,
-                  licence_ignore, patch_file):
-    """ Performs licence checks """
-    global failure
-    if patch_file.endswith(tuple(licence_ext)) \
-            and patch_file not in licence_ignore:
-        fo = open(patch_file, 'r')
-        content = fo.read()
-        # Note: Hardcoded use of 'copyright' & 'spdx' is the result
-        # of a decision made at 2017 plugfest to limit searches to
-        # just these two strings.
-        patterns = ['copyright', 'spdx',
-                    'http://creativecommons.org/licenses/by/4.0']
-        if any(i in content.lower() for i in patterns):
-            logger.info('Contains needed Licence string: %s', patch_file)
-        else:
-            logger.error('Licence header missing in file: %s', patch_file)
-            failure = True
-            with open(reports_dir + "licence-" + project + ".log", "a") \
-                    as gate_report:
-                gate_report.write('Licence header missing in file: {0}\n'.
-                                  format(patch_file))
 
 
 def process_failure():
     """ If any scan operations register a failure, sys.exit(1) is called
         to allow jjb to register a failure"""
     if failure:
-        logger.error('Please visit: https://wiki.opnfv.org/x/5oey')
         sys.exit(1)

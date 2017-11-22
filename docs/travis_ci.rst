@@ -9,7 +9,7 @@ Set up steps
 To use anteater as a build check for any github pull requests, first start by
 creating a main list and ignore list in the repository that you wish to monitor.
 
-First create an `anteater.conf` in the root directory of your repository
+First create an `anteater.conf` in the root directory of your repository::.
 
     [config]
     reports_dir =  .reports/
@@ -54,13 +54,12 @@ the user guide.
 Travis Integration
 ------------------
 
-All that is required now is to make the following entries to your yaml file
+All that is required now is to make the following entries to your yaml file::.
 
     language: python
 
     python:
       - "2.7"
-      - "pypy"
 
     install:
       - pip install anteater
@@ -73,7 +72,7 @@ All that is required now is to make the following entries to your yaml file
 *Note:*
 
 Should you be using another language other then python (for example ruby), you
-can use `matrix:include`, for example
+can use `matrix:include`, for example::.
 
     matrix:
       include:
