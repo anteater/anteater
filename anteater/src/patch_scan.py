@@ -84,7 +84,8 @@ def scan_patch(project, patch_file, binary_list, file_audit_list,
     global failure
     if is_binary(patch_file):
         hashlist = get_lists.GetLists()
-        binary_hash = hashlist.binary_hash(project, patch_file)
+        split_path = patch_file.split(project + '/', 1)[-1]
+        binary_hash = hashlist.binary_hash(project, split_path)
         if not binary_list.search(patch_file):
             with open(patch_file, 'rb') as afile:
                 buf = afile.read()

@@ -86,9 +86,9 @@ class GetLists(object):
 
     def binary_hash(self, project, patch_file):
         self.load_project_exception_file(ml.get('project_exceptions'), project)
-        file_name = os.path.basename(patch_file)
+
         try:
-            binary_hash = (ml['binaries'][project][file_name])
+            binary_hash = (ml['binaries'][project][patch_file])
             return binary_hash
         except KeyError:
             binary_hash = 'null'

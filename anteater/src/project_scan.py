@@ -93,9 +93,10 @@ def scan_file(project_dir, project, binary_list, file_audit_list,
 
             # Check if Binary is whitelisted
             hashlist = get_lists.GetLists()
-            binary_hash = hashlist.binary_hash(project, full_path)
+            split_path = full_path.split(project + '/', 1)[-1]
+            binary_hash = hashlist.binary_hash(project, split_path)
 
-            if is_binary(full_path) and not binary_list.search(full_path):
+            if is_binary(full_path):
                 with open(full_path, 'rb') as afile:
                     buf = afile.read()
                     hasher.update(buf)
