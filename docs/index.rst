@@ -12,6 +12,7 @@ Contents
 
    installation
    user_guide
+   travis_ci
 
 Indices and tables
 ==================

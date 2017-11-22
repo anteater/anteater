@@ -2,16 +2,6 @@
 User Guide
 ==========
 
-Anteater is a wrapper framework around the following security lint scanners:
-
-* Bandit (Python) https://github.com/openstack/bandit
-* PMD (Java) https://pmd.github.io/
-* Rats (C / C++) https://code.google.com/archive/p/rough-auditing-tool-for-security/
-
-Anteater allows a user to quickly git clone / pull projects and then scan those
-projects. Anteater will analyse the project files, and select the more suited
-scanner to run (for example python projects are scanned with Bandit, C/C++ with
-Rats Scanner).
 
 Configuration
 -------------
