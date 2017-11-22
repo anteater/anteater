@@ -47,7 +47,7 @@ def prepare_patchset(project, patchset):
     file_audit_list, file_audit_project_list = lists.file_audit_list(project)
 
     # Get file content black list and project waivers
-    master_list, ignore_list = lists.file_content_list(project)
+    flag_list, ignore_list = lists.file_content_list(project)
 
     # Get File Ignore Lists
     file_ignore = lists.file_ignore()
@@ -65,7 +65,7 @@ def prepare_patchset(project, patchset):
         # Perform binary and file / content checks
         scan_patch(project, patch_file, binary_list,
                    file_audit_list, file_audit_project_list,
-                   master_list, ignore_list, file_ignore)
+                   flag_list, ignore_list, file_ignore)
 
     # Process each file in patch set using waivers generated above
     # Process final result
@@ -73,7 +73,7 @@ def prepare_patchset(project, patchset):
 
 
 def scan_patch(project, patch_file, binary_list, file_audit_list,
-               file_audit_project_list, master_list,
+               file_audit_project_list, flag_list,
                ignore_list, file_ignore):
     """ Scan actions for each commited file in patch set """
     global failure
@@ -123,7 +123,7 @@ def scan_patch(project, patch_file, binary_list, file_audit_list,
 
         if file_exists and not patch_file.endswith(tuple(file_ignore)):
             for line in lines:
-                for key, value in master_list.iteritems():
+                for key, value in flag_list.iteritems():
                     regex = value['regex']
                     desc = value['desc']
                     if re.search(regex, line) and not re.search(

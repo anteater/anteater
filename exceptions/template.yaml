@@ -6,7 +6,8 @@
 # of escaping YAML delimiters too (such as `:`) using double quotes "".
 
 binaries:
-  binary_ignore: [nullvalue]
+  ping:
+    - 407fb352a8b709fa1890f200fee5186455fe815fb6c7808305f210e2f1faf76d
 
 file_audits:
   file_names: [nullvalue]

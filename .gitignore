@@ -21,6 +21,7 @@ env
 repos
 anteater.log
 anteater-gate.log
+.reports
 # Installer logs
 pip-log.txt
 

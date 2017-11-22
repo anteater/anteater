@@ -34,24 +34,17 @@ To retrieve the html reports, use docker cp::
 Install Anteater
 ----------------
 
-The best method to install anteater, is via pip
+The best method to install anteater, is via pip::
 
     pip install anteater
 
-Clone & Install Anteater
-------------------------
+Contribute
+----------
 
-Clone the repository:
+All contributions must be made as pull requests from your forked repository of
+anteater.
 
-    git clone https://github.com/lukehinds/anteater
-
-Create a virtualenv::
-
-    virtualenv env
-
-Source (activate) the virtualenv::
-
-    source env/bin/activate
+To install from source:
 
 Install requirements::
 

@@ -26,10 +26,10 @@ import re
 config = six.moves.configparser.RawConfigParser()
 config.read('anteater.conf')
 logger = logging.getLogger(__name__)
-master_list = config.get('config', 'master_list')
+flag_list = config.get('config', 'flag_list')
 ignore_list = config.get('config', 'ignore_list')
 
-with open(master_list, 'r') as f:
+with open(flag_list, 'r') as f:
     ml = yaml.safe_load(f)
 
 with open(ignore_list, 'r') as f:
@@ -123,7 +123,7 @@ class GetLists(object):
         project_list = False
         self.load_project_exception_file(ml.get('project_exceptions'), project)
         try:
-            master_list = (ml['file_audits']['file_contents'])
+            flag_list = (ml['file_audits']['file_contents'])
 
         except KeyError:
             logger.error('Key Error processing file_contents list values')
@@ -144,7 +144,7 @@ class GetLists(object):
 
         ignore_list_re = re.compile("|".join(ignore_list_merge), flags=re.IGNORECASE)
 
-        return master_list, ignore_list_re
+        return flag_list, ignore_list_re
 
     def file_ignore(self):
         try:

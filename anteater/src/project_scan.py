@@ -29,8 +29,8 @@ logger = logging.getLogger(__name__)
 config = six.moves.configparser.RawConfigParser()
 config.read('anteater.conf')
 reports_dir = config.get('config', 'reports_dir')
-master_list = config.get('config', 'master_list')
-ignore_list = config.get('config', 'master_list')
+flag_list = config.get('config', 'flag_list')
+ignore_list = config.get('config', 'flag_list')
 ignore_dirs = ['.git']
 hasher = hashlib.sha256()
 
@@ -48,19 +48,19 @@ def prepare_project(project, project_dir):
     file_audit_list, file_audit_project_list = lists.file_audit_list(project)
 
     # Get file content black list and project waivers
-    master_list, ignore_list = lists.file_content_list(project)
+    flag_list, ignore_list = lists.file_content_list(project)
 
     # Get File Ignore Lists
     file_ignore = lists.file_ignore()
 
     # Perform rudimentary scans
     scan_file(project_dir, project, binary_list,file_audit_list,
-              file_audit_project_list, master_list, ignore_list,
+              file_audit_project_list, flag_list, ignore_list,
               file_ignore)
 
 
 def scan_file(project_dir, project, binary_list, file_audit_list,
-              file_audit_project_list, master_list, ignore_list,
+              file_audit_project_list, flag_list, ignore_list,
               file_ignore):
     """Searches for banned strings and files that are listed """
     for root, dirs, files in os.walk(project_dir):
@@ -115,7 +115,7 @@ def scan_file(project_dir, project, binary_list, file_audit_list,
 
                     for line in lines:
                         # Check for sensitive content in project files
-                        for key, value in master_list.iteritems():
+                        for key, value in flag_list.iteritems():
                             regex = value['regex']
                             desc = value['desc']
                             if re.search(regex, line) and not re.search(
