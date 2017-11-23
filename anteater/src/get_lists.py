@@ -84,7 +84,7 @@ class GetLists(object):
         return binary_re
 
     def binary_hash(self, project, patch_file):
-        self.load_project_exception_file(ml.get('project_exceptions'), project)
+        self.load_project_exception_file(il.get('project_exceptions'), project)
 
         try:
             binary_hash = (ml['binaries'][project][patch_file])
@@ -95,7 +95,7 @@ class GetLists(object):
 
     def file_audit_list(self, project):
         project_list = False
-        self.load_project_exception_file(ml.get('project_exceptions'), project)
+        self.load_project_exception_file(il.get('project_exceptions'), project)
         try:
             default_list = set((ml['file_audits']['file_names']))
         except KeyError:
@@ -119,7 +119,7 @@ class GetLists(object):
 
     def file_content_list(self,  project):
         project_list = False
-        self.load_project_exception_file(ml.get('project_exceptions'), project)
+        self.load_project_exception_file(il.get('project_exceptions'), project)
         try:
             flag_list = (ml['file_audits']['file_contents'])
 

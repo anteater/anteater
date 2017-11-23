@@ -7,3 +7,6 @@ file_audits:
   file_contents:
     - ^#
     - git clone.+\.github\.com\lukehinds\/
+
+project_exceptions:
+  - template: exceptions/template.yaml

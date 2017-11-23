@@ -212,6 +212,3 @@ file_audits:
 file_ignore:
   - '.rst'
   - '.md'
-
-project_exceptions:
-  - template: exceptions/template.yaml
