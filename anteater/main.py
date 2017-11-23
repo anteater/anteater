@@ -39,7 +39,7 @@ from anteater.src.project_scan import prepare_project
 config = six.moves.configparser.RawConfigParser()
 config.read('anteater.conf')
 reports_dir = config.get('config', 'reports_dir')
-__version__ = "0.6"
+__version__ = "0.7"
 logger = logging.getLogger(__name__)
 
 
