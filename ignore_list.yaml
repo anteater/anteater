@@ -25,4 +25,4 @@ file_ignore:
 
 # Add your project exception file into here.
 project_exceptions:
-  - project: exceptions/testproject.yaml
+  - testproject: exceptions/testproject.yaml
