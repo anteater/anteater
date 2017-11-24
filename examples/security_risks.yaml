@@ -210,4 +210,4 @@ file_ignore:
   - '.md'
 
 project_exceptions:
-  - template: exceptions/template.yaml
+  - template: exceptions/testproject.yaml

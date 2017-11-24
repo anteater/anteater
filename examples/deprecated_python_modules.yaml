@@ -1,0 +1,95 @@
+---
+# This file uses standard regular expression syntax,  however be mindful
+# of escaping YAML delimiters too (such as `:`) using double quotes "".
+
+file_audits:
+  file_names: [nullvalue]
+  file_contents:
+    posixfile:
+      regex: import*.posixfile|from*.posixfile
+      desc: "Locking is better done by fcntl.lockf()."
+    gopherlib:
+      regex: import*.gopherlib|from*.gopherlib
+      desc: "The gopher protocol is not in active use anymore."
+    rgbimgmodule:
+      regex: import*.rgbimgmodule|from*.rgbimgmodule
+      desc: "Removed in Python 2.6."
+    pre:
+      regex: import*.pre|from*.pre
+      desc: "The underlying PCRE engine doesn't support Unicode, and has been unmaintained since Python 1.5.2."
+    whrandom:
+      regex: import*.whrandom|from*.whrandom
+      desc: "The module's default seed computation was  inherently insecure; the random module should be used instead.."
+    rfc822:
+      regex: import*.rfc822|from*.rfc822
+      desc: "Supplanted by Python 2.2's email package."
+    mimetools:
+      regex: import*.mimetools|from*.mimetools
+      desc: "Supplanted by Python 2.2's email package."
+    mimewriter:
+      regex: import*.mimewriter|from*.mimewriter
+      desc: "Supplanted by Python 2.2's email package."
+    mimify:
+      regex: import*.mimify|from*.mimify
+      desc: "Supplanted by Python 2.2's email package."
+    rotor:
+      regex: import*.rotor|from*.rotor
+      desc: "Uses insecure algorithm."
+    termios.py:
+      regex: import*.termios|from*.termios
+      desc: "The constants in this file are now in the 'termios' module."
+    statcache:
+      regex: import*.statcache|from*.statcache
+      desc: "Using the cache can be fragile and error-prone. Applications should just use os.stat() directly."
+    mpz:
+      regex: import*.mpz|from*.mpz
+      desc: "This module has been documented as obsolete since Python 2.2"
+    xreadlines:
+      regex: import*.xreadlines|from*.xreadlines
+      desc: "Using 'for line in file', introduced in 2.3, is preferable."
+    multifile:
+      regex: import*.multifile|from*.multifile
+      desc: "Supplanted by the email package."                  
+    sets:
+      regex: import*.sets|from*.sets
+      desc: "The built-in set/frozenset types, introduced in Python 2.4, supplant the module."
+    buildtools:
+      regex: import*.buildtools|from*.buildtools
+      desc: "Documented as deprecated as of Python 2.3."
+    cfmfile:
+      regex: import*.cfmfile|from*.cfmfile
+      desc: "Documented as deprecated as of Python 2.4."
+    macfs:
+      regex: import*.macfs|from*.macfs
+      desc: "Documented as deprecated as of Python 2.3."
+    md5:
+      regex: import*.md5|from*.md5
+      desc: "Documented as deprecated as of Python 2.5."
+    sha:
+      regex: import*.sha|from*.sha
+      desc: "Documented as deprecated as of Python 2.5."
+    plat-freebsd2:
+      regex: import*.plat-freebsd2|from*.plat-freebsd2
+      desc: "Platforms are obsolete (last released in 2000)."
+    plat-freebsd3:
+      regex: import*.plat-freebsd3|from*.plat-freebsd3
+      desc: "Platforms are obsolete (last released in 2000)."
+    plat-freebsd4:
+      regex: import*.plat-freebsd4|from*.plat-freebsd4
+      desc: "Platforms are obsolete (last released in 2000)."
+    imp:
+      regex: import*.imp|from*.imp
+      desc: "Replaced by the importlib module."
+    macpath:
+      regex: import*.macpath|from*.macpath
+      desc: "Replaced by the importlib module."
+    formatter:
+      regex: import*.formatter|from*.formatter
+      desc: "Lack of use in the community, no tests to keep code working."
+
+file_ignore:
+  - '.rst'
+  - '.md'
+
+project_exceptions:
+  - template: exceptions/testproject.yaml
