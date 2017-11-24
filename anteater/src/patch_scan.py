@@ -40,8 +40,6 @@ def prepare_patchset(project, patchset):
 
     # Get Various Lists / Project Waivers
     lists = get_lists.GetLists()
-    # Get binary white list
-    binary_list = lists.binary_list(project)
 
     # Get file name black list and project waivers
     file_audit_list, file_audit_project_list = lists.file_audit_list(project)
@@ -63,41 +61,39 @@ def prepare_patchset(project, patchset):
     for line in lines:
         patch_file = line.strip('\n')
         # Perform binary and file / content checks
-        scan_patch(project, patch_file, binary_list,
-                   file_audit_list, file_audit_project_list,
-                   flag_list, ignore_list, file_ignore)
+        scan_patch(project, patch_file, file_audit_list,
+                   file_audit_project_list, flag_list, ignore_list,
+                   file_ignore)
 
     # Process each file in patch set using waivers generated above
     # Process final result
     process_failure()
 
 
-def scan_patch(project, patch_file, binary_list, file_audit_list,
-               file_audit_project_list, flag_list,
-               ignore_list, file_ignore):
+def scan_patch(project, patch_file, file_audit_list, file_audit_project_list,
+               flag_list, ignore_list, file_ignore):
     """ Scan actions for each commited file in patch set """
     global failure
     if is_binary(patch_file):
         hashlist = get_lists.GetLists()
         split_path = patch_file.split(project + '/', 1)[-1]
         binary_hash = hashlist.binary_hash(project, split_path)
-        if not binary_list.search(patch_file):
-            with open(patch_file, 'rb') as afile:
-                buf = afile.read()
-                hasher.update(buf)
-            if hasher.hexdigest() in binary_hash:
-                logger.info('Found matching file hash for file: %s',
-                            patch_file)
-            else:
-                logger.error('Non Whitelisted Binary file: %s',
-                             patch_file)
-                logger.error('Submit patch with the following hash: %s',
-                             hasher.hexdigest())
-            failure = True
-            with open(reports_dir + "binaries-" + project + ".log", "a") \
-                    as gate_report:
-                gate_report.write('Non Whitelisted Binary file: {0}\n'.
-                                  format(patch_file))
+        with open(patch_file, 'rb') as afile:
+            buf = afile.read()
+            hasher.update(buf)
+        if hasher.hexdigest() in binary_hash:
+            logger.info('Found matching file hash for file: %s',
+                        patch_file)
+        else:
+            logger.error('Non Whitelisted Binary file: %s',
+                         patch_file)
+            logger.error('Submit patch with the following hash: %s',
+                         hasher.hexdigest())
+        failure = True
+        with open(reports_dir + "binaries-" + project + ".log", "a") \
+                as gate_report:
+            gate_report.write('Non Whitelisted Binary file: {0}\n'.
+                              format(patch_file))
     else:
         # Check file names / extensions
         if file_audit_list.search(patch_file) and not \

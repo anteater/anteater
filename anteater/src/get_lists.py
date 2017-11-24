@@ -73,16 +73,6 @@ class GetLists(object):
                             if project in ml[key] else ex.get(key, None)
             self.loaded = True
 
-    def binary_list(self, project):
-        try:
-            default_list = (ml['binaries']['binary_ignore'])
-        except KeyError:
-            logger.error('Key Error processing binary list values')
-
-        binary_re = re.compile("|".join(default_list),
-                               flags=re.IGNORECASE)
-        return binary_re
-
     def binary_hash(self, project, patch_file):
         self.load_project_exception_file(il.get('project_exceptions'), project)
 

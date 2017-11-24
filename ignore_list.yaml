@@ -9,4 +9,4 @@ file_audits:
     - git clone.+\.github\.com\lukehinds\/
 
 project_exceptions:
-  - template: exceptions/template.yaml
+  - project: exceptions/testproject.yaml
