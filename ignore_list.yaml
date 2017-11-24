@@ -1,16 +1,28 @@
 ---
-binaries:
-  binary_ignore: [nullvalue]
+# When adding projects all sections must have a value, Use 'nullvalue' if no
+# waivers are required.
+#
+# This file uses standard regular expression syntax,  however be mindful
+# of escaping YAML delimiters too (such as `:`) using double quotes "".
 
+# sha256 checksums of binary files allowed
+binaries:
+  path/to/example.png:
+    - 609feaed93afbea14c6b10c6effc986f39d1deb0a372ac088129bb22bbca8834
+
+# Ignore file_names and file_contents that match the following RegExp
 file_audits:
-  file_names: [nullvalue]
+  file_names:
+    - ignore_this_file.txt
   file_contents:
     - ^#
     - git clone.+\.github\.com\lukehinds\/
 
+# Any files with the following extensions will not be scanned
 file_ignore:
   - '.rst'
   - '.md'
 
+# Add your project exception file into here.
 project_exceptions:
   - project: exceptions/testproject.yaml

@@ -77,11 +77,23 @@ class GetLists(object):
         self.load_project_exception_file(il.get('project_exceptions'), project)
 
         try:
-            binary_hash = (fl['binaries'][project][patch_file])
-            return binary_hash
+            main_binary_hash = (il['binaries'][patch_file])
         except KeyError:
-            binary_hash = 'null'
-            return binary_hash
+            main_binary_hash = []
+
+        try:
+            project_binary_hash = (fl['binaries'][project][patch_file])
+        except KeyError:
+            project_binary_hash = []
+
+        if main_binary_hash and project_binary_hash :
+            logger.error('Warning: You have two hash entries for the %s file',
+                         patch_file)
+            logger.error('Check for duplicate entries in %s and %s.yaml for %s',
+                         ignore_list, project, patch_file)
+
+        new_list = main_binary_hash + project_binary_hash
+        return new_list
 
     def file_audit_list(self, project):
         project_list = False

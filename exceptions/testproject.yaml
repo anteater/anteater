@@ -1,14 +1,16 @@
 ---
-# When adding projects all `arrays: []` sections must have
-# a value, Use 'nullvalue' if no waivers are available.
+# When adding projects all sections must have a value, Use 'nullvalue' if no
+# waivers are required.
 #
 # This file uses standard regular expression syntax,  however be mindful
 # of escaping YAML delimiters too (such as `:`) using double quotes "".
 
+# sha256 checksums of binary files allowed
 binaries:
   images/pal.png:
     - a71e13ebeb2500ed20781ab3ae8a9b306cf69a6c8be9a31e96d4e04f1657b4d8
 
+# Ignore file_names and file_contents that match the following RegExp
 file_audits:
   file_names:
     - ignore-filename.txt

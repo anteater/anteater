@@ -88,7 +88,7 @@ def scan_file(project_dir, project, file_audit_list, file_audit_project_list,
                     buf = afile.read()
                     hasher.update(buf)
                 if hasher.hexdigest() in binary_hash:
-                    logger.info('Found matching file hash for file: %s',
+                    logger.info('Found matching file hash for: %s',
                                     full_path)
                 else:
                     logger.error('Non Whitelisted Binary file: %s',
