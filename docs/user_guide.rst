@@ -18,7 +18,7 @@ Most of anteaters configuration exists witin ``anteater.conf``::
 * ``flag_list``: Regular Expressions to flag. See RegExp Framework.
 * ``ignore_list``: Regular Expressions to overwrite / cancel ``flag_list``.
 
-The ``anteater.conf` should always be in the directory of whereever the anteater
+The ``anteater.conf`` should always be in the directory of wherever the anteater
 command is run from. ``anteater`` will look for ``anteater.conf`` in the present
 working directory.
 
@@ -52,7 +52,7 @@ The ``--project`` parameter maps to several areas:
 * project exceptions::
 
     project_exceptions:
-      - myproject: exceptions/myproject.yaml
+      - myrepo: exceptions/myrepo.yaml
 
 Note: See `project exceptions` for more details.
 
@@ -97,10 +97,11 @@ There is a simple hierarchy with these files, with ``ignore_list`` and files
 within ``project_exceptions`` "stacking" onto each other.
 
 ``flag_list``
+
 ``ignore_list`` < ``project_exceptions``
 
-``flag_list``
--------------
+flag_list
+---------
 
 ``flag_list`` is a complete list of all regular expressions that if matched
 within any file content or binary / file name, will cause anteater to exit with
@@ -108,10 +109,10 @@ a sys code 1, thereby causing a build failure within a CI system (such as
 jenkins / Travis CI).
 
 ``flag_list`` should be considered a list of strings or object namings that you
-do not want anyone to merge into a repository. This could include security
-objects such as private keys, binaries, depreciated functions, modules, libaries
-and essentially anything that can be matched against using standard regular
-expression syntax.
+do not want anyone to merge into a repository, a blacklist essentially. This
+could include security objects such as private keys, binaries or depreciated
+functions, modules, libaries and anything that can be matched against using
+standard regular expression syntax.
 
 Within ``flag_list`` are several parameters set within YAML list formats.
 
@@ -138,10 +139,11 @@ documentation, shell scripts, source code etc.
 
 The structure of the file is as follows::
 
-   file_contents:
-      unique_name:
-          regex: <Regular Expression to Match>
-          desc: <Line of text to describe the rationale for flagging the string>
+    file_audits:
+      file_contents:
+        unique_name:
+            regex: <Regular Expression to Match>
+            desc: <Line of text to describe the rationale for flagging the string>
 
 The following would be examples for ensuring no insecure cryptos are used and
 a depreciated function is also flagged::
@@ -171,13 +173,28 @@ Exceptions can be made in two locations ``ignore_list`` or ``project_exceptions`
 and allow you to overule a string set within the ``flag_list`` file and remove
 false postives.
 
-There are three sections within ``ignore_list`` and ``project_exceptions``
+There are main three sections within ``ignore_list.yaml`` and ``project_exceptions``
 
-* ``file_contents``
+* ``file_contents`` - flag any matching regex found in a provided file.
 
-* ``file_names``
+* ``file_names`` -  flag any matching regex when it matches a file name.
 
-* ``binaries``
+* ``binaries`` - flag any binaries, that do not have a sha256 checksum entry.
+
+Project Exceptions
+------------------
+
+If you're a single project, then you can place all of the above three sections
+into ``ignore_list.yaml``. If you have to manage multiple projects, then use
+``ignore_list.yaml`` as a global master list, and use a ``project_exceptions``
+entry for each individual project. For example, within your ``ignore_list.yaml``
+you can declare each projects exeception list as follows::
+
+    project_exceptions:
+      - acme:   exceptions/acme.yaml
+      - bravo   exceptions/bravo.yaml
+      - charlie exceptions/charlie.yaml
+
 
 file_contents exceptions
 ------------------------
