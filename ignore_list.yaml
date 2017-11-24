@@ -8,5 +8,9 @@ file_audits:
     - ^#
     - git clone.+\.github\.com\lukehinds\/
 
+file_ignore:
+  - '.rst'
+  - '.md'
+
 project_exceptions:
   - project: exceptions/testproject.yaml

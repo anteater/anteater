@@ -141,7 +141,7 @@ class GetLists(object):
 
     def file_ignore(self):
         try:
-            file_ignore = (ml['file_ignore'])
+            file_ignore = (il['file_ignore'])
         except KeyError:
             logger.error('Key Error processing file_ignore list values')
         return file_ignore
