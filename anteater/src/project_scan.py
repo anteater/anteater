@@ -41,9 +41,6 @@ def prepare_project(project, project_dir):
     # Get Various Lists / Project Waivers
     lists = get_lists.GetLists()
 
-    # Get binary white list
-    binary_list = lists.binary_list(project)
-
     # Get file name black list and project waivers
     file_audit_list, file_audit_project_list = lists.file_audit_list(project)
 
@@ -54,14 +51,12 @@ def prepare_project(project, project_dir):
     file_ignore = lists.file_ignore()
 
     # Perform rudimentary scans
-    scan_file(project_dir, project, binary_list,file_audit_list,
-              file_audit_project_list, flag_list, ignore_list,
-              file_ignore)
+    scan_file(project_dir, project, file_audit_list, file_audit_project_list,
+              flag_list, ignore_list, file_ignore)
 
 
-def scan_file(project_dir, project, binary_list, file_audit_list,
-              file_audit_project_list, flag_list, ignore_list,
-              file_ignore):
+def scan_file(project_dir, project, file_audit_list, file_audit_project_list,
+              flag_list, ignore_list, file_ignore):
     """Searches for banned strings and files that are listed """
     for root, dirs, files in os.walk(project_dir):
         # Filter out ignored directories from list.
