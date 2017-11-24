@@ -18,6 +18,10 @@ Most of anteaters configuration exists witin ``anteater.conf``::
 * ``flag_list``: Regular Expressions to flag. See RegExp Framework.
 * ``ignore_list``: Regular Expressions to overwrite / cancel ``flag_list``.
 
+The ``anteater.conf` should always be in the directory of whereever the anteater
+command is run from. ``anteater`` will look for ``anteater.conf`` in the present
+working directory.
+
 Methods of Operation
 --------------------
 
@@ -30,8 +34,9 @@ The ``--project`` argument
 --------------------------
 
 Anteater always requires a project name passed with the ``--project`` argument.
-This should be the same as the name as your repository. So for example, your
-project is named 'acme', then you pass ``--project acme``.
+This should be the same as the name as your repository. So for example, if your
+git repository and its root folder are named 'acme', then you
+pass ``--project acme``.
 
 Having a project parameter allows for a scenario of multiple projects (for
 example when using gerrit).
@@ -146,15 +151,15 @@ a depreciated function is also flagged::
       regex: md[245]
       desc: "Insecure hashing algorithm"
 
-      depreciated_function:
-        regex: depreciated_function\(.*\)
-        desc: This function was depreciated in release X, use Y function.
+    depreciated_function:
+      regex: depreciated_function\(.*\)
+      desc: This function was depreciated in release X, use Y function.
 
-So the above would match the following lines::
+So the above would match and flag the following lines::
 
-    dothis = instance.depreciated_function(some_value):
+    dothis = thing.depreciated_function(some_value):
 
-    hashlib.md5(myhash)
+    hashlib.md5(password)
 
 Exceptions
 ==========
