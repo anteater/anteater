@@ -2,10 +2,6 @@
 # This file uses standard regular expression syntax,  however be mindful
 # of escaping YAML delimiters too (such as `:`) using double quotes "".
 
-binaries:
-  binary_ignore:
-    - \.git/(index|objects)
-
 file_audits:
   file_names:
     - \.asc
