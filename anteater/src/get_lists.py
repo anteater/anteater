@@ -29,7 +29,7 @@ flag_list = config.get('config', 'flag_list')
 ignore_list = config.get('config', 'ignore_list')
 
 with open(flag_list, 'r') as f:
-    ml = yaml.safe_load(f)
+    fl = yaml.safe_load(f)
 
 with open(ignore_list, 'r') as f:
     il = yaml.safe_load(f)
@@ -68,16 +68,16 @@ class GetLists(object):
             with open(exception_file, 'r') as f:
                 ex = yaml.safe_load(f)
             for key in ex:
-                if key in ml:
-                    ml[key][project] = _merge(ml[key][project], ex.get(key, None)) \
-                            if project in ml[key] else ex.get(key, None)
+                if key in fl:
+                    fl[key][project] = _merge(fl[key][project], ex.get(key, None)) \
+                            if project in fl[key] else ex.get(key, None)
             self.loaded = True
 
     def binary_hash(self, project, patch_file):
         self.load_project_exception_file(il.get('project_exceptions'), project)
 
         try:
-            binary_hash = (ml['binaries'][project][patch_file])
+            binary_hash = (fl['binaries'][project][patch_file])
             return binary_hash
         except KeyError:
             binary_hash = 'null'
@@ -87,11 +87,11 @@ class GetLists(object):
         project_list = False
         self.load_project_exception_file(il.get('project_exceptions'), project)
         try:
-            default_list = set((ml['file_audits']['file_names']))
+            default_list = set((fl['file_audits']['file_names']))
         except KeyError:
             logger.error('Key Error processing file_names list values')
         try:
-            project_list = set((ml['file_audits'][project]['file_names']))
+            project_list = set((fl['file_audits'][project]['file_names']))
             logger.info('file_names waivers found for %s', project)
         except KeyError:
             logger.info('No file_names waivers found for %s', project)
@@ -111,7 +111,7 @@ class GetLists(object):
         project_list = False
         self.load_project_exception_file(il.get('project_exceptions'), project)
         try:
-            flag_list = (ml['file_audits']['file_contents'])
+            flag_list = (fl['file_audits']['file_contents'])
 
         except KeyError:
             logger.error('Key Error processing file_contents list values')
@@ -123,7 +123,7 @@ class GetLists(object):
             logger.error('Key Error processing file_contents list values')
 
         try:
-            project_list = ml['file_audits'][project]['file_contents']
+            project_list = fl['file_audits'][project]['file_contents']
 
         except KeyError:
             logger.info('No file_contents waivers found  for %s', project)
