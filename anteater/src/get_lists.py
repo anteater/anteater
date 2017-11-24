@@ -73,8 +73,24 @@ class GetLists(object):
                             if project in fl[key] else ex.get(key, None)
             self.loaded = True
 
+    def load_binary_exception_file(self, project_exceptions, project):
+        if self.loaded:
+            return
+        exception_file = None
+        for item in project_exceptions:
+            if project in item:
+                exception_file = item.get(project)
+        if exception_file is not None:
+            with open(exception_file, 'r') as f:
+                ex = yaml.safe_load(f)
+            for key in ex:
+                if key in il:
+                    il[key][project] = _merge(il[key][project], ex.get(key, None)) \
+                            if project in il[key] else ex.get(key, None)
+            self.loaded = True
+
     def binary_hash(self, project, patch_file):
-        self.load_project_exception_file(il.get('project_exceptions'), project)
+        self.load_binary_exception_file(il.get('project_exceptions'), project)
 
         try:
             main_binary_hash = (il['binaries'][patch_file])
@@ -82,7 +98,7 @@ class GetLists(object):
             main_binary_hash = []
 
         try:
-            project_binary_hash = (fl['binaries'][project][patch_file])
+            project_binary_hash = (il['binaries'][project][patch_file])
         except KeyError:
             project_binary_hash = []
 
