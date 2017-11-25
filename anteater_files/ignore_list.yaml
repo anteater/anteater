@@ -24,4 +24,4 @@ file_ignore:
 
 # Add your project exception file into here.
 project_exceptions:
-  - testproject: exceptions/testproject.yaml
+  - testproject: anteater_files/testproject.yaml

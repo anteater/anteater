@@ -27,9 +27,11 @@ import re
 from . import get_lists
 
 logger = logging.getLogger(__name__)
-config = six.moves.configparser.RawConfigParser()
+config = six.moves.configparser.SafeConfigParser()
 config.read('anteater.conf')
+anteater_files = config.get('config', 'anteater_files')
 reports_dir = config.get('config', 'reports_dir')
+ignore_dirs = ['.git', 'examples', anteater_files]
 failure = False
 hasher = hashlib.sha256()
 

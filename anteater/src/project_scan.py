@@ -26,12 +26,11 @@ from binaryornot.check import is_binary
 from . import get_lists
 
 logger = logging.getLogger(__name__)
-config = six.moves.configparser.RawConfigParser()
+config = six.moves.configparser.SafeConfigParser()
 config.read('anteater.conf')
+anteater_files = config.get('config', 'anteater_files')
 reports_dir = config.get('config', 'reports_dir')
-flag_list = config.get('config', 'flag_list')
-ignore_list = config.get('config', 'flag_list')
-ignore_dirs = ['.git']
+ignore_dirs = ['.git', 'examples', anteater_files]
 hasher = hashlib.sha256()
 
 

@@ -36,7 +36,7 @@ from anteater import LOG
 from anteater.src.patch_scan import prepare_patchset
 from anteater.src.project_scan import prepare_project
 
-config = six.moves.configparser.RawConfigParser()
+config = six.moves.configparser.SafeConfigParser()
 config.read('anteater.conf')
 reports_dir = config.get('config', 'reports_dir')
 __version__ = "0.7"

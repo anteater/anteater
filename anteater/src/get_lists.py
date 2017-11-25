@@ -21,12 +21,13 @@ import copy
 import yaml
 import re
 
-
-config = six.moves.configparser.RawConfigParser()
+config = six.moves.configparser.SafeConfigParser()
 config.read('anteater.conf')
 logger = logging.getLogger(__name__)
+anteater_files = config.get('config', 'anteater_files')
 flag_list = config.get('config', 'flag_list')
 ignore_list = config.get('config', 'ignore_list')
+ignore_dirs = ['.git', 'examples', anteater_files]
 
 with open(flag_list, 'r') as f:
     fl = yaml.safe_load(f)

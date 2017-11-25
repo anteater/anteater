@@ -16,3 +16,4 @@ file_audits:
     - ignore-filename.txt
   file_contents:
     - password
+
