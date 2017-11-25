@@ -5,7 +5,7 @@ User Guide
 Configuration
 -------------
 
-Most of anteaters configuration exists witin ``anteater.conf``::
+Anteaters configuration exists witin ``anteater.conf``::
 
     [config]
     reports_dir =  .reports/
@@ -18,9 +18,9 @@ Most of anteaters configuration exists witin ``anteater.conf``::
 * ``flag_list``: Regular Expressions to flag. See RegExp Framework.
 * ``ignore_list``: Regular Expressions to overwrite / cancel ``flag_list``.
 
-The ``anteater.conf`` should always be in the directory of wherever the anteater
-command is run from. ``anteater`` will look for ``anteater.conf`` in the present
-working directory.
+The ``anteater.conf`` file should always be in the directory from where the
+anteater command is run from. ``anteater`` will look for ``anteater.conf``
+in the present working directory.
 
 Methods of Operation
 --------------------
@@ -62,7 +62,7 @@ The ``--patchset`` and ``--path`` arguments
 Anteater can be run with two methods, ``--patchset`` or ``--path``.
 
 When ``--patchset`` is passed as an argument, it is expected that a text file be
-provided that consists of a list of files, using a relative or full POSIX path.
+provided that consists of a list of files, using a relative or full path.
 Anteater will then iterate scans over each file, with the files seperated by
 a new line. For example::
 
@@ -81,8 +81,8 @@ This would then be called with::
     anteater --project myrepo --patchset /tmp/patchset
 
 When ``--path`` is  provided, the argument should be a single relative or full
-POSIX path to your repositories folder. Anteater will then perform a recursive
-walk through all files in the respository folder. For example::
+path to your repositories folder. Anteater will then perform a recursive walk
+through all files in the respository folder. For example::
 
     anteater --project myrepo --path /path/to/repos/myrepo
 
@@ -93,25 +93,22 @@ The RegExp Framework is set of a YAML formatted files which are declared in
 ``anteater.conf`` under the directives ``flag_list`` and ``ignore_list``, as
 well as ``project_exceptions`` embedded within ``ignore_list``.
 
-There is a simple hierarchy with these files, with ``ignore_list`` and files
-within ``project_exceptions`` "stacking" onto each other.
+There is a simple hierarchy with these files, with ``ignore_list`` and the
+contents within ``project_exceptions`` "stacking" on top.
 
-``flag_list``
-
-``ignore_list`` < ``project_exceptions``
 
 flag_list
 ---------
 
-``flag_list`` is a complete list of all regular expressions that if matched
+``flag_list`` is a complete list of all regular expressions, that if matched
 within any file content or binary / file name, will cause anteater to exit with
-a sys code 1, thereby causing a build failure within a CI system (such as
+a sys code of ``1``, thereby causing a build failure within a CI system (such as
 jenkins / Travis CI).
 
 ``flag_list`` should be considered a list of strings or object namings that you
 do not want anyone to merge into a repository, a blacklist essentially. This
 could include security objects such as private keys, binaries or depreciated
-functions, modules, libaries and anything that can be matched against using
+functions, modules, libaries. Basically anything that can be matched using
 standard regular expression syntax.
 
 Within ``flag_list`` are several parameters set within YAML list formats.
@@ -164,7 +161,7 @@ So the above would match and flag the following lines::
     hashlib.md5(password)
 
 Exceptions
-==========
+----------
 
 Exceptions are essentially a regular expression that provides a waiver to
 strings that are flagged as false postives.
@@ -253,8 +250,8 @@ incorrectly flagged false postive.
 file_names exceptions
 ---------------------
 
-As with file_contents, file_names incorrectly flagged as false postives may
-also be disabled by using a specific enough regular expression.
+As with ``file_contents``, ``file_names`` incorrectly flagged as false postives may
+also be removed using a regular expression.
 
 binary exceptions
 -----------------
