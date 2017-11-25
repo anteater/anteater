@@ -21,12 +21,13 @@ import copy
 import yaml
 import re
 
+
 config = six.moves.configparser.SafeConfigParser()
 config.read('anteater.conf')
 logger = logging.getLogger(__name__)
 anteater_files = config.get('config', 'anteater_files')
 flag_list = config.get('config', 'flag_list')
-ignore_list = config.get('config', 'ignore_list')
+ignore_list = config.get('config', 'flag_list')
 ignore_dirs = ['.git', 'examples', anteater_files]
 
 with open(flag_list, 'r') as f:
@@ -117,13 +118,14 @@ class GetLists(object):
         self.load_project_exception_file(il.get('project_exceptions'), project)
         try:
             default_list = set((fl['file_audits']['file_names']))
+            logger.info('Loaded %s file_names ignore_list', project)
         except KeyError:
             logger.error('Key Error processing file_names list values')
         try:
             project_list = set((fl['file_audits'][project]['file_names']))
-            logger.info('file_names waivers found for %s', project)
+            logger.info('Loaded %s file_names project_exceptions', project)
         except KeyError:
-            logger.info('No file_names waivers found for %s', project)
+            logger.info('No file_names project_exceptions for %s', project)
 
         file_names_re = re.compile("|".join(default_list),
                                    flags=re.IGNORECASE)
@@ -141,21 +143,23 @@ class GetLists(object):
         self.load_project_exception_file(il.get('project_exceptions'), project)
         try:
             flag_list = (fl['file_audits']['file_contents'])
-
+            logger.info('Loaded %s file_contents flag_list', project)
         except KeyError:
             logger.error('Key Error processing file_contents list values')
 
         try:
             ignore_list = il['file_audits']['file_contents']
+            logger.info('Loaded %s file_contents ignore_list', project)
 
         except KeyError:
             logger.error('Key Error processing file_contents list values')
 
         try:
             project_list = fl['file_audits'][project]['file_contents']
+            logger.info('Loaded %s file_contents project_exceptions', project)
 
         except KeyError:
-            logger.info('No file_contents waivers found  for %s', project)
+            logger.info('No file_contents project_exceptions for %s', project)
 
         if project_list:
             ignore_list_merge = project_list + ignore_list
