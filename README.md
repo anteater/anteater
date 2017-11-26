@@ -1,4 +1,4 @@
-# Anteater - CI Check Framework
+# Anteater - CI/CD Gate Verification Framework
 
 ![anteater](http://i.imgur.com/BPvV3Gz.png)
 
