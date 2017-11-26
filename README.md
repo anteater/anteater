@@ -33,24 +33,26 @@ First, as mentioned, it can be set up to block strings and files with a
 potential security impact or risk. This could include private keys, a shell
 history, aws credentials (*cough* uber *cough*).
 
-Let's take a look at an example::
+Let's take a look at an example:
 
-  apprun:
-    regex: app\.run\s*\(.*debug.*=.*True.*\)
-    desc: "Running flask in debug mode can give away sensitive data"
-
-Perfect for stopping code typical to a developers enviroment, being staged into
-production.
+```
+apprun:
+  regex: app\.run\s*\(.*debug.*=.*True.*\)
+  desc: "Running flask in debug mode can give away sensitive data"
+```
 
 The above will match a code line where a flask server is running in debug (which
-can lead to info leak).
+can lead to info leak). Perfect for stopping code typical to a developers enviroment,
+being staged into production.
 
-How about a file that often lurks in a developers enviroment, that would be
-killer if it ever got leaked into production.
+How about a file that often lurks in a developers enviroment, that would cause a
+job loss if it ever got leaked into production?
 
 Perhaps:
 
 ``jenkins\.plugins\.publish_over_ssh\.BapSshPublisherPlugin\.xml``
+
+Or even..
 
 ```
 - \.pypirc
@@ -62,7 +64,8 @@ Perhaps:
 
 If your own app has its own secrets / config file, then its very easy to
 add your own regular expressions. Everything is set using YAML formatting,
-so no need to change anteaters code.
+so no need to change anteaters code. It's hardly machine learning, blockchain
+based AI tech, no, but RegEx is something we all know and can put to use.
 
 Depreciated functions, classes etc
 ----------------------------------
@@ -75,6 +78,29 @@ depreciated_function:``
   regex: depreciated_function\(.*\)
   desc: This function was depreciated in release X, use Y function.
 ```
+
+What if I get false postives?
+-----------------------------
+
+Easy, you set a RegExp to stop the match , kind of like RegExp'ception.
+
+Example:
+
+Let's say we want to stop use of MD5:
+
+```
+md245:
+  regex: md[245]
+  desc: "Insecure hashing algorithm"
+```
+
+This then incorrectly gets matched to the following:
+
+``mystring = int(amd500) * 4``
+
+We set a specific ignore RegEx:
+
+``mystring.=.int\(amd500\).*``
 
 Block Binaries
 --------------
@@ -108,3 +134,6 @@ $ anteater --bincheck --project myproj --patchset /tmp/patch
 Found matching file hash for: /home/luke/repo/images/pal.png
 ```
 For more details and indepth documentation, please visit [readthedocs](http://anteater.readthedocs.io/en/latest/)
+
+Last of all, if you do use anteater, I would love to know (twitter: @lukeahinds)
+and pull requests / issues are welcome!
