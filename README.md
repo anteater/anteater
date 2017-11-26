@@ -42,7 +42,7 @@ Let's take a look at an example:
 ```
 apprun:
   regex: app\.run\s*\(.*debug.*=.*True.*\)
-  desc: "Running flask in debug mode can give away sensitive data"
+  desc: "Running flask in debug mode could potentially leak sensitive data"
 ```
 
 The above will match code where a flask server is set to running in debug mode
@@ -57,10 +57,10 @@ Even more simple, look for the following in most logging frameworks:
 
 `` - log\.debug``
 
-How about credential file that would cause a job loss if ever leaked into
+How about credential files that would cause a job loss if ever leaked into
 production? Anteater works with file names too.
 
-Perhaps:
+For Example:
 
 ``jenkins\.plugins\.publish_over_ssh\.BapSshPublisherPlugin\.xml``
 
@@ -71,7 +71,7 @@ Or even..
 - \.gem\/credentials
 - aws_access_key_id
 - aws_secret_access_key
-- jenkins\.plugins\.publish_over_ssh\.BapSshPublisherPlugin\.xml
+- LocalSettings\.php
 ```
 
 If your own app has its own secrets / config file, then its very easy to
@@ -95,8 +95,6 @@ What if I get false postives?
 
 Easy, you set a RegExp to stop the match , kind of like RegExp'ception.
 
-Example:
-
 Let's say we want to stop use of MD5:
 
 ```
@@ -114,20 +112,20 @@ ignore entry.
 
 ``mystring.=.int\(amd500\).*``
 
-Block Binaries
---------------
+Yet other instance of ``MD5`` continue to get flagged.
 
-Let's say for example, you have some image files, compiled objects or any form
-of binary. Well we would not want one of those to get malicously replaced
-with an infected blob would we? Before you scoff, it does happen. There have
-been occurances of where developers SSH keys have been stolen and hackers have
-self approved patches and managed to get trojan files on a production server.
+Binaries
+--------
 
 With anteater, if you pass the argument ``--bincheck``, every binary causes a
 CI build failure on the related Pull Request. It is not until a sha256 checksum
 is set within anteater's YAML files, that the build is allowed to pass.
 
-For example:
+This means you can block people from checking in compliled objects, images, PDFs
+etc or tampering with the existing binary files you have (for example a sites
+images).
+
+An example:
 
 ```
 $ anteater --bincheck --project myproj --patchset /tmp/patch
