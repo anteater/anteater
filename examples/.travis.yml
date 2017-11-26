@@ -1,4 +1,4 @@
-# Config file for anteater build jobs at travis-ci.org
+# Config file for automatic testing at travis-ci.org
 
 language: python
 
@@ -10,6 +10,7 @@ install:
 
 before_script:
   - git diff --name-only HEAD^ > ./patch
+  - anteater --version
 
 script:
-  - anteater --project antest --patchset ./patch
+  - anteater --project CHANGEME! --patchset ./patch
