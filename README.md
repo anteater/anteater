@@ -1,14 +1,11 @@
-# Anteater
+# Anteater - CI Check Framework
 
 ![anteater](http://i.imgur.com/BPvV3Gz.png)
-
-Anteater - CI Validation Framework
-----------------------------------
 
 Description
 -----------
 
-Anteater, an open framework using standard regular expressions to ensure
+Anteater, is an open framework using standard regular expressions to ensure
 unwanted strings, filenames and binaries are not included in any patch or Pull
 request to any of your git repositories.
 
