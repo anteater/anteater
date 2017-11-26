@@ -41,19 +41,19 @@ apprun:
   desc: "Running flask in debug mode can give away sensitive data"
 ```
 
-The above will match a code where a flask server is set to running in debug mode
-(which can lead to info leak). Perfect for stopping code typical to a developers
-enviroment, being staged into production.
+The above will match code where a flask server is set to running in debug mode
+`` app.run(host='0.0.0.0' port=80 debug=true)``, which can be typical to a
+developers enviroment and mistakenly staged into production.
 
 For a rails app, this could be:
 ``\<%=.*debug.*%>``
 
-Even more simple:
+Even more simple, look for the following in most logging frameworks:
 
 ``log\.debug``
 
-How about a file that often lurks in a developers enviroment, that would cause a
-job loss if it ever got leaked into production?
+How about credential file that would cause a job loss if ever leaked into
+production? Anteater works with file names too.
 
 Perhaps:
 
