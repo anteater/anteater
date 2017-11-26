@@ -13,17 +13,17 @@ patch or Pull request to any of your git repositories.
 You tell anteater exactly what you don't want to get merged, and anteater looks
 after the rest.
 
-If anteater finds something, it exits with a non-zero code, which in turn fails
-the build of all of the typical CI tools used. Any false positives are easily
-negated by using the RegExp framework to cancel out the false match.
+If anteater finds something, it exits with a non-zero code which in turn fails
+the build of your CI tool. Any false positives are easily negated by using the
+same RegExp framework to cancel out the false match.
 
 With a few simple steps it can be easily implemented into a CI / CD workflow
 with tooling such as [Travis CI]()https://travis-ci.org/, [CircleCI](https://circleci.com/), [Gitlab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/) and [Jenkins](https://jenkins.io/).
 
-It is currently used in the Linux Foundations project ['OPNFV'](https://opnfv.org) as means to
-provid automated security checks at gate, but as shown in the examples below,
-it can be used for much more such as ensuring depreciated objects etc are not
-included in a patch / pull request.
+It is currently used in the Linux Foundations project ['OPNFV'](https://opnfv.org)
+as means to provid automated security checks at gate, but as shown in the
+examples below, it can be used for much more such as ensuring depreciated
+objects etc are not included in a patch / pull request.
 
 Why would I want to use this?
 -----------------------------
