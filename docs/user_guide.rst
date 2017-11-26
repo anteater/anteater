@@ -8,13 +8,17 @@ Configuration
 Anteaters configuration exists witin ``anteater.conf``::
 
     [config]
-    reports_dir =  .reports/
-    anteater_log = .reports/anteater.log
-    flag_list =  ./flag_list.yaml
-    ignore_list = ./ignore_list.yaml
+    anteater_files = anteater_files/
+    reports_dir = %(anteater_files)s.reports/
+    anteater_log = %(anteater_files)s/.reports/anteater.log
+    flag_list =  %(anteater_files)s/flag_list.yaml
+    ignore_list = %(anteater_files)s/ignore_list.yaml
 
+* ``anteater_files``: Main location to store anteater ``flag_list``,
+  ``ignore_list`` and reports. This location is ignored by anteater when
+  performing scans.
 * ``reports_dir``: location for anteater to send reports
-* ``anteater_log``: anteater logging framework output file.
+* ``anteater_log``: anteater application logging output file.
 * ``flag_list``: Regular Expressions to flag. See RegExp Framework.
 * ``ignore_list``: Regular Expressions to overwrite / cancel ``flag_list``.
 
@@ -54,7 +58,9 @@ The ``--project`` parameter maps to several areas:
     project_exceptions:
       - myrepo: exceptions/myrepo.yaml
 
-Note: See `project exceptions` for more details.
+.. Note::
+
+    See `Exceptions`_ for more details.
 
 The ``--patchset`` and ``--path`` arguments
 -------------------------------------------
@@ -96,6 +102,9 @@ well as ``project_exceptions`` embedded within ``ignore_list``.
 There is a simple hierarchy with these files, with ``ignore_list`` and the
 contents within ``project_exceptions`` "stacking" on top.
 
+All RegExp files should be stored in the  set location of ``anteater_files``
+that is declared in ``anteater.conf`` - this is important, as ``anteater_files``
+is ignored by anteater during all scanning operations.
 
 flag_list
 ---------
@@ -167,10 +176,11 @@ Exceptions are essentially a regular expression that provides a waiver to
 strings that are flagged as false postives.
 
 Exceptions can be made in two locations ``ignore_list`` or ``project_exceptions``
-and allow you to overule a string set within the ``flag_list`` file and remove
-false postives.
+set within ``ignore_list`` and allows you to overule a string set within the
+``flag_list`` file and remove false postives.
 
-There are main three sections within ``ignore_list.yaml`` and ``project_exceptions``
+There are main three sections within ``ignore_list.yaml`` and
+``project_exceptions``
 
 * ``file_contents`` - flag any matching regex found in a provided file.
 
@@ -188,9 +198,9 @@ entry for each individual project. For example, within your ``ignore_list.yaml``
 you can declare each projects exeception list as follows::
 
     project_exceptions:
-      - acme:   exceptions/acme.yaml
-      - bravo   exceptions/bravo.yaml
-      - charlie exceptions/charlie.yaml
+      - acme:   anteater_files/acme.yaml
+      - bravo   anteater_files/bravo.yaml
+      - charlie anteater_files/charlie.yaml
 
 
 file_contents exceptions
@@ -245,7 +255,9 @@ incorrectly flagged false postive.
     file_contents:
       - mystring.=.int\(md500\).*
 
-* Note: you can test strings out on an regex site such as https://regex101.com
+
+.. Note::
+    You can test strings out on an regex site such as https://regex101.com
 
 file_names exceptions
 ---------------------
@@ -266,4 +278,4 @@ root of the respository. For example::
     - 5a1101e8b1796f6b40641b90643d83516e72b5b54b1fd289cf233745ec534ec9
 
 
-Examples of these files can be found under https://github.com/lukehinds/anteater/examples.
+Examples of these files can be found .. _here: https://github.com/lukehinds/anteater/tree/master/examples

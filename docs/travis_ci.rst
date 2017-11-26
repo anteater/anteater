@@ -2,7 +2,6 @@
 Travis CI Integration
 =====================
 
-
 Set up steps
 ------------
 
@@ -12,10 +11,11 @@ creating a main list and ignore list in the repository that you wish to monitor.
 First create an `anteater.conf` in the root directory of your repository::
 
     [config]
-    reports_dir =  .reports/
-    anteater_log = .reports/anteater.log
-    master_list =  ./check_list.yaml
-    ignore_list =  ./ignore_list.yaml
+    anteater_files = anteater_files/
+    reports_dir = %(anteater_files)s.reports/
+    anteater_log = %(anteater_files)s/.reports/anteater.log
+    flag_list =  %(anteater_files)s/flag_list.yaml
+    ignore_list = %(anteater_files)s/ignore_list.yaml
 
 reports_dir & anteater_log
 --------------------------
@@ -23,33 +23,15 @@ reports_dir & anteater_log
 You can leave this as is, its a logging location used for when running the tool
 locally.
 
-master_list
------------
+flag_list & ignore_list
+-----------------------
 
-Master list is the regular expressions that if matched will fail the build,
-thereby marking a failure on the github pull request page.
+``flag_list.yaml`` is where regular expressions are set, that if matched will
+fail the build, thereby marking a failure on the github pull request page.
 
-Some examples can be found at:
+Some examples can be found .. _here: https://github.com/lukehinds/anteater/tree/master/examples
 
-https://github.com/lukehinds/anteater/tree/master/examples
-
-For more in depth details of creating your own entries, please consult the user
-guide.
-
-ignore_list
------------
-
-Ignore list is the regular expressions that if matched within the master list
-can be 'waived' in the ignore list, thereby marking a failure on the github
-pull request page. This actual file is more useful when dealing with multiple
-projects, and so may not be relevant to a single project.
-
-Some examples can be found at:
-
-https://github.com/lukehinds/anteater/tree/master/examples
-
-For more in depth details of creating your own ignore entries, please consult
-the user guide.
+For information on ``flag_list``, please consult the `User Guide`_.
 
 Travis Integration
 ------------------
@@ -69,10 +51,11 @@ All that is required now is to make the following entries to your yaml file::
     script:
       - anteater --project antest --patchset ./patch
 
-*Note:*
 
-Should you be using another language other then python (for example ruby), you
-can use `matrix:include`, for example::
+.. Note::
+
+    Should you be using another language other then python (for example ruby), you
+    can use `matrix:include`, for example::
 
     matrix:
       include:
@@ -92,5 +75,3 @@ can use `matrix:include`, for example::
 
         - language: ruby
         # your project travis elements go here.
-
-TODO: Add example projects on github.com/lukehinds
