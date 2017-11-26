@@ -25,6 +25,7 @@ Contents
    installation
    user_guide
    travis_ci
+   circle_ci
 
 Indices and tables
 ==================
