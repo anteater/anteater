@@ -1,0 +1,15 @@
+# Config file for anteater build jobs at travis-ci.org
+
+language: python
+
+python:
+  - "2.7"
+
+install:
+  - pip install anteater --no-cache-dir
+
+before_script:
+  - git diff --name-only HEAD^ > ./patch
+
+script:
+  - anteater --project antest --patchset ./patch
