@@ -2,36 +2,97 @@ Anteater - CI Validation Framework
 ==================================
 
 Description
-===========
+-----------
 
-Anteater performs security scanning of any github pull requests or gerrit code
-review patches. Each time a patch is pushed to a repository, jenkins
-instantiates anteater, who then performs a series of security checks to each
-file proposed in a patch.
+Anteater, an open framework using standard regular expressions to ensure
+unwanted strings, filenames and binaries are not included in any patch or Pull
+request to any of your git repositories.
 
-Checks consist of verification that no binary / blobs are present. If they are,
-the build will fail , until a review has occurred to insure the binary is safe
-and its origins are known. Once agreed as safe, a sha256 checksum is entered
-into anteaters 'exception' list to insure it is not maliciously replaced at any
-given time in the future.
+You tell anteater exactly what you do want to get merged, and anteater looks
+after the rest.
 
-Checks are made to insure the file are not of a sensitive nature, for example
-cryptographic keys or application configuration files known to contain
-sensitive details, are all blocked from merge.
+With a few simple steps it can be easily implemented into a CI / CD workflow
+with tooling such as Travis CI, CircleCI, Gitlab CI/CD and jenkins, gerrit and
+possibly others.
 
-Finally a deep scan is performed to look for suspect patterns, such as scripts
-pulling in file / objects from untrusted sites, or various patterns such as
-shell executions.
+It is currently used in the Linux Foundations project 'OPNFV' as means to
+provided automated security checks at gate.
 
-Anteater uses an open framework to allow users to add new additions easily,
-without having to touch any code.
+Why would I want this?
+----------------------
 
-Anteater was developed to address concerns of recent high profile attacks that
-have occurred against CI environments, where hackers have backdoor'ed build /
-DevOps systems by various means (such as stealing a users ssh key and self
-approving patches). By having automated non-human checks in place, it adds an
-extra layer of security review with the ability to block a patch merge at gate.
+Anteater has many uses.
 
-The project is mainly used in the Linux Foundations OPNFV platform, which has
-over 40 repositories that need monitoring. This is a fork of that repo with
-added ability to run from Travis CI.
+First it can be set up to block strings and files with a potential security
+impact or risk. This could include private keys, shell history,
+aws credentials (*cough* uber *cough*).
+
+Let's take a look at an example::
+
+  apprun:
+    regex: app\.run\s*\(.*debug.*=.*True.*\)
+    desc: "Running flask in debug mode can give away sensitive data"
+
+The above will match a code line where a flask server is running in debug (which
+can lead to info leak).
+
+How about a file that often lurks in a developers enviroment, that would be
+killer if it ever got leaked into production.
+
+Perhaps::
+    - jenkins\.plugins\.publish_over_ssh\.BapSshPublisherPlugin\.xml
+
+Or even::
+    - \.pypirc
+    - \.gem\/credentials
+    - aws_access_key_id
+    - aws_secret_access_key
+    - jenkins\.plugins\.publish_over_ssh\.BapSshPublisherPlugin\.xml
+
+We can then see how we can stop a commonly used string in a development env,
+not being used in production!
+
+If your own app has its own secrets / config file, then its very easy to
+add your own regular expressions. Everything is set using YAML formatting,
+so no need to change anteaters code.
+
+Depreciated functions, classes etc
+----------------------------------
+
+Let's say for example our project depreciates and old function, yet developers
+still make pull requests using the old function naming:
+
+``depreciated_function:``
+  ``regex: depreciated_function\(.*\)``
+  ``desc: This function was depreciated in release X, use Y function.``
+
+Block Binaries
+--------------
+
+Let's say for example, you have some image files, compiled objects or any form
+of binary. Well we would not want one of those to get malicously replaced
+with an infected blob would we? Before you scoff, it does happen. There have
+been occurances of where developers SSH keys have been stolen and hackers have
+self approved patches and managed to get trojan files on a production server.
+
+With anteater, if you pass the argument ``--bincheck``, every binary causes a
+CI build failure on the related Pull Request. It is not until a sha256 checksum
+is set within anteater's YAML files, that the build is allowed to pass.
+
+For example::
+    $ anteater --project myproj --patchset /tmp/patch --bincheck
+    Non Whitelisted Binary file: /home/luke/repo/images/pal.png
+    Please submit patch with this hash: 3aeae9c71e82942e2f34341e9185b14b7cca9142d53f8724bb8e9531a73de8b2
+
+Let's enter the hash::
+
+    binaries:
+      images/pal.png:
+        - 3aeae9c71e82942e2f34341e9185b14b7cca9142d53f8724bb8e9531a73de8b2
+
+Run the job again::
+
+    $ anteater --project myproj --patchset /tmp/patch --bincheck
+    Found matching file hash for: /home/luke/repo/images/pal.png
+
+For more details and indepth documentation, please visit the ![readthedocs]http://anteater.readthedocs.io/en/latest/).
