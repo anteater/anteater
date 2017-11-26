@@ -54,7 +54,9 @@ All that is required now is to make the following entries to your yaml file::
 .. Note::
 
     Should you be using another language other then python (for example ruby), you
-    can use `matrix:include`, for example::
+    can use ``matrix:include``
+
+::
 
     matrix:
       include:
