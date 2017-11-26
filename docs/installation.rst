@@ -9,7 +9,13 @@ This tool is best run on a Linux distribution, it may work on Mac, but has not
 been tested as yet. The recommended way is using docker, as that way it will
 not interfere with your local systems package installations.
 
-The main OS package requirements are listed below
+The main OS package requirements are listed below.
+
+.. Note::
+    If you only intend to use anteater as part of a Travis CI / github gate,
+    then you can likely bypass this chapter which is more centered on
+    installation for self hosted CI enviroments. See :doc:`travis_ci` for setup
+    details.
 
 Docker
 ------
@@ -44,7 +50,7 @@ Contribute
 All contributions must be made as pull requests from your forked repository of
 anteater.
 
-To install from source:
+To install from source (recommend a virtualenv for isolation / non root use):
 
 Install requirements::
 
@@ -53,4 +59,3 @@ Install requirements::
 Install anteater::
 
     python setup.py install
-

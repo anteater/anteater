@@ -5,7 +5,7 @@ Travis CI Integration
 Set up steps
 ------------
 
-First create an `anteater.conf` in the root directory of your repository::
+First create an ```anteater.conf`` in the root directory of your repository::
 
     [config]
     anteater_files = anteater_files/
@@ -63,7 +63,7 @@ All that is required now is to make the following entries to your yaml file::
         - language: python
           python:
             - "2.7"
-            - "pypy"
+            - "3.6"
 
           install:
             - pip install anteater
