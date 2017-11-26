@@ -5,9 +5,6 @@ Travis CI Integration
 Set up steps
 ------------
 
-To use anteater as a build check for any github pull requests, first start by
-creating a main list and ignore list in the repository that you wish to monitor.
-
 First create an `anteater.conf` in the root directory of your repository::
 
     [config]
@@ -17,21 +14,23 @@ First create an `anteater.conf` in the root directory of your repository::
     flag_list =  %(anteater_files)s/flag_list.yaml
     ignore_list = %(anteater_files)s/ignore_list.yaml
 
-reports_dir & anteater_log
---------------------------
+``reports_dir`` & ``anteater_log``
+----------------------------------
 
 You can leave this as is, its a logging location used for when running the tool
 locally.
 
-flag_list & ignore_list
------------------------
+``flag_list`` & ``ignore_list``
+-------------------------------
 
 ``flag_list.yaml`` is where regular expressions are set, that if matched will
 fail the build, thereby marking a failure on the github pull request page.
 
-Some examples can be found .. _here: https://github.com/lukehinds/anteater/tree/master/examples
+Some examples can be found here_.
 
-For information on ``flag_list``, please consult the `User Guide`_.
+.. _here: https://github.com/lukehinds/anteater/tree/master/examples
+
+For information on ``flag_list``, please consult the :doc:`user_guide`
 
 Travis Integration
 ------------------
