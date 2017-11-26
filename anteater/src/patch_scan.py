@@ -36,10 +36,9 @@ failure = False
 hasher = hashlib.sha256()
 
 
-def prepare_patchset(project, patchset):
+def prepare_patchset(project, patchset, bincheck):
     """ Create black/white lists and default / project waivers
         and iterates over patchset file """
-
     # Get Various Lists / Project Waivers
     lists = get_lists.GetLists()
 
@@ -63,7 +62,7 @@ def prepare_patchset(project, patchset):
     for line in lines:
         patch_file = line.strip('\n')
         # Perform binary and file / content checks
-        scan_patch(project, patch_file, file_audit_list,
+        scan_patch(project, patch_file, bincheck, file_audit_list,
                    file_audit_project_list, flag_list, ignore_list,
                    file_ignore)
 
@@ -72,11 +71,11 @@ def prepare_patchset(project, patchset):
     process_failure()
 
 
-def scan_patch(project, patch_file, file_audit_list, file_audit_project_list,
-               flag_list, ignore_list, file_ignore):
+def scan_patch(project, patch_file, bincheck, file_audit_list,
+               file_audit_project_list, flag_list, ignore_list, file_ignore):
     """ Scan actions for each commited file in patch set """
     global failure
-    if is_binary(patch_file):
+    if is_binary(patch_file) and bincheck:
         hashlist = get_lists.GetLists()
         split_path = patch_file.split(project + '/', 1)[-1]
         binary_hash = hashlist.binary_hash(project, split_path)

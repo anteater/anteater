@@ -34,7 +34,7 @@ ignore_dirs = ['.git', 'examples', anteater_files]
 hasher = hashlib.sha256()
 
 
-def prepare_project(project, project_dir):
+def prepare_project(project, project_dir, bincheck):
     """ Generates blacklists / whitelists and calls main functions """
 
     # Get Various Lists / Project Waivers
@@ -50,12 +50,12 @@ def prepare_project(project, project_dir):
     file_ignore = lists.file_ignore()
 
     # Perform rudimentary scans
-    scan_file(project_dir, project, file_audit_list, file_audit_project_list,
-              flag_list, ignore_list, file_ignore)
+    scan_file(project_dir, project, bincheck, file_audit_list,
+              file_audit_project_list, flag_list, ignore_list, file_ignore)
 
 
-def scan_file(project_dir, project, file_audit_list, file_audit_project_list,
-              flag_list, ignore_list, file_ignore):
+def scan_file(project_dir, project, bincheck, file_audit_list,
+              file_audit_project_list, flag_list, ignore_list, file_ignore):
     """Searches for banned strings and files that are listed """
     for root, dirs, files in os.walk(project_dir):
         # Filter out ignored directories from list.
@@ -82,7 +82,7 @@ def scan_file(project_dir, project, file_audit_list, file_audit_project_list,
             split_path = full_path.split(project + '/', 1)[-1]
             binary_hash = hashlist.binary_hash(project, split_path)
 
-            if is_binary(full_path):
+            if is_binary(full_path) and bincheck:
                 with open(full_path, 'rb') as afile:
                     buf = afile.read()
                     hasher.update(buf)
@@ -96,7 +96,7 @@ def scan_file(project_dir, project, file_audit_list, file_audit_project_list,
                                  hasher.hexdigest())
                     with open(reports_dir + "binaries-" + project + ".log",
                               "a") as gate_report:
-                            gate_report.write('Non Whitelisted Binary: {0}\n'.
+                        gate_report.write('Non Whitelisted Binary: {0}\n'.
                                               format(full_path))
 
             else:

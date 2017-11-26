@@ -14,8 +14,8 @@
 """Anteater - CI Gate Checks.
 
 Usage:
-  anteater (-p |--project) <project> [(-ps |--patchset) <patchset>]
-  anteater (-p |--project) <project> [--path <project_path>]
+  anteater [--bincheck] (-p |--project) <project> [(-ps |--patchset) <patchset>]
+  anteater [--bincheck] (-p |--project) <project> [--path <project_path>]
   anteater (-h | --help)
   anteater --version
 
@@ -86,9 +86,11 @@ def main():
     arguments = docopt(__doc__, version=__version__)
 
     if arguments['<patchset>']:
-        prepare_patchset(arguments['<project>'], arguments['<patchset>'])
+        prepare_patchset(arguments['<project>'], arguments['<patchset>'],
+                         arguments['--bincheck'])
     elif arguments['<project_path>']:
-        prepare_project(arguments['<project>'], arguments['<project_path>'])
+        prepare_project(arguments['<project>'], arguments['<project_path>'],
+                        arguments['--bincheck'])
 
 
 if __name__ == "__main__":

@@ -34,6 +34,14 @@ Anteater uses a simple argument system in the standard POSIX format.
 The main usage  parameters are ``--project`` and either ``---path`` or
 ``--patchset``.
 
+An optional parameter is ``--bincheck`` which is the binary check system. When
+this argument is passed, all binaries / blobs will result in a CI build failure
+- unless a sha256 checksum of the binary is listed in one of the exeception
+files (``ignore_list`` or a ``project_exceptions`` file.
+
+Refer to `binary exceptions`_ for more details on the binary blocking feature of
+anteater.
+
 The ``--project`` argument
 --------------------------
 
@@ -268,9 +276,13 @@ also be removed using a regular expression.
 binary exceptions
 -----------------
 
-By default, anteater blocks all binary files unless a sha256 checksum of the
-file is entered as an exeception. This is done using the relative path from the
-root of the respository. For example::
+If the ``--bincheck`` argument is passed to anteater, anteater blocks (CI build
+failure) all binary files unless a sha256 checksum of the file is entered as an
+exeception.
+
+This is done using the relative path from the root of the respository.
+
+For example::
 
   media/images/weather-storm.png:
     - 48f38bed00f002f22f1e61979ba258bf9006a2c4937dde152311b77fce6a3c1c
