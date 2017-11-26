@@ -5,16 +5,16 @@
 Description
 -----------
 
-Anteater is an open framework using standard regular expressions to ensure
-unwanted strings, filenames and binaries are not included in any patch or Pull
+Anteater is an open framework using standard regular expression to ensure
+unwanted strings, filenames, binaries, depreciated functions or staging
+enviroment code / credentials etc, are not included in any patch or Pull
 request to any of your git repositories.
 
 You tell anteater exactly what you don't want to get merged, and anteater looks
 after the rest.
 
 With a few simple steps it can be easily implemented into a CI / CD workflow
-with tooling such as Travis CI, CircleCI, Gitlab CI/CD and jenkins, gerrit and
-possibly others.
+with tooling such as [Travis CI]()https://travis-ci.org/, [CircleCI](https://circleci.com/), [Gitlab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/) and [Jenkins](https://jenkins.io/).
 
 It is currently used in the Linux Foundations project ['OPNFV'](https://opnfv.org) as means to
 provid automated security checks at gate, but as shown in the examples below,
@@ -24,14 +24,14 @@ included in a patch / pull request.
 Why would I want to use this?
 -----------------------------
 
-Anteater has many uses.
+Anteater has many uses, and can easily be bent to cover your own specific needs.
 
 First, as mentioned, it can be set up to block strings and files with a
 potential security impact or risk. This could include private keys, a shell
 history, aws credentials etc.
 
 It is especially useful at ensuring that elements used in a staging /
-development enviroment are not merged into a production enviroment.
+development enviroment don't find there way into a production enviroment.
 
 Let's take a look at an example:
 
@@ -46,11 +46,12 @@ The above will match code where a flask server is set to running in debug mode
 developers enviroment and mistakenly staged into production.
 
 For a rails app, this could be:
-``\<%=.*debug.*%>``
+
+`` - \<%=.*debug.*%>``
 
 Even more simple, look for the following in most logging frameworks:
 
-``log\.debug``
+`` - log\.debug``
 
 How about credential file that would cause a job loss if ever leaked into
 production? Anteater works with file names too.
@@ -71,14 +72,13 @@ Or even..
 
 If your own app has its own secrets / config file, then its very easy to
 add your own regular expressions. Everything is set using YAML formatting,
-so no need to change anteaters code. It's hardly machine learning, blockchain
-based AI tech, no, but RegEx is something we all know and can put to use.
+so no need to change anteaters code.
 
 Depreciated functions, classes etc
 ----------------------------------
 
-Another use is for when our project depreciates an old function, yet developers
-still make pull requests using the old function naming:
+Another use is for when a project depreciates an old function, yet developers
+might still make pull requests using the old function naming:
 
 ```
 depreciated_function:``
@@ -141,6 +141,10 @@ Run the job again::
 $ anteater --bincheck --project myproj --patchset /tmp/patch
 Found matching file hash for: /folder/to/repo/images/pal.png
 ```
+
+This way we can sure binaries are not tampered with by means of a failed
+cryptographic signature / checksum.
+
 For more details and indepth documentation, please visit [readthedocs](http://anteater.readthedocs.io/en/latest/)
 
 Last of all, if you do use anteater, I would love to know (twitter: @lukeahinds)
