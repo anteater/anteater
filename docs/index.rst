@@ -1,8 +1,20 @@
-========
-anteater
-========
+==================================
+Anteater - CI Validation Framework
+==================================
 
-This is the documentation of **anteater**.
+This is the documentation of Anteater CI Validation Framework.
+
+Anteater is an application that is run as a gate / build check within a
+continous Integration / DevOps deployment scenarion.
+
+It's main function is to block content based on regular expressions.
+
+You can use it to protect against security risks, or automate a way of letting
+developers know that their Pull Request contains content that is depreciated or
+in some way no longer accepted by your project.
+
+The tool can be run locally, or as a part of DevOps CI flow with systems such as
+Jenkins, Travis CI, Github, Gerrit review etc.
 
 Contents
 ========
