@@ -12,9 +12,10 @@ not interfere with your local systems package installations.
 The main OS package requirements are listed below.
 
 .. Note::
-    If you only intend to use anteater as part of a Travis CI / github gate,
+    If you only intend to use anteater as part of a Travis CI / CircleCI gate,
     then you can likely bypass this chapter which is more centered on
-    installation for self hosted CI enviroments. See :doc:`travis_ci` for setup
+    installation for self hosted CI enviroments. See :doc:`travis_ci` or
+    :doc:`circle_ci` for setup details.
     details.
 
 Docker
