@@ -35,9 +35,7 @@ locally.
 ``flag_list.yaml`` is where all regular expressions are set, that if matched
 will fail the build, thereby marking a failure on the pull request page.
 
-Some examples can be found here_.
-
-.. _here: https://github.com/lukehinds/anteater/tree/master/examples
+Some examples can be found `here <https://github.com/lukehinds/anteater/blob/master/examples/>`_.
 
 For information on ``flag_list``, please consult the :doc:`user_guide`
 
@@ -86,9 +84,7 @@ All that is required now is to make the following entries to your yaml file::
         - language: ruby
         # your project travis elements go here.
 
-An example .travis.yml can be found here_.
-
-.. _here: https://github.com/lukehinds/anteater/blob/master/examples/.travis.yml
+An example .travis.yml can be found `here <https://github.com/lukehinds/anteater/blob/master/examples/.travis.yml>`_.
 
 Developer Workflow
 ------------------
