@@ -1,4 +1,4 @@
-# Anteater - CI/CD Gate Check Framework 
+# Anteater - CI/CD Gate Check Framework
 
 ![anteater](http://i.imgur.com/BPvV3Gz.png)
 
@@ -38,7 +38,7 @@ history, aws credentials etc.
 It is especially useful at ensuring that elements used in a staging /
 development enviroment don't find there way into a production enviroment.
 
-Let's take a look at an example:
+Let's take a look at some examples:
 
 ```
 apprun:
@@ -52,11 +52,19 @@ developers enviroment and mistakenly staged into production.
 
 For a rails app, this could be:
 
-`` - \<%=.*debug.*%>``
+``  regex: \<%=.*debug.*%>``
 
 Even more simple, look for the following in most logging frameworks:
 
-`` - log\.debug``
+`` regex: log\.debug``
+
+Need to stop developers mistakenly adding a private key?
+
+```
+  private_key:
+    regex: -----BEGIN\sRSA\sPRIVATE\sKEY----
+    desc: "This looks like it could be a private key"
+```
 
 How about credential files that would cause a job loss if ever leaked into
 production? Anteater works with file names too.
@@ -75,7 +83,7 @@ Or even..
 - LocalSettings\.php
 ```
 
-If your own app has its own secrets / config file, then its very easy to
+If your app has its own custom secrets / config file, then its very easy to
 add your own regular expressions. Everything is set using YAML formatting,
 so no need to change anteaters code.
 
@@ -90,6 +98,10 @@ depreciated_function:``
   regex: depreciated_function\(.*\)
   desc: This function was depreciated in release X, use Y function.
 ```
+
+Or perhaps stopping people from using 1.x versions of a framework:
+
+``<script.src.*="https:\/\/ajax\.googleapis\.com\/ajax\/libs\/angularjs\/1.*<\/script>``
 
 What if I get false postives?
 -----------------------------
