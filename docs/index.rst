@@ -1,8 +1,8 @@
-==================================
-Anteater - CI Validation Framework
-==================================
+=====================================
+Anteater - CI/CD Gate Check Framework
+=====================================
 
-This is the documentation of Anteater CI Validation Framework.
+This is the documentation of Anteater - CI/CD Gate Check Framework .
 
 Anteater is an application that is run as a gate / build check within a
 continous Integration / DevOps deployment scenario.

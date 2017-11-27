@@ -1,4 +1,4 @@
-# Anteater - CI/CD Gate Verification Framework
+# Anteater - CI/CD Gate Check Framework 
 
 ![anteater](http://i.imgur.com/BPvV3Gz.png)
 
@@ -119,7 +119,7 @@ Binaries
 --------
 
 With anteater, if you pass the argument ``--bincheck``, every binary found
-causes a build failure on the originating pull request. It is not until a 
+causes a build failure on the originating pull request. It is not until a
 sha256 checksum is set within anteater's YAML ignore files, that the build is
 allowed to pass.
 

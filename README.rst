@@ -1,5 +1,5 @@
-Anteater - CI Validation Framework
-==================================
+Anteater - CI/CD Gate Check Framework
+=====================================
 
 .. image:: https://readthedocs.org/projects/anteater/badge/?version=latest
 :target: http://anteater.readthedocs.io/en/latest/?badge=latest
