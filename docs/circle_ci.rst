@@ -39,6 +39,8 @@ More examples can be found here_.
 
 .. _here: https://github.com/lukehinds/anteater/blob/master/examples/
 
+Test hyperlink: `Stack Overflow <http://stackoverflow.com/>`_.
+
 For information on ``flag_list``, please consult the :doc:`user_guide`
 
 CircleCI Integration
