@@ -14,10 +14,19 @@ First create an ```anteater.conf`` in the root directory of your repository::
     flag_list =  %(anteater_files)s/flag_list.yaml
     ignore_list = %(anteater_files)s/ignore_list.yaml
 
+``anteater_files``
+------------------
+
+``anteater_files`` is a location which anteater **wil not** scan.
+
+The rationale about hiding this folder from anteater, is for the simple fact
+anteater will report on the strings it uses itself as a guide for what to
+search for.
+
 ``reports_dir`` & ``anteater_log``
 ----------------------------------
 
-You can leave this as is, its a logging location used for when running the tool
+You can leave these as is, its a logging location used for when running the tool
 locally.
 
 ``flag_list`` & ``ignore_list``
@@ -90,3 +99,31 @@ configuration file ``.circleci/config.yml``::
           - store_artifacts:
               path: test-reports
               destination: test-reports
+
+An example config.yml can be found here_.
+
+.. _here: https://github.com/lukehinds/anteater/blob/master/examples/config.yml
+
+Developer Workflow
+------------------
+
+1. Contributor forks , creates a branch
+
+``git checkout -b mypullrequest``
+
+2. Contributor commits and makes pull request
+
+``git commit -m "My Pull Request"``
+``git push origin mypullrequest``
+
+3. A pull request is then made on the Contributors github page.
+
+4. Travis CI runs anteater checks, checks fail.
+
+5. Contributor addresses the failure.
+
+``git commit -va -m "Correcting for anteater failures"``
+
+6. Travis CI runs anteater again, and marks build as Passed.
+
+7. Main developer see's test has passed, and merges Contributors pull request.

@@ -64,7 +64,7 @@ The ``--project`` parameter maps to several areas:
 * project exceptions::
 
     project_exceptions:
-      - myrepo: exceptions/myrepo.yaml
+      - myrepo: anteater_files/myrepo.yaml
 
 .. Note::
 
@@ -100,6 +100,9 @@ through all files in the respository folder. For example::
 
     anteater --project myrepo --path /path/to/repos/myrepo
 
+Having these two methods allows anteater to scan individual pull requests /
+patch sets or perform a complete audit on existing files.
+
 RegExp Framework
 ================
 
@@ -112,7 +115,8 @@ contents within ``project_exceptions`` "stacking" on top.
 
 All RegExp files should be stored in the  set location of ``anteater_files``
 that is declared in ``anteater.conf`` - this is important, as ``anteater_files``
-is ignored by anteater during all scanning operations.
+is ignored by anteater during all scanning operations, thereby stopping anteater
+falsely flagging its own strings set within ``flag_list``.
 
 flag_list
 ---------
@@ -133,16 +137,16 @@ Within ``flag_list`` are several parameters set within YAML list formats.
 file_names
 -----------
 
-``file_names`` is a list of full filenames to flag. For example, the following
+``file_names`` is a list of full file names to flag. For example, the following
 would flag someone's shell history if included in a pull request / patch::
 
     file_audits:
         file_names:
           - (irb|plsq|mysql|bash|zsh)_history
 
-So if a user then accidently checks in a ``zsh_history`` then anteater will flag
-this, the build will fail and prevent an oversight from happening and the file
-being merged into main branches.
+So if a user then accidentally checks in a ``zsh_history`` then anteater will
+flag this, the build will fail and prevent an oversight from happening and the
+file being merged into main branches.
 
 file_contents
 -------------
@@ -173,9 +177,9 @@ a depreciated function is also flagged::
 
 So the above would match and flag the following lines::
 
-    dothis = thing.depreciated_function(some_value):
-
     hashlib.md5(password)
+
+    dothis = thing.depreciated_function(some_value):
 
 Exceptions
 ----------
@@ -185,16 +189,16 @@ strings that are flagged as false postives.
 
 Exceptions can be made in two locations ``ignore_list`` or ``project_exceptions``
 set within ``ignore_list`` and allows you to overule a string set within the
-``flag_list`` file and remove false postives.
+``flag_list`` file with a more unique regular expression.
 
 There are main three sections within ``ignore_list.yaml`` and
 ``project_exceptions``
 
-* ``file_contents`` - flag any matching regex found in a provided file.
+* ``file_contents`` - ignore matching regex if matched in a certain file.
 
-* ``file_names`` -  flag any matching regex when it matches a file name.
+* ``file_names`` -  ignore matching regex when it matches a file name.
 
-* ``binaries`` - flag any binaries, that do not have a sha256 checksum entry.
+* ``binaries`` - allow binaries, when they have a matching sha256 checksum set.
 
 Project Exceptions
 ------------------
@@ -218,9 +222,11 @@ file_contents exceptions
 using a regular expression that matches a unique string that has been
 incorrectly flagged and is a false positive.
 
-Let's say we wish to have some control over git repositories that can be cloned.
+Let's say we wish to have some control over git repositories that can be cloned
+in shell scripts present in out repository and used to automate our builds.
 
 First we make an entry in the ``flag_list`` around git clone::
+
     file_contents:
       clone:
         regex: git.*clone
@@ -228,10 +234,10 @@ First we make an entry in the ``flag_list`` around git clone::
 
 The above would flag any instance of a clone, for example::
 
-    git clone http://github.com/someuser/somerepo.git
+    git clone http://github.com/no_longer_around/some_unmaintained_repo.git
 
 Now let's assume we want to allow all clones from a specific github org called
-'acme', but no other github repositories.
+'acme' which we trust, but no other github repositories.
 
 We could do this by using the following Exception::
 
@@ -258,11 +264,10 @@ string::
 In this case ``md500` is incorrectly matched against ``md5``.
 
 We can cancel out this false postive with a regular expression unique to the
-incorrectly flagged false postive.
+incorrectly flagged false positive::
 
     file_contents:
       - mystring.=.int\(md500\).*
-
 
 .. Note::
     You can test strings out on an regex site such as https://regex101.com
@@ -289,5 +294,5 @@ For example::
   media/images/stop_light.png:
     - 5a1101e8b1796f6b40641b90643d83516e72b5b54b1fd289cf233745ec534ec9
 
-
-Examples of these files can be found .. _here: https://github.com/lukehinds/anteater/tree/master/examples
+Examples of files can be found here_.
+.. _here: https://github.com/lukehinds/anteater/tree/master/examples

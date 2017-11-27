@@ -2,6 +2,8 @@
 
 ![anteater](http://i.imgur.com/BPvV3Gz.png)
 
+[![Documentation Status](https://readthedocs.org/projects/anteater/badge/?version=latest)](http://anteater.readthedocs.io/en/latest/?badge=latest)
+
 Description
 -----------
 
@@ -116,13 +118,13 @@ Yet other instance of ``MD5`` continue to get flagged.
 Binaries
 --------
 
-With anteater, if you pass the argument ``--bincheck``, every binary causes a
-CI build failure on the related Pull Request. It is not until a sha256 checksum
-is set within anteater's YAML files, that the build is allowed to pass.
+With anteater, if you pass the argument ``--bincheck``, every binary found
+causes a build failure on the originating pull request. It is not until a 
+sha256 checksum is set within anteater's YAML ignore files, that the build is
+allowed to pass.
 
-This means you can block people from checking in compliled objects, images, PDFs
-etc or tampering with the existing binary files you have (for example a sites
-images).
+This means you can block people from checking in compiled objects, images, PDFs
+etc that may have an unknown origin or tampering with the existing binary files.
 
 An example:
 

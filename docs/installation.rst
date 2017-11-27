@@ -34,7 +34,7 @@ Run an instance::
 
     docker run -t -i anteater /bin/bash
 
-To retrieve the html reports, use docker cp::
+To retrieve the reports, use docker cp::
 
     docker cp <containerId>:/file/path/reports /host/path/reports
 

@@ -1,6 +1,10 @@
 Anteater - CI Validation Framework
 ==================================
 
+.. image:: https://readthedocs.org/projects/anteater/badge/?version=latest
+:target: http://anteater.readthedocs.io/en/latest/?badge=latest
+:alt: Documentation Status
+
 Description
 -----------
 
