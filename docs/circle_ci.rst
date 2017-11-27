@@ -35,7 +35,9 @@ locally.
 ``flag_list.yaml`` is where regular expressions are set, that if matched will
 fail the build, thereby marking a failure on the github pull request page.
 
-More examples can be found `here <https://github.com/lukehinds/anteater/blob/master/examples/>`
+More examples can be found here_.
+
+.. _here: https://github.com/lukehinds/anteater/blob/master/examples/
 
 For information on ``flag_list``, please consult the :doc:`user_guide`
 
@@ -98,7 +100,9 @@ configuration file ``.circleci/config.yml``::
               path: test-reports
               destination: test-reports
 
-An example config.yml can be found `here <https://github.com/lukehinds/anteater/blob/master/examples/config.yml>`
+An example config.yml can be found here_.
+
+.. _here: https://github.com/lukehinds/anteater/blob/master/examples/config.yml
 
 Developer Workflow
 ------------------
