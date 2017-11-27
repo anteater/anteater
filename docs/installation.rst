@@ -32,11 +32,14 @@ Build the Image::
 
 Run an instance::
 
+
     docker run -t -i anteater /bin/bash
 
-To retrieve the reports, use docker cp::
-
-    docker cp <containerId>:/file/path/reports /host/path/reports
+Or to run from a job:
+    PROJECT="myrepo"
+    git diff --name-only HEAD^ > /tmp/patch
+    vols="-v /home/user/repos/$PROJECT"
+    docker run -i $vols ~/venv/bin/anteater --project $PROJECT --patchset /tmp/patch"
 
 Install Anteater
 ----------------
