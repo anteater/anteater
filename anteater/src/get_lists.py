@@ -59,7 +59,7 @@ class GetLists(object):
         self.args = args
         self.loaded = False
 
-    def load_project_exception_file(self, project_exceptions, project):
+    def load_project_flag_list_file (self, project_exceptions, project):
         if self.loaded:
             return
         exception_file = None
@@ -72,10 +72,10 @@ class GetLists(object):
             for key in ex:
                 if key in fl:
                     fl[key][project] = _merge(fl[key][project], ex.get(key, None)) \
-                            if project in fl[key] else ex.get(key, None)
+                        if project in fl[key] else ex.get(key, None)
             self.loaded = True
 
-    def load_binary_exception_file(self, project_exceptions, project):
+    def load_project_ignore_list_file(self, project_exceptions, project):
         if self.loaded:
             return
         exception_file = None
@@ -85,15 +85,16 @@ class GetLists(object):
         if exception_file is not None:
             with open(exception_file, 'r') as f:
                 ex = yaml.safe_load(f)
+            ex.pop('ignore_directories', None)
             for key in ex:
                 if key in il:
                     il[key][project] = _merge(il[key][project], ex.get(key, None)) \
-                            if project in il[key] else ex.get(key, None)
+                        if project in il[key] else ex.get(key, None)
             self.loaded = True
 
     def binary_hash(self, project, patch_file):
-        self.load_binary_exception_file(il.get('project_exceptions'), project)
-
+        self.load_project_ignore_list_file(il.get('project_exceptions'),
+                                           project)
         try:
             main_binary_hash = (il['binaries'][patch_file])
         except KeyError:
@@ -115,7 +116,7 @@ class GetLists(object):
 
     def file_audit_list(self, project):
         project_list = False
-        self.load_project_exception_file(il.get('project_exceptions'), project)
+        self.load_project_flag_list_file(il.get('project_exceptions'), project)
         try:
             default_list = set((fl['file_audits']['file_names']))
             logger.info('Loaded %s file_names ignore_list', project)
@@ -140,7 +141,7 @@ class GetLists(object):
 
     def file_content_list(self,  project):
         project_list = False
-        self.load_project_exception_file(il.get('project_exceptions'), project)
+        self.load_project_flag_list_file(il.get('project_exceptions'), project)
         try:
             flag_list = (fl['file_audits']['file_contents'])
             logger.info('Loaded %s file_contents flag_list', project)
@@ -172,9 +173,34 @@ class GetLists(object):
                                         flags=re.IGNORECASE)
             return flag_list, ignore_list_re
 
+    def ignore_directories(self, project):
+        try:
+            ignore_directories = il['ignore_directories']
+            logger.info('Loaded %s ignore_directories', project)
+        except KeyError:
+            logger.error('Key Error processing ignore_directories list values')
+
+        try:
+            project_exceptions = il.get('project_exceptions')
+            for item in project_exceptions:
+                if project in item:
+                    exception_file = item.get(project)
+                    with open(exception_file, 'r') as f:
+                        test_list = yaml.safe_load(f)
+                        project_list = test_list['ignore_directories']
+        except KeyError:
+            logger.info('No ignore_directories for %s', project)
+
+        if project_list:
+            ignore_directories = ignore_directories + project_list
+            return ignore_directories
+        else:
+            return ignore_directories
+
     def file_ignore(self):
         try:
             file_ignore = (il['file_ignore'])
         except KeyError:
             logger.error('Key Error processing file_ignore list values')
         return file_ignore
+

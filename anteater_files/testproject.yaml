@@ -3,17 +3,27 @@
 # waivers are required.
 #
 # This file uses standard regular expression syntax,  however be mindful
-# of escaping YAML delimiters too (such as `:`) using double quotes "".
+# of escaping "\" YAML delimiters too (such as "\:" or "\/").
 
 # sha256 checksums of binary files allowed
 binaries:
   images/pal.png:
     - a71e13ebeb2500ed20781ab3ae8a9b306cf69a6c8be9a31e96d4e04f1657b4d8
 
-# Ignore file_names and file_contents that match the following RegExp
+# Ignore file_names and file_contents that match the following RegExps
 file_audits:
   file_names:
     - ignore-filename.txt
   file_contents:
-    - password
+    - ignore-this-string
 
+# Unit tests, functional tests, documentation etc. These folders will never be
+# scanned. This is a relative path, so always leave a trailing `/` path
+# delimiter, but don't start with one!
+ignore_directories:
+  - .git/
+  - examples
+  - anteater_files
+  - tests/
+  - docs/
+  - spec/

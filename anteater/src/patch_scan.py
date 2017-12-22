@@ -31,7 +31,6 @@ config = six.moves.configparser.SafeConfigParser()
 config.read('anteater.conf')
 anteater_files = config.get('config', 'anteater_files')
 reports_dir = config.get('config', 'reports_dir')
-ignore_dirs = ['.git', 'examples', anteater_files]
 failure = False
 hasher = hashlib.sha256()
 
@@ -51,6 +50,8 @@ def prepare_patchset(project, patchset, bincheck):
     # Get File Ignore Lists
     file_ignore = lists.file_ignore()
 
+    ignore_directories = lists.ignore_directories(project)
+
     # Open patch set to get file list
     try:
         fo = open(patchset, 'r')
@@ -64,7 +65,7 @@ def prepare_patchset(project, patchset, bincheck):
         # Perform binary and file / content checks
         scan_patch(project, patch_file, bincheck, file_audit_list,
                    file_audit_project_list, flag_list, ignore_list,
-                   file_ignore)
+                   file_ignore, ignore_directories)
 
     # Process each file in patch set using waivers generated above
     # Process final result
@@ -72,73 +73,76 @@ def prepare_patchset(project, patchset, bincheck):
 
 
 def scan_patch(project, patch_file, bincheck, file_audit_list,
-               file_audit_project_list, flag_list, ignore_list, file_ignore):
+               file_audit_project_list, flag_list, ignore_list, file_ignore,
+               ignore_directories):
     """ Scan actions for each commited file in patch set """
     global failure
-    if is_binary(patch_file) and bincheck:
-        hashlist = get_lists.GetLists()
-        split_path = patch_file.split(project + '/', 1)[-1]
-        binary_hash = hashlist.binary_hash(project, split_path)
-        with open(patch_file, 'rb') as afile:
-            buf = afile.read()
-            hasher.update(buf)
-        if hasher.hexdigest() in binary_hash:
-            logger.info('Found matching file hash for: %s',
-                        patch_file)
-        else:
-            logger.error('Non Whitelisted Binary file: %s',
-                         patch_file)
-            logger.error('Submit patch with the following hash: %s',
-                         hasher.hexdigest())
-        failure = True
-        with open(reports_dir + "binaries-" + project + ".log", "a") \
-                as gate_report:
-            gate_report.write('Non Whitelisted Binary file: {0}\n'.
-                              format(patch_file))
-    else:
-        # Check file names / extensions
-        if file_audit_list.search(patch_file) and not \
-                    file_audit_project_list.search(patch_file):
-            match = file_audit_list.search(patch_file)
-            logger.error('Blacklisted file: %s', patch_file)
-            logger.error('Matched String: %s', match.group())
+    split_path = patch_file.split(project + '/', 1)[-1]
+
+    if not any(x in split_path for x in ignore_directories):
+        if is_binary(patch_file) and bincheck:
+            hashlist = get_lists.GetLists()
+            binary_hash = hashlist.binary_hash(project, split_path)
+            with open(patch_file, 'rb') as afile:
+                buf = afile.read()
+                hasher.update(buf)
+            if hasher.hexdigest() in binary_hash:
+                logger.info('Found matching file hash for: %s',
+                            patch_file)
+            else:
+                logger.error('Non Whitelisted Binary file: %s',
+                             patch_file)
+                logger.error('Submit patch with the following hash: %s',
+                             hasher.hexdigest())
             failure = True
-            with open(reports_dir + "file-names_" + project + ".log", "a") \
+            with open(reports_dir + "binaries-" + project + ".log", "a") \
                     as gate_report:
-                gate_report.write('Blacklisted file: {0}\n'.
+                gate_report.write('Non Whitelisted Binary file: {0}\n'.
                                   format(patch_file))
-                gate_report.write('Matched String: {0}'.
-                                  format(match.group()))
+        else:
+            # Check file names / extensions
+            if file_audit_list.search(patch_file) and not \
+                    file_audit_project_list.search(patch_file):
+                match = file_audit_list.search(patch_file)
+                logger.error('Blacklisted file: %s', patch_file)
+                logger.error('Matched String: %s', match.group())
+                failure = True
+                with open(reports_dir + "file-names_" + project + ".log", "a") \
+                        as gate_report:
+                    gate_report.write('Blacklisted file: {0}\n'.
+                                      format(patch_file))
+                    gate_report.write('Matched String: {0}'.
+                                      format(match.group()))
 
-        # Open file to check for blacklisted content
-        try:
-            fo = open(patch_file, 'r')
-            lines = fo.readlines()
-            file_exists = True
-        except IOError:
-            file_exists = False
+            # Open file to check for blacklisted content
+            try:
+                fo = open(patch_file, 'r')
+                lines = fo.readlines()
+                file_exists = True
+            except IOError:
+                file_exists = False
 
-        if file_exists and not patch_file.endswith(tuple(file_ignore)):
-            for line in lines:
-                for key, value in flag_list.iteritems():
-                    regex = value['regex']
-                    desc = value['desc']
-                    if re.search(regex, line) and not re.search(
-                            ignore_list, line):
-                        logger.error('File contains violation: %s', patch_file)
-                        logger.error('Flagged Content: %s', line.rstrip())
-                        logger.error('Rationale: %s', desc.rstrip())
-                        failure = True
-                        with open(reports_dir + "contents_" + project + ".log",
-                                  "a") as gate_report:
-                            gate_report.write('File contains violation: {0}\n'.
-                                              format(patch_file))
-                            gate_report.write('Flagged Content: {0}'.
-                                              format(line))
-                            gate_report.write('Matched Regular Exp: {0}\n'.
-                                              format(regex))
-                            gate_report.write('Rationale: {0}\n'.
-                                              format(desc.rstrip()))
+            if file_exists and not patch_file.endswith(tuple(file_ignore)):
+                for line in lines:
+                    for key, value in flag_list.iteritems():
+                        regex = value['regex']
+                        desc = value['desc']
+                        if re.search(regex, line) and not re.search(
+                                ignore_list, line):
+                            logger.error('File contains violation: %s', patch_file)
+                            logger.error('Flagged Content: %s', line.rstrip())
+                            logger.error('Rationale: %s', desc.rstrip())
+                            failure = True
+                            with open(reports_dir + "contents_" + project + ".log",
+                                      "a") as gate_report:
+                                gate_report.write('File contains violation: {0}\n'.
+                                                  format(patch_file))
+                                gate_report.write('Flagged Content: {0}'.
+                                                  format(line))
+                                gate_report.write('Matched Regular Exp: {0}\n'.
+                                                  format(regex))
+                                gate_report.write('Rationale: {0}\n'.
+                                                  format(desc.rstrip()))
 
 
 def process_failure():
