@@ -19,7 +19,7 @@ from __future__ import division, print_function, absolute_import
 import hashlib
 import six.moves.configparser
 import os
-import re
+import regex as re
 import logging
 from binaryornot.check import is_binary
 
@@ -114,7 +114,7 @@ def scan_file(project, project_dir, bincheck, file_audit_list,
 
                         for line in lines:
                             # Check for sensitive content in project files
-                            for key, value in flag_list.iteritems():
+                            for key, value in flag_list.items():
                                 regex = value['regex']
                                 desc = value['desc']
                                 if re.search(regex, line) and not re.search(

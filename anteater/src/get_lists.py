@@ -19,7 +19,7 @@ import logging
 import six.moves.configparser
 import copy
 import yaml
-import re
+import regex as re
 
 
 config = six.moves.configparser.SafeConfigParser()

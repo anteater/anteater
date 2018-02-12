@@ -7,3 +7,4 @@ packaging==16.8
 pyparsing==2.2.0
 PyYAML==3.12
 six==1.10.0
+regex==2018.2.8

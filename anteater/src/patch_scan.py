@@ -22,7 +22,7 @@ import logging
 import hashlib
 import six.moves.configparser
 import sys
-import re
+import regex as re
 
 from . import get_lists
 
@@ -124,7 +124,7 @@ def scan_patch(project, patch_file, bincheck, file_audit_list,
 
             if file_exists and not patch_file.endswith(tuple(file_ignore)):
                 for line in lines:
-                    for key, value in flag_list.iteritems():
+                    for key, value in flag_list.items():
                         regex = value['regex']
                         desc = value['desc']
                         if re.search(regex, line) and not re.search(
