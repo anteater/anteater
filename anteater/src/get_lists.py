@@ -119,14 +119,13 @@ class GetLists(object):
         self.load_project_flag_list_file(il.get('project_exceptions'), project)
         try:
             default_list = set((fl['file_audits']['file_names']))
-            logger.info('Loaded %s file_names ignore_list', project)
         except KeyError:
             logger.error('Key Error processing file_names list values')
         try:
             project_list = set((fl['file_audits'][project]['file_names']))
-            logger.info('Loaded %s file_names project_exceptions', project)
+            logger.info('Loaded %s specific file_audits entries', project) 
         except KeyError:
-            logger.info('No file_names project_exceptions for %s', project)
+            logger.info('No project specific file_names section for project %s', project)
 
         file_names_re = re.compile("|".join(default_list),
                                    flags=re.IGNORECASE)
@@ -144,23 +143,20 @@ class GetLists(object):
         self.load_project_flag_list_file(il.get('project_exceptions'), project)
         try:
             flag_list = (fl['file_audits']['file_contents'])
-            logger.info('Loaded %s file_contents flag_list', project)
         except KeyError:
             logger.error('Key Error processing file_contents list values')
 
         try:
             ignore_list = il['file_audits']['file_contents']
-            logger.info('Loaded %s file_contents ignore_list', project)
-
         except KeyError:
             logger.error('Key Error processing file_contents list values')
 
         try:
             project_list = fl['file_audits'][project]['file_contents']
-            logger.info('Loaded %s file_contents project_exceptions', project)
+            logger.info('Loaded %s specific file_contents entries', project) 
 
         except KeyError:
-            logger.info('No file_contents project_exceptions for %s', project)
+            logger.info('No project specific file_contents section for project %s', project)
 
         if project_list:
             ignore_list_merge = project_list + ignore_list
@@ -174,9 +170,9 @@ class GetLists(object):
             return flag_list, ignore_list_re
 
     def ignore_directories(self, project):
+        project_list = False
         try:
             ignore_directories = il['ignore_directories']
-            logger.info('Loaded %s ignore_directories', project)
         except KeyError:
             logger.error('Key Error processing ignore_directories list values')
 
