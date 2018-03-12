@@ -33,7 +33,7 @@ Anteater has many uses.
 
 First it can be set up to block strings and files with a potential security
 impact or risk. This could include private keys, shell history,
-aws credentials (*cough* uber *cough*).
+aws credentials.
 
 Let's take a look at an example::
 
