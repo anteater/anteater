@@ -19,6 +19,10 @@ With a few simple steps it can be easily implemented into a CI / CD workflow
 with tooling such as Travis CI, CircleCI, Gitlab CI/CD and jenkins, gerrit and
 possibly others.
 
+Anteater also provides a Virus Total API, so any binaries, public IP addresses
+or URL's found by anteater, will be sent to the Virus Total API and a report
+will be returned. If any object is reported as malicous, it will fail the build.
+
 It is currently used in the Linux Foundations project 'OPNFV' as means to
 provided automated security checks at gate.
 

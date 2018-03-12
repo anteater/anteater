@@ -26,6 +26,10 @@ It is currently used in the Linux Foundations project ['OPNFV'](https://opnfv.or
 as means to provide automated security checks at gate, but as shown in the
 examples below, it can be used for other scenarios.
 
+Anteater also provides a Virus Total API, so any binaries, public IP addresses
+or URL's found by anteater, will be sent to the Virus Total API and a report
+will be returned. If any object is reported as malicous, it will fail the build.
+
 Why would I want to use this?
 -----------------------------
 
