@@ -283,7 +283,8 @@ binary exceptions
 
 If the ``--bincheck`` argument is passed to anteater, anteater blocks (CI build
 failure) all binary files unless a sha256 checksum of the file is entered as an
-exeception.
+exeception. If no checksum is present, the binary (hash) is also sent to 
+the VirusTotal API.
 
 This is done using the relative path from the root of the respository.
 
@@ -295,4 +296,4 @@ For example::
     - 5a1101e8b1796f6b40641b90643d83516e72b5b54b1fd289cf233745ec534ec9
 
 Examples of files can be found here_.
-.. _here: https://github.com/lukehinds/anteater/tree/master/examples
+.. _here: https://github.com/anteater/tree/master/examples

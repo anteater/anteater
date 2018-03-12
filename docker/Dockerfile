@@ -26,15 +26,18 @@ ENV ANTEATER_HOME ${HOME}/anteater
 # Packaged dependencies
 RUN yum -y install epel-release
 RUN yum -y update
-RUN yum -y install git python-devel python-pip python-virtualenv
+RUN yum -y install git python-devel python-pip python-virtualenv redis
 RUN yum clean all
+
+# Start Redis Server
+RUN systemctl start redis
 
 # Run all following commands and container as non-root user
 USER ${ANTEATER_USER}
 
 # Commands to clone and install
 RUN mkdir -p ${ANTEATER_HOME}
-RUN git clone https://github.com/lukehinds/anteater ${ANTEATER_HOME}
+RUN git clone https://github.com/anteater ${ANTEATER_HOME}
 WORKDIR ${ANTEATER_HOME}
 RUN virtualenv ~/venv
 RUN . ~/venv/bin/activate

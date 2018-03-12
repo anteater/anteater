@@ -29,11 +29,7 @@ file_ignore:
 # delimiter, but don't start with one!
 ignore_directories:
   - .git/
-  - examples
-  - anteater_files
-  - tests/
-  - docs/
-  - spec/
+
 
 # Add your project exception file into here.
 project_exceptions:

@@ -9,6 +9,8 @@
 binaries:
   images/pal.png:
     - a71e13ebeb2500ed20781ab3ae8a9b306cf69a6c8be9a31e96d4e04f1657b4d8
+  images/flow.png:
+    - d2c417f51abbac1c68b9110f1a2fb6a1571c15274d637b43c98a0f816c8d151f
 
 # Ignore file_names and file_contents that match the following RegExps
 file_audits:
@@ -22,8 +24,3 @@ file_audits:
 # delimiter, but don't start with one!
 ignore_directories:
   - .git/
-  - examples
-  - anteater_files
-  - tests/
-  - docs/
-  - spec/

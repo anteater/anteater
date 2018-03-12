@@ -35,7 +35,7 @@ locally.
 ``flag_list.yaml`` is where regular expressions are set, that if matched will
 fail the build, thereby marking a failure on the github pull request page.
 
-More examples can be found `here <https://github.com/lukehinds/anteater/blob/master/examples/>`_.
+More examples can be found `here <https://github.com/anteater/blob/master/examples/>`_.
 
 For information on ``flag_list``, please consult the :doc:`user_guide`
 
@@ -98,7 +98,16 @@ configuration file ``.circleci/config.yml``::
               path: test-reports
               destination: test-reports
 
-An example config.yml can be found `here <https://github.com/lukehinds/anteater/blob/master/examples/config.yml>`_.
+An example config.yml can be found `here <https://github.com/anteater/blob/master/examples/config.yml>`_.
+
+Virus Total API KEY
+-------------------
+
+Should you wish to use any of the Virus Total functionailty such as URL
+scanning, then please set your Virus Total Key as the environment variable
+``VT_KEY`` in the "Environment Variables" section of your Circle CI app, see
+`here <https://circleci.com/docs/2.0/env-vars/#adding-environment-variables-in-the-app>`_.
+for complete details.
 
 Developer Workflow
 ------------------

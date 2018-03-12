@@ -14,8 +14,8 @@
 """Anteater - CI Gate Checks.
 
 Usage:
-  anteater [--bincheck] (-p |--project) <project> [(-ps |--patchset) <patchset>]
-  anteater [--bincheck] (-p |--project) <project> [--path <project_path>]
+  anteater [--bincheck] [--ips] [--urls] (-p |--project) <project> [(-ps |--patchset) <patchset>]
+  anteater [--bincheck] [--ips] [--urls] (-p |--project) <project> [--path <project_path>]
   anteater (-h | --help)
   anteater --version
 
@@ -24,14 +24,11 @@ Options:
   --version     Show version.
 """
 from __future__ import absolute_import
-
+from docopt import docopt
 import errno
 import logging
-
 import os
 import six.moves.configparser
-from docopt import docopt
-
 from anteater import LOG
 from anteater.src.patch_scan import prepare_patchset
 from anteater.src.project_scan import prepare_project
@@ -87,10 +84,10 @@ def main():
 
     if arguments['<patchset>']:
         prepare_patchset(arguments['<project>'], arguments['<patchset>'],
-                         arguments['--bincheck'])
+                         arguments['--bincheck'], arguments['--ips'], arguments['--urls'])
     elif arguments['<project_path>']:
         prepare_project(arguments['<project>'], arguments['<project_path>'],
-                        arguments['--bincheck'])
+                         arguments['--bincheck'], arguments['--ips'], arguments['--urls'])
 
 
 if __name__ == "__main__":

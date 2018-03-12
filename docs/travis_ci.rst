@@ -35,7 +35,7 @@ locally.
 ``flag_list.yaml`` is where all regular expressions are set, that if matched
 will fail the build, thereby marking a failure on the pull request page.
 
-Some examples can be found `here <https://github.com/lukehinds/anteater/blob/master/examples/>`_.
+Some examples can be found `here <https://github.com/anteater/blob/master/examples/>`_.
 
 For information on ``flag_list``, please consult the :doc:`user_guide`
 
@@ -84,7 +84,16 @@ All that is required now is to make the following entries to your yaml file::
         - language: ruby
         # your project travis elements go here.
 
-An example .travis.yml can be found `here <https://github.com/lukehinds/anteater/blob/master/examples/.travis.yml>`_.
+An example .travis.yml can be found `here <https://github.com/anteater/blob/master/examples/.travis.yml>`_.
+
+Virus Total API KEY
+-------------------
+
+Should you wish to use any of the Virus Total functionailty such as URL
+scanning, then please set your Virus Total Key as the environment variable
+``VT_KEY`` in the "Environment Variables" section of your Travis CI job, see
+`here <https://docs.travis-ci.com/user/environment-variables#Defining-Variables-in-Repository-Settings>`_.
+for complete details.
 
 Developer Workflow
 ------------------

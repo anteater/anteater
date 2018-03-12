@@ -79,14 +79,6 @@ file_audits:
       regex: (password|passwd)(.*:|.*=.*)
       desc: "Possible hardcoded password"
 
-    curl:
-      regex: \bcurl\b
-      desc: "Curl can be used for retrieving objects from untrusted sources"
-
-    clone:
-      regex: git.*clone
-      desc: "clone blocked as using an non approved external source"
-
     dual_ec_drbg:
       regex: dual_ec_drbg
       desc: "Insecure cryptographic algorithm"
@@ -147,10 +139,6 @@ file_audits:
       regex: tlsv1
       desc: "Insecure TLS Version"
 
-    wget:
-      regex: wget
-      desc: "WGET is blocked to unknown / untrusted destinations"
-
     run_as_root:
       regex: run_as_root.*=.*True
       desc: "Its better to use sudo or a rootwrapper"
@@ -186,7 +174,7 @@ file_audits:
         "tmp directories are risky. They are world writable and easily guessed"
 
     yamlload:
-      regex: \yaml\.load
+      regex: yaml\.load
       desc: |
         "Avoid dangerous file parsing & serialization libs, use yaml.safe_load"
 

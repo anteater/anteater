@@ -1,8 +1,7 @@
-#!/bin/bash
+hashlib.md5()
 
-curl http://212.23.22.33/install_script.sh | sudo bash
+http://cool-mart.ru/katalog-produkcii
 
+http://lastaffa.denunzio.it/RcDo6NB/
 
-sudo yum -y install \
-        curl \
-        libyaml \
+https://www.reddit.com/r/netsec

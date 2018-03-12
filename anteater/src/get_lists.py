@@ -18,8 +18,8 @@ from __future__ import absolute_import
 import logging
 import six.moves.configparser
 import copy
+import re
 import yaml
-import regex as re
 
 
 config = six.moves.configparser.SafeConfigParser()
@@ -38,11 +38,13 @@ with open(ignore_list, 'r') as f:
 
 
 def _remove_nullvalue(contents):
+    """ Removes nullvalue placeholders required to prevent key errors"""
     if contents and len(contents) > 2 and 'nullvalue' in contents:
         contents.remove('nullvalue')
 
 
 def _merge(org, ded):
+    """ Merges project keys with main list keys """
     ret = copy.deepcopy(org)
     for key in list(set([k for k in org] + [k for k in ded])):
         if key in org and key in ded:
@@ -55,11 +57,11 @@ def _merge(org, ded):
 
 class GetLists(object):
     def __init__(self, *args):
-        # Placeholder for future args if more filters are needed
         self.args = args
         self.loaded = False
 
     def load_project_flag_list_file (self, project_exceptions, project):
+        """ Loads project specific lists """
         if self.loaded:
             return
         exception_file = None
@@ -76,6 +78,7 @@ class GetLists(object):
             self.loaded = True
 
     def load_project_ignore_list_file(self, project_exceptions, project):
+        """ Loads project specific ignore lists """
         if self.loaded:
             return
         exception_file = None
@@ -93,6 +96,7 @@ class GetLists(object):
             self.loaded = True
 
     def binary_hash(self, project, patch_file):
+        """ Gathers sha256 hashes from binary lists """
         self.load_project_ignore_list_file(il.get('project_exceptions'),
                                            project)
         try:
@@ -115,6 +119,7 @@ class GetLists(object):
         return new_list
 
     def file_audit_list(self, project):
+        """ Gathers file name lists """
         project_list = False
         self.load_project_flag_list_file(il.get('project_exceptions'), project)
         try:
@@ -139,6 +144,7 @@ class GetLists(object):
             return file_names_re, file_names_proj_re
 
     def file_content_list(self,  project):
+        """ gathers content strings """
         project_list = False
         self.load_project_flag_list_file(il.get('project_exceptions'), project)
         try:
@@ -170,6 +176,7 @@ class GetLists(object):
             return flag_list, ignore_list_re
 
     def ignore_directories(self, project):
+        """ Gathers a list of directories to ignore """
         project_list = False
         try:
             ignore_directories = il['ignore_directories']
@@ -194,6 +201,7 @@ class GetLists(object):
             return ignore_directories
 
     def file_ignore(self):
+        """ Gathers a list of files to ignore """
         try:
             file_ignore = (il['file_ignore'])
         except KeyError:
