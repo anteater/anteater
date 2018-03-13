@@ -143,8 +143,12 @@ def scan_file(project, project_dir, bincheck, ips, urls, file_audit_list,
                                 ipaddr = re.findall(r'(?:\d{1,3}\.)+(?:\d{1,3})', line)
                                 if ipaddr:
                                     ipaddr = ipaddr[0]
-                                    if ipaddress.ip_address(ipaddr).is_global:
+                                    try:
+                                        ipaddress.ip_address(ipaddr).is_global
                                         scan_ipaddr(ipaddr, project, split_path, apikey)
+                                    except:
+                                        pass # Ok to pass here, as this captures 
+                                             # the odd string which is not an IP Address
                             
                             # Check for URLs and send for report to Virus Total
                             if urls:

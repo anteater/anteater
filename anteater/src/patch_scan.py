@@ -156,8 +156,12 @@ def scan_patch(project, patch_file, bincheck, ips, urls, file_audit_list,
                             ipaddr = re.findall(r'(?:\d{1,3}\.)+(?:\d{1,3})', line)
                             if ipaddr:
                                 ipaddr = ipaddr[0]
-                                if ipaddress.ip_address(ipaddr).is_global:
+                                try:
+                                    ipaddress.ip_address(ipaddr).is_global
                                     scan_ipaddr(ipaddr, apikey)
+                                except:
+                                    pass # Ok to pass here, as this captures 
+                                             # the odd string which is not an IP Address
                             
                         # Check for URLs and send for report to Virus Total
                         if urls:
@@ -268,6 +272,8 @@ def scan_ipaddr(ipaddr, apikey):
         logger.error('%s has been known to resolve to malicious urls', ipaddr)
         for url in urls:
             logger.info('URL: %s',url)
+    else:
+        logger.info('%s has no record of resolving to malicious urls', ipaddr)
 
 def scan_url(url, apikey):
     """
