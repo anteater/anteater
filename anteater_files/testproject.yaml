@@ -19,6 +19,12 @@ file_audits:
   file_contents:
     - ignore-this-string
 
+url_ignore:
+  - 'www.iana.org'
+
+ip_ignore:
+  - '192.0.43.8'
+
 # Unit tests, functional tests, documentation etc. These folders will never be
 # scanned. This is a relative path, so always leave a trailing `/` path
 # delimiter, but don't start with one!

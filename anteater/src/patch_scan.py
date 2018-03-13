@@ -51,6 +51,12 @@ def prepare_patchset(project, patchset,  bincheck, ips, urls):
     # Get file content black list and project waivers
     flag_list, ignore_list = lists.file_content_list(project)
 
+    # Get URL Ignore Lists
+    url_ignore = lists.url_ignore(project)
+
+    # Get URL Ignore Lists
+    ip_ignore = lists.ip_ignore(project)
+
     # Get File Ignore Lists
     file_ignore = lists.file_ignore()
 
@@ -86,7 +92,7 @@ def prepare_patchset(project, patchset,  bincheck, ips, urls):
         # Perform binary and file / content checks
         scan_patch(project, patch_file, bincheck, ips, urls, file_audit_list,
                    file_audit_project_list, flag_list, ignore_list,
-                   file_ignore, ignore_directories, apikey)
+                   file_ignore, ignore_directories, url_ignore, ip_ignore, apikey)
 
     # Process final result
     process_failure()
@@ -94,7 +100,7 @@ def prepare_patchset(project, patchset,  bincheck, ips, urls):
 
 def scan_patch(project, patch_file, bincheck, ips, urls, file_audit_list,
                file_audit_project_list, flag_list, ignore_list, file_ignore,
-               ignore_directories, apikey):
+               ignore_directories, url_ignore, ip_ignore, apikey):
 
     """ 
     Scan actions for each commited file in patch set
@@ -156,19 +162,26 @@ def scan_patch(project, patch_file, bincheck, ips, urls, file_audit_list,
                             ipaddr = re.findall(r'(?:\d{1,3}\.)+(?:\d{1,3})', line)
                             if ipaddr:
                                 ipaddr = ipaddr[0]
-                                try:
-                                    ipaddress.ip_address(ipaddr).is_global
-                                    scan_ipaddr(ipaddr, apikey)
-                                except:
-                                    pass # Ok to pass here, as this captures 
-                                             # the odd string which is not an IP Address
+                                if re.search(ip_ignore,ipaddr):
+                                        logger.info('%s is in IP ignore list.', ipaddr)
+                                else:
+                                    try:
+                                        ipaddress.ip_address(ipaddr).is_global
+                                        scan_ipaddr(ipaddr, apikey)
+                                    except:
+                                        pass # Ok to pass here, as this captures 
+                                                # the odd string which is not an IP Address
                             
                         # Check for URLs and send for report to Virus Total
                         if urls:
                             url = re.search("(?P<url>https?://[^\s]+)", line) or re.search("(?P<url>www[^\s]+)", line)
                             if url:
                                 url = url.group("url")
-                                scan_url(url, apikey)
+                                if re.search(url_ignore, url):
+                                    logger.info('%s is in URL ignore list.', url)
+                                else:
+                                    scan_url(url, apikey)
+
 
                         # Perform search within text files
                         for key, value in flag_list.items():

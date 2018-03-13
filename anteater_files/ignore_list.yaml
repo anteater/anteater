@@ -24,6 +24,13 @@ file_ignore:
   - '.rst'
   - '.md'
 
+url_ignore:
+  - 'http://www.apache.org'
+  - 'https://github.com'
+
+ip_ignore:
+  - '172.217.16.206'
+
 # Unit tests, functional tests, documentation etc. These folders will never be
 # scanned. This is a relative path, so always leave a trailing `/` path
 # delimiter, but don't start with one!
