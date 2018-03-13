@@ -1,4 +1,5 @@
 include LICENSE README.md
 include anteater.conf
-include master_list.yaml
-include ignore_list.yaml
+include requirements.txt
+include anteater_files/master_list.yaml
+include anteater_files/ignore_list.yaml

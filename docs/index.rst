@@ -24,7 +24,7 @@ Contents
 
    installation
    user_guide
-   virus_total
+   virus_total_api
    travis_ci
    circle_ci
 

@@ -10,6 +10,9 @@ REQUIRES = [
     'six',
     'binaryornot',
     'PyYAML',
+    'pylimit',
+    'redis',
+    'requests'
 ]
 
 
@@ -51,7 +54,7 @@ def read(fname):
 
 setup(
     name='anteater',
-    version="0.17",
+    version="0.19",
     description='Anteater - CI Validation Framework',
     long_description=read("README.md"),
     author='Luke Hinds',
