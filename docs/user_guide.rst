@@ -13,6 +13,7 @@ Anteaters configuration exists witin ``anteater.conf``::
     anteater_log = %(anteater_files)s/.reports/anteater.log
     flag_list =  %(anteater_files)s/flag_list.yaml
     ignore_list = %(anteater_files)s/ignore_list.yaml
+    vt_rate_type = public
 
 * ``anteater_files``: Main location to store anteater ``flag_list``,
   ``ignore_list`` and reports. This location is ignored by anteater when
@@ -21,6 +22,7 @@ Anteaters configuration exists witin ``anteater.conf``::
 * ``anteater_log``: anteater application logging output file.
 * ``flag_list``: Regular Expressions to flag. See RegExp Framework.
 * ``ignore_list``: Regular Expressions to overwrite / cancel ``flag_list``.
+* ``vt_rate_type``: ``public`` or ``private`` VirusTotal API limiting.
 
 The ``anteater.conf`` file should always be in the directory from where the
 anteater command is run from. ``anteater`` will look for ``anteater.conf``
@@ -34,10 +36,11 @@ Anteater uses a simple argument system in the standard POSIX format.
 The main usage  parameters are ``--project`` and either ``---path`` or
 ``--patchset``.
 
-An optional parameter is ``--bincheck`` which is the binary check system. When
-this argument is passed, all binaries / blobs will result in a CI build failure
+Optional parameters are ``--bincheck`` which is the binary check system. When
+this argument is passed, all binaries / blobs will result in a VirusTotal scan 
 - unless a sha256 checksum of the binary is listed in one of the exeception
-files (``ignore_list`` or a ``project_exceptions`` file.
+files (``ignore_list`` or a ``project_exceptions`` file. ``--ips`` peforms a
+scan of IP addresses, and ``--urls`` for any URL's found within file contents.
 
 Refer to `binary exceptions`_ for more details on the binary blocking feature of
 anteater.
@@ -277,6 +280,25 @@ file_names exceptions
 
 As with ``file_contents``, ``file_names`` incorrectly flagged as false postives may
 also be removed using a regular expression.
+
+Public IP Addresses
+-------------------
+
+If `--ips` is passed as arguments, anteater will perform a scan for 
+public / external IP Addresses. Once an address is found, the IP is sent to 
+the Virus Total API and if the IP Address has past assocations with malicous 
+or malware hosting domains, a failure is registered and a report is provided.
+
+An example report can be seen `here <https://www.virustotal.com/#/ip-address/90.156.201.27>`_.
+
+URLs
+----
+
+If ``--urls`` is passed as arguments, anteater will perform a scan for URL's. 
+If an URL is found, the URL is sent to the Virus Total API which then 
+compares the URL to a large list of URL blacklisting services.
+
+An example report can be seen `here <https://www.virustotal.com/#/url/fb69ecad84eb86b1afddcca17aec38daea196e7c883b22ff88a7c39fd8fbdf1a/detection>`_.
 
 binary exceptions
 -----------------
