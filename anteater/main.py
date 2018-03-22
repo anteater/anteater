@@ -14,8 +14,8 @@
 """Anteater - CI Gate Checks.
 
 Usage:
-  anteater [--bincheck] [--ips] [--urls] (-p |--project) <project> [(-ps |--patchset) <patchset>]
-  anteater [--bincheck] [--ips] [--urls] (-p |--project) <project> [--path <project_path>]
+  anteater [--binaries] [--ips] [--urls] (-p |--project) <project> [(-ps |--patchset) <patchset>]
+  anteater [--binaries] [--ips] [--urls] (-p |--project) <project> [--path <project_path>]
   anteater (-h | --help)
   anteater --version
 
@@ -36,7 +36,7 @@ from anteater.src.project_scan import prepare_project
 config = six.moves.configparser.SafeConfigParser()
 config.read('anteater.conf')
 reports_dir = config.get('config', 'reports_dir')
-__version__ = "0.21"
+__version__ = "0.22"
 logger = logging.getLogger(__name__)
 
 
@@ -84,10 +84,10 @@ def main():
 
     if arguments['<patchset>']:
         prepare_patchset(arguments['<project>'], arguments['<patchset>'],
-                         arguments['--bincheck'], arguments['--ips'], arguments['--urls'])
+                         arguments['--binaries'], arguments['--ips'], arguments['--urls'])
     elif arguments['<project_path>']:
         prepare_project(arguments['<project>'], arguments['<project_path>'],
-                         arguments['--bincheck'], arguments['--ips'], arguments['--urls'])
+                         arguments['--binaries'], arguments['--ips'], arguments['--urls'])
 
 
 if __name__ == "__main__":

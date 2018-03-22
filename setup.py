@@ -54,12 +54,12 @@ def read(fname):
 
 setup(
     name='anteater',
-    version="0.21",
+    version="0.22",
     description='Anteater - CI Validation Framework',
     long_description=read("README.md"),
     author='Luke Hinds',
     author_email='lhinds@redhat.com',
-    url='https://github.com/lukehinds/anteater',
+    url='https://github.com/anteater/anteater',
     install_requires=REQUIRES,
     license=read("LICENSE"),
     zip_safe=False,
@@ -69,10 +69,7 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
-        "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.7',
-        "Programming Language :: Python :: 3",
-        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy'
     ],

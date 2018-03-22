@@ -134,7 +134,7 @@ Yet other instance of ``MD5`` continue to get flagged.
 Binaries
 --------
 
-With anteater, if you pass the argument ``--bincheck``, every binary found
+With anteater, if you pass the argument ``--binaries``, any binary found
 causes a build failure on the originating pull request. It is not until a
 sha256 checksum is set within anteater's YAML ignore files, that the build is
 allowed to pass.
@@ -145,7 +145,7 @@ etc that may have an unknown origin or tampering with the existing binary files.
 An example:
 
 ```
-$ anteater --bincheck --project myproj --patchset /tmp/patch
+$ anteater --binaries --project myproj --patchset /tmp/patch
 Non Whitelisted Binary file: /folder/to/repo/images/pal.png
 Please submit patch with this hash: 3aeae9c71e82942e2f34341e9185b14b7cca9142d53f8724bb8e9531a73de8b2
 ```
@@ -157,12 +157,29 @@ binaries:
 ```
 Run the job again::
 ```
-$ anteater --bincheck --project myproj --patchset /tmp/patch
+$ anteater --binaries --project myproj --patchset /tmp/patch
 Found matching file hash for: /folder/to/repo/images/pal.png
 ```
 
 This way we can sure binaries are not tampered with by means of a failed
 cryptographic signature / checksum.
+
+Any binaries not having a sha256 checksum will also be sent to the Virus Total
+API for scanning.
+
+Virus Total API
+---------------
+
+If the following flags (combined or individually) ``--ips``, ``-urls``, ``--binaries``
+are used, anteater will perform a lookup to the Virus Total API.
+
+IP addresses, will be have their DNS history checked for any previous or present connection
+with known black listed domains marked as malicious or containing malware.
+
+URLs, will be checked for any previous or present connection with known black listed domains
+marked as malicious or containing malware.
+
+As mentioned, Binaries will be sent to Virus Total and verified as clean / infected.
 
 For more details and indepth documentation, please visit [readthedocs](http://anteater.readthedocs.io/en/latest/)
 

@@ -13,4 +13,4 @@ before_script:
   - anteater --version
 
 script:
-  - anteater --project CHANGEME! --patchset ./patch
+  - anteater --ips --urls --binaries --project CHANGEME! --patchset ./patch

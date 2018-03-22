@@ -14,12 +14,13 @@
     calling instance
 """
 from __future__ import absolute_import
-
+import collections
 import logging
 import six.moves.configparser
 import copy
 import re
 import yaml
+import sys
 
 
 config = six.moves.configparser.SafeConfigParser()
@@ -30,30 +31,26 @@ flag_list = config.get('config', 'flag_list')
 ignore_list = config.get('config', 'ignore_list')
 ignore_dirs = ['.git', 'examples', anteater_files]
 
-with open(flag_list, 'r') as f:
-    fl = yaml.safe_load(f)
+try:
+    with open(flag_list, 'r') as f:
+        fl = yaml.safe_load(f)
+except IOError:
+    logger.error('File not found: %s', ignore_list)
+    sys.exit(0)
+try:
+    with open(ignore_list, 'r') as f:
+        il = yaml.safe_load(f)
+except IOError:
+    logger.error('File not found: %s', ignore_list)
+    sys.exit(0)
 
-with open(ignore_list, 'r') as f:
-    il = yaml.safe_load(f)
-
+def unique(sequence):
+    return list(set(sequence))
 
 def _remove_nullvalue(contents):
     """ Removes nullvalue placeholders required to prevent key errors"""
     if contents and len(contents) > 2 and 'nullvalue' in contents:
         contents.remove('nullvalue')
-
-
-def _merge(org, ded):
-    """ Merges project keys with main list keys """
-    ret = copy.deepcopy(org)
-    for key in list(set([k for k in org] + [k for k in ded])):
-        if key in org and key in ded:
-            ret[key] = list(set(ret[key] + ded[key]))
-            _remove_nullvalue(ret[key])
-        elif key in ded:
-            ret[key] = ded[key]
-    return ret
-
 
 class GetLists(object):
     def __init__(self, *args):
@@ -69,13 +66,20 @@ class GetLists(object):
             if project in item:
                 exception_file = item.get(project)
         if exception_file is not None:
-            with open(exception_file, 'r') as f:
-                ex = yaml.safe_load(f)
+            try:
+                with open(exception_file, 'r') as f:
+                    ex = yaml.safe_load(f)
+            except IOError:
+                logger.error('File not found: %s', exception_file)
+                sys.exit(0)
             for key in ex:
                 if key in fl:
                     fl[key][project] = _merge(fl[key][project], ex.get(key, None)) \
                         if project in fl[key] else ex.get(key, None)
             self.loaded = True
+        else:
+            logger.info('%s not found in %s', project, ignore_list)
+            logger.info('No project specific exceptions will be applied')
 
     def load_project_ignore_list_file(self, project_exceptions, project):
         """ Loads project specific ignore lists """
@@ -85,38 +89,63 @@ class GetLists(object):
         for item in project_exceptions:
             if project in item:
                 exception_file = item.get(project)
+            else:
+                logger.info('%s not found in %s', project, ignore_list)
+                sys.exit(0)
         if exception_file is not None:
-            with open(exception_file, 'r') as f:
-                ex = yaml.safe_load(f)
+            try:
+                with open(exception_file, 'r') as f:
+                    ex = yaml.safe_load(f)
+            except IOError:
+                logger.error('File not found: %s', exception_file)
+                sys.exit(0)
+
             ex.pop('ignore_directories', None)
+
             for key in ex:
                 if key in il:
                     il[key][project] = _merge(il[key][project], ex.get(key, None)) \
                         if project in il[key] else ex.get(key, None)
             self.loaded = True
+        else:
+            logger.info('%s not found in %s', project, ignore_list)
+            logger.info('No project specific exceptions will be applied')
 
+    
     def binary_hash(self, project, patch_file):
         """ Gathers sha256 hashes from binary lists """
-        self.load_project_ignore_list_file(il.get('project_exceptions'),
-                                           project)
+        global il
+        exception_file = None
         try:
-            main_binary_hash = (il['binaries'][patch_file])
+            project_exceptions = il.get('project_exceptions') # try needed
         except KeyError:
-            main_binary_hash = []
+            logger.info('project_exceptions missing in %s for %s', ignore_list, project)
 
-        try:
-            project_binary_hash = (il['binaries'][project][patch_file])
-        except KeyError:
-            project_binary_hash = []
+        for project_files in project_exceptions:
+            if project in project_files:
+                exception_file = project_files.get(project)
+                with open(exception_file, 'r') as f:
+                    bl = yaml.safe_load(f)
 
-        if main_binary_hash and project_binary_hash :
-            logger.error('Warning: You have two hash entries for the %s file',
-                         patch_file)
-            logger.error('Check for duplicate entries in %s and %s.yaml for %s',
-                         ignore_list, project, patch_file)
-
-        new_list = main_binary_hash + project_binary_hash
-        return new_list
+                for key, value in bl.items():
+                    if key == 'binaries':
+                        if patch_file in value:
+                            hashvalue = value[patch_file]
+                            return hashvalue
+                        else:
+                            for key, value in il.items():
+                                if key == 'binaries':
+                                    if patch_file in value:
+                                        hashvalue = value[patch_file]
+                                        return hashvalue
+                                    else:
+                                        hashvalue = ""
+                                        return hashvalue
+            else:
+                logger.info('%s not found in %s', project, ignore_list)
+                logger.info('No project specific exceptions will be applied')
+                hashvalue = ""
+                return hashvalue
 
     def file_audit_list(self, project):
         """ Gathers file name lists """
@@ -263,4 +292,3 @@ class GetLists(object):
         except KeyError:
             logger.error('Key Error processing file_ignore list values')
         return file_ignore
-

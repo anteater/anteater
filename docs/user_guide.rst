@@ -36,7 +36,7 @@ Anteater uses a simple argument system in the standard POSIX format.
 The main usage  parameters are ``--project`` and either ``---path`` or
 ``--patchset``.
 
-Optional parameters are ``--bincheck`` which is the binary check system. When
+Optional parameters are ``--binaries`` which is the binary check system. When
 this argument is passed, all binaries / blobs will result in a VirusTotal scan 
 - unless a sha256 checksum of the binary is listed in one of the exeception
 files (``ignore_list`` or a ``project_exceptions`` file. ``--ips`` peforms a
@@ -303,7 +303,7 @@ An example report can be seen `here <https://www.virustotal.com/#/url/fb69ecad84
 binary exceptions
 -----------------
 
-If the ``--bincheck`` argument is passed to anteater, anteater blocks (CI build
+If the ``--binaries`` argument is passed to anteater, anteater blocks (CI build
 failure) all binary files unless a sha256 checksum of the file is entered as an
 exeception. If no checksum is present, the binary (hash) is also sent to 
 the VirusTotal API.

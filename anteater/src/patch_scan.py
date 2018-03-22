@@ -35,11 +35,10 @@ config = six.moves.configparser.SafeConfigParser()
 config.read('anteater.conf')
 anteater_files = config.get('config', 'anteater_files')
 reports_dir = config.get('config', 'reports_dir')
-
-failure = False
 hasher = hashlib.sha256()
+failure = False
 
-def prepare_patchset(project, patchset,  bincheck, ips, urls):
+def prepare_patchset(project, patchset,  binaries, ips, urls):
     """ Create black/white lists and default / project waivers
         and iterates over patchset file """
     # Get Various Lists / Project Waivers
@@ -60,9 +59,10 @@ def prepare_patchset(project, patchset,  bincheck, ips, urls):
     # Get File Ignore Lists
     file_ignore = lists.file_ignore()
 
+    # Get Directory Ignore Lists
     ignore_directories = lists.ignore_directories(project)
 
-    if bincheck or ips or urls:
+    if binaries or ips or urls:
         try:  
             apikey = os.environ["VT_KEY"]
         except KeyError: 
@@ -78,6 +78,8 @@ def prepare_patchset(project, patchset,  bincheck, ips, urls):
         if not patten.match(vt_rate_type):
             logger.error("Unrecognized %s option for vt_rate_type", vt_rate_type)
             sys.exit(1)
+    else:
+        apikey = ""
 
     # Open patch set to get file list
     try:
@@ -90,7 +92,7 @@ def prepare_patchset(project, patchset,  bincheck, ips, urls):
     for line in lines:
         patch_file = line.strip('\n')
         # Perform binary and file / content checks
-        scan_patch(project, patch_file, bincheck, ips, urls, file_audit_list,
+        scan_patch(project, patch_file, binaries, ips, urls, file_audit_list,
                    file_audit_project_list, flag_list, ignore_list,
                    file_ignore, ignore_directories, url_ignore, ip_ignore, apikey)
 
@@ -98,7 +100,7 @@ def prepare_patchset(project, patchset,  bincheck, ips, urls):
     process_failure()
 
 
-def scan_patch(project, patch_file, bincheck, ips, urls, file_audit_list,
+def scan_patch(project, patch_file, binaries, ips, urls, file_audit_list,
                file_audit_project_list, flag_list, ignore_list, file_ignore,
                ignore_directories, url_ignore, ip_ignore, apikey):
 
@@ -109,24 +111,29 @@ def scan_patch(project, patch_file, bincheck, ips, urls, file_audit_list,
     split_path = patch_file.split(project + '/', 1)[-1]
 
     if not any(x in split_path for x in ignore_directories):
-        if is_binary(patch_file) and bincheck:
+        if is_binary(patch_file) and binaries:
             hashlist = get_lists.GetLists()
             binary_hash = hashlist.binary_hash(project, split_path)
+
             with open(patch_file, 'rb') as afile:
+                hasher = hashlib.sha256()
                 buf = afile.read()
                 hasher.update(buf)
                 sha256hash = hasher.hexdigest()
-                
+        
             if sha256hash in binary_hash:
+                
                 logger.info('Found matching file hash for: %s',
                             patch_file)
             else:
+                logger.info('sha256hash: %s', sha256hash)
                 logger.error('Non Whitelisted Binary file: %s',
                              patch_file)
                 
                 scan_binary(patch_file, project, sha256hash, apikey) 
-                # logger.error('Submit patch with the following hash: %s',
+
                 failure = True
+
             with open(reports_dir + "binaries-" + project + ".log", "a") \
                     as gate_report:
                 gate_report.write('Non Whitelisted Binary file: {0}\n'.
@@ -246,7 +253,7 @@ def negative_report(binary_report,sha256hash, project, patch_file):
     logger.info('File scan date for %s shows a clean status on: %s', patch_file, scan_date)
     logger.info('Full report avaliable here: %s', report_url)
     logger.info('The following sha256 hash can be used in your %s.yaml file to suppress this scan:', project)
-    logger.info('%s:', sha256hash)
+    logger.info('%s', sha256hash)
     with open(reports_dir + "binaries-" + project + ".log",
                     "a") as gate_report:
                 gate_report.write('Non Whitelisted Binary: {}\n'.
@@ -284,7 +291,7 @@ def scan_ipaddr(ipaddr, apikey):
         failure = True
         logger.error('%s has been known to resolve to malicious urls', ipaddr)
         for url in urls:
-            logger.info('URL: %s',url)
+            logger.error('%s on date: %s', url['url'], url['scan_date'])
     else:
         logger.info('%s has no record of resolving to malicious urls', ipaddr)
 

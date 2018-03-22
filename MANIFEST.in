@@ -3,3 +3,12 @@ include anteater.conf
 include requirements.txt
 include anteater_files/master_list.yaml
 include anteater_files/ignore_list.yaml
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.orig
+global-exclude *.rej
+global-exclude tests/*
+global-exclude .git*
+global-exclude .DS_Store
+global-exclude *.swp
+global-exclude anteater_files/.reports/*

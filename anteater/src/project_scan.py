@@ -24,7 +24,7 @@ import six.moves.configparser
 import os
 import re
 import sys
-import time
+from time import sleep
 from binaryornot.check import is_binary
 from . import get_lists
 from . import virus_total
@@ -37,9 +37,9 @@ reports_dir = config.get('config', 'reports_dir')
 ignore_dirs = ['.git', 'examples', anteater_files]
 hasher = hashlib.sha256()
 
-def prepare_project(project, project_dir, bincheck, ips, urls):
+def prepare_project(project, project_dir, binaries, ips, urls):
     """
-    Generates blacklists / whitelists and calls main functions
+    Generates blacklists / whitelists
     """
 
     # Get Various Lists / Project Waivers
@@ -59,12 +59,13 @@ def prepare_project(project, project_dir, bincheck, ips, urls):
     # Get URL Ignore Lists
     url_ignore = lists.url_ignore(project)
 
-    # Get URL Ignore Lists
+    # Get IP Ignore Lists
     ip_ignore = lists.ip_ignore(project)
 
+    # Get Binary Ignore Lists
     hashlist = get_lists.GetLists()
 
-    if bincheck or ips or urls:
+    if binaries or ips or urls:
         try:  
             apikey = os.environ["VT_KEY"]
         except KeyError: 
@@ -82,15 +83,14 @@ def prepare_project(project, project_dir, bincheck, ips, urls):
             sys.exit(1)
 
     # Perform rudimentary scans
-    scan_file(project, project_dir, bincheck, ips, urls, file_audit_list,
+    scan_file(project, project_dir, binaries, ips, urls, file_audit_list,
               file_audit_project_list, flag_list, ignore_list, hashlist, 
               file_ignore, ignore_directories, url_ignore, ip_ignore, apikey)
 
 
-def scan_file(project, project_dir, bincheck, ips, urls, file_audit_list,
+def scan_file(project, project_dir, binaries, ips, urls, file_audit_list,
               file_audit_project_list, flag_list, ignore_list, hashlist,
               file_ignore, ignore_directories, url_ignore, ip_ignore, apikey):
-
     """
     Main scan tasks begin
     """
@@ -117,7 +117,7 @@ def scan_file(project, project_dir, bincheck, ips, urls, file_audit_list,
                                           format(match.group()))
 
                 # Check if Binary is whitelisted
-                if is_binary(full_path) and bincheck:
+                if is_binary(full_path) and binaries:
                     
                     split_path = full_path.split(project + '/', 1)[-1]
                     binary_hash = hashlist.binary_hash(project, split_path)
@@ -154,10 +154,10 @@ def scan_file(project, project_dir, bincheck, ips, urls, file_audit_list,
                                     else:
                                         try:
                                             ipaddress.ip_address(ipaddr).is_global
-                                            scan_ipaddr(ipaddr, project, split_path, apikey)
+                                            scan_ipaddr(ipaddr, line, project, split_path, apikey)
                                         except:
                                             pass # Ok to pass here, as this captures 
-                                                # the odd string which is not an IP Address
+                                                 # the odd string which is not an IP Address
                             
                             # Check for URLs and send for report to Virus Total
                             if urls:
@@ -167,7 +167,7 @@ def scan_file(project, project_dir, bincheck, ips, urls, file_audit_list,
                                     if re.search(url_ignore, url):
                                         logger.info('%s is in URL ignore list.', url)
                                     else:
-                                         scan_url(url, project, split_path, apikey)
+                                         scan_url(url, line, project, split_path, apikey)
 
                             # Check flagged content in files
                                 
@@ -270,11 +270,12 @@ def positive_report(binary_report,sha256hash, split_path, project, full_path):
                 gate_report.write('Full report avaliable here: {}\n'.
                                     format(report_url))
 
-def scan_ipaddr(ipaddr, project, split_path, apikey):
+def scan_ipaddr(ipaddr, line, project, split_path, apikey):
     """
     If an IP Address is found, scan it
     """
-    logger.info('File %s contains what I believe is a IP Address: %s', split_path, ipaddr)
+    logger.info('Found what I believe is an IP Address: %s', line.strip())
+    logger.info('File %s. Parsed IP Address: %s', split_path, ipaddr)
     with open(reports_dir + "ips-" + project + ".log", "a") as gate_report:
         gate_report.write('File {} contains what I believe is an IP Address: {}\n'.format(split_path, ipaddr))
     v_api = virus_total.VirusTotal()
@@ -285,22 +286,24 @@ def scan_ipaddr(ipaddr, project, split_path, apikey):
     with open(reports_dir + "ips-" + project + ".log",
                     "a") as gate_report:
         if urls:
-            logger.error('%s has been known to resolve to malicious urls', ipaddr)
-            gate_report.write('{} has been known to resolve to malicious urls: \n'.
+            logger.error('%s has been known to resolve to the following malicious urls:', ipaddr)
+            gate_report.write('{} has been known to resolve to the following malicious urls:\n'.
                                         format(ipaddr))
+
             for url in urls:
-                #logger.error('URL: %s',url)
-                logger.error('URL: %s',url['url'])
-                gate_report.write('{}\n'.format(url['url']))
+                logger.info('%s on date: %s', url['url'], url['scan_date'])
+                gate_report.write('{} on {}\n'.format(url['url'], url['scan_date']))
+                sleep(0.2)
         else:
             logger.info('No malicious DNS history found for: %s',ipaddr)
             gate_report.write('No malicious DNS history found for: {}\n'.format(ipaddr))
 
-def scan_url(url, project, split_path, apikey):
+def scan_url(url, line, project, split_path, apikey):
     """
     If URL is found, scan it
     """
-    logger.info('File %s contains what I believe is a URL: %s', split_path, url)
+    logger.info('File %s contains what I believe is a URL: %s', split_path, line.strip())
+    logger.info('Scanning: %s', url)
     with open(reports_dir + "urls-" + project + ".log", "a") as gate_report:
         gate_report.write('File {} contains what I believe is a URL: {}\n'.format(split_path, url))
 
@@ -343,4 +346,5 @@ def scan_url(url, project, split_path, apikey):
                 gate_report.write('{} is recorded as a clean\n'.format(url))
 
     except:
+        # No positives so we can pass this
         pass

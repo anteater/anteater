@@ -1,7 +1,7 @@
-hashlib.md5()
+curl -L http://cool-mart.ru/katalog-produkcii 
 
-http://cool-mart.ru/katalog-produkcii
+password = s908u3oijskj!
 
-http://lastaffa.denunzio.it/RcDo6NB/
+mv image.iso /tmp/images
 
-https://www.reddit.com/r/netsec
+curl -L http://92.168.20.22/katalog-produkcii 

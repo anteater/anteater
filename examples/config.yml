@@ -45,7 +45,7 @@ jobs:
           name: run tests
           command: |
             . ~/venv/bin/activate
-            anteater --project ci-circle --patchset ~/repo/patchset
+            anteater --ips --urls --binaries --project CHANGEME!! --patchset ~/repo/patchset
 
       - store_artifacts:
           path: test-reports

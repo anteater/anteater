@@ -19,11 +19,16 @@ file_audits:
   file_contents:
     - ignore-this-string
 
+ip_ignore:
+  - '192.0.43.8'
+  
 url_ignore:
   - 'www.iana.org'
 
-ip_ignore:
-  - '192.0.43.8'
+# Any files with the following extensions will not be scanned
+file_ignore:
+  - '.rst'
+  - '.md'
 
 # Unit tests, functional tests, documentation etc. These folders will never be
 # scanned. This is a relative path, so always leave a trailing `/` path

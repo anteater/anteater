@@ -29,7 +29,7 @@ url_ignore:
   - 'https://github.com'
 
 ip_ignore:
-  - '172.217.16.206'
+  - '173.217.16.206'
 
 # Unit tests, functional tests, documentation etc. These folders will never be
 # scanned. This is a relative path, so always leave a trailing `/` path
@@ -41,3 +41,4 @@ ignore_directories:
 # Add your project exception file into here.
 project_exceptions:
   - testproject: anteater_files/testproject.yaml
+  - functest: anteater_files/functest.yaml
