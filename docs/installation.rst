@@ -21,7 +21,7 @@ The main OS package requirements are listed below.
 Docker
 ------
 
-Get the latest Dockerfile::
+Get the latest Dockerfile (read the Dockerfile first before running!)::
 
     wget https://raw.githubusercontent.com/lukehinds/anteater/master/docker/Dockerfile
 
@@ -32,10 +32,10 @@ Build the Image::
 
 Run an instance::
 
-
     docker run -t -i anteater /bin/bash
 
-Or to run from a job:
+Or to run from a job::
+
     PROJECT="myrepo"
     git diff --name-only HEAD^ > /tmp/patch
     vols="-v /home/user/repos/$PROJECT"
