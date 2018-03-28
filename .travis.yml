@@ -4,11 +4,14 @@ language: python
 
 python:
   - "3.3"
-  - "2.7"
-  - "pypy"
+  - "3.4"
+  - "3.5"
 
-# command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-install: pip install -U .
+before_install:
+  - pip install pycodestyle
 
-# command to run tests, e.g. python setup.py test
-script: py.test
+before_script:
+  -  pycodestyle --exclude ./buildroot,tests,.git,build .
+
+script:
+  - python setup.py test

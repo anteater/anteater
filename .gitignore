@@ -8,7 +8,7 @@
 *.egg-info
 dist
 build
-eggs
+.eggs/
 parts
 bin
 var
@@ -29,6 +29,7 @@ pip-log.txt
 .coverage
 .tox
 nosetests.xml
+.pytest_cache
 
 # Translations
 *.mo
@@ -42,6 +43,7 @@ nosetests.xml
 # Complexity
 output/*.html
 output/*/index.html
+dump.rdb
 
 # Sphinx
 docs/_build
