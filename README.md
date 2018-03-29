@@ -2,7 +2,10 @@
 
 ![anteater](http://i.imgur.com/BPvV3Gz.png)
 
+[![Build Status](https://travis-ci.org/anteater/anteater.svg?branch=master)](https://travis-ci.org/anteater/anteater)
+
 [![Documentation Status](https://readthedocs.org/projects/anteater/badge/?version=latest)](http://anteater.readthedocs.io/en/latest/?badge=latest)
+
 
 Description
 -----------
