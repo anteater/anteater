@@ -185,3 +185,25 @@ For more details and indepth documentation, please visit [readthedocs](http://an
 
 Last of all, if you do use anteater, I would love to know (twitter: @lukeahinds)
 and pull requests / issues are welcome!
+
+Contribute
+----------
+
+Contributions are welcome.
+
+Please make a pull request in a new branch, and not master.
+
+```
+git checkout -b mypatch
+```
+
+```
+git push origin mypatch
+```
+
+Unit tests and PEP8 checks are in tox, so simply run the `tox` command before
+pushing your code.
+
+If your patch fixes and issue, please paste the issue url into the commit
+message.
+
