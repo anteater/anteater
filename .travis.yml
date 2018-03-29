@@ -8,11 +8,7 @@ python:
   - "3.5"
 
 before_install:
-  - pip install pycodestyle
   - pip install tox-travis
-
-before_script:
-  -  pycodestyle --exclude ./buildroot,tests,.git,build .
 
 script:
   - tox
