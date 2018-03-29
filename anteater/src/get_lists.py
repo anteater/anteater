@@ -44,20 +44,23 @@ except IOError:
     logger.error('File not found: %s', ignore_list)
     sys.exit(0)
 
+
 def unique(sequence):
     return list(set(sequence))
+
 
 def _remove_nullvalue(contents):
     """ Removes nullvalue placeholders required to prevent key errors"""
     if contents and len(contents) > 2 and 'nullvalue' in contents:
         contents.remove('nullvalue')
 
+
 class GetLists(object):
     def __init__(self, *args):
         self.args = args
         self.loaded = False
 
-    def load_project_flag_list_file (self, project_exceptions, project):
+    def load_project_flag_list_file(self, project_exceptions, project):
         """ Loads project specific lists """
         if self.loaded:
             return
@@ -111,13 +114,12 @@ class GetLists(object):
             logger.info('%s not found in %s', project, ignore_list)
             logger.info('No project specific exceptions will be applied')
 
-    
     def binary_hash(self, project, patch_file):
         """ Gathers sha256 hashes from binary lists """
         global il
         exception_file = None
         try:
-            project_exceptions = il.get('project_exceptions') # try needed
+            project_exceptions = il.get('project_exceptions')
         except KeyError:
             logger.info('project_exceptions missing in %s for %s', ignore_list, project)
 
@@ -157,7 +159,7 @@ class GetLists(object):
             logger.error('Key Error processing file_names list values')
         try:
             project_list = set((fl['file_audits'][project]['file_names']))
-            logger.info('Loaded %s specific file_audits entries', project) 
+            logger.info('Loaded %s specific file_audits entries', project)
         except KeyError:
             logger.info('No project specific file_names section for project %s', project)
 
@@ -172,7 +174,7 @@ class GetLists(object):
             file_names_proj_re = re.compile("")
             return file_names_re, file_names_proj_re
 
-    def file_content_list(self,  project):
+    def file_content_list(self, project):
         """ gathers content strings """
         project_list = False
         self.load_project_flag_list_file(il.get('project_exceptions'), project)
@@ -188,7 +190,7 @@ class GetLists(object):
 
         try:
             project_list = fl['file_audits'][project]['file_contents']
-            logger.info('Loaded %s specific file_contents entries', project) 
+            logger.info('Loaded %s specific file_contents entries', project)
 
         except KeyError:
             logger.info('No project specific file_contents section for project %s', project)
@@ -228,9 +230,8 @@ class GetLists(object):
             return ignore_directories
         else:
             return ignore_directories
-    
-    def url_ignore(self, project):
 
+    def url_ignore(self, project):
         """ Gathers a list of URLs to ignore """
         project_list = False
         try:
@@ -258,7 +259,6 @@ class GetLists(object):
             return url_ignore_re
 
     def ip_ignore(self, project):
-
         """ Gathers a list of URLs to ignore """
         project_list = False
         try:

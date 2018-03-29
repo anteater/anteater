@@ -87,7 +87,7 @@ def main():
                          arguments['--binaries'], arguments['--ips'], arguments['--urls'])
     elif arguments['<project_path>']:
         prepare_project(arguments['<project>'], arguments['<project_path>'],
-                         arguments['--binaries'], arguments['--ips'], arguments['--urls'])
+                        arguments['--binaries'], arguments['--ips'], arguments['--urls'])
 
 
 if __name__ == "__main__":

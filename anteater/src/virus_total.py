@@ -1,3 +1,4 @@
+# noinspection PyInterpreter
 import json
 import logging
 import os
@@ -11,10 +12,12 @@ import uuid
 from pylimit import PyRateLimit
 import six.moves.configparser
 
+
 class VirusTotal():
     def __init__(self, *args):
         self.logger = logging.getLogger(__name__)
         self.base_url = 'https://www.virustotal.com/vtapi/v2/'
+        self.headers = {"Accept-Encoding": "gzip, deflate", "User-Agent": "Anteater"}
         self.HTTP_OK = 200
         self.HTTP_BAD = 400
         self.HTTP_FORBIDDEN = 403
@@ -25,7 +28,7 @@ class VirusTotal():
         self.config = six.moves.configparser.SafeConfigParser()
         self.config.read('anteater.conf')
 
-        try: # might be better to move this to its own class
+        try:
             conn = redis.StrictRedis(
                 host='localhost',
                 port=6379,
@@ -35,7 +38,7 @@ class VirusTotal():
         except Exception as ex:
             self.logger.error('Error: %s', ex)
             exit('Failed to connect, terminating.')
-        
+
         self.limit = PyRateLimit()
 
         try:
@@ -50,9 +53,9 @@ class VirusTotal():
             sys.exit(1)
 
         if vt_rate_type == 'public':
-            self.limit.create(21,1)
+            self.limit.create(21, 1)
         elif vt_rate_type == 'private':
-            self.limit.create(1,1)
+            self.limit.create(1, 1)
 
     def rate_limit(self):
         """
@@ -63,12 +66,11 @@ class VirusTotal():
         while True:
             is_rate_limited = self.limit.is_rate_limited(uuid)
             if is_rate_limited:
-                time.sleep(0.3) # save hammering the shit out of redis
+                time.sleep(0.3)  # save hammering redis
                 if not rate_limited_msg:
                     self.logger.info('Rate limit active..please wait...')
                     rate_limited_msg = True
-                    
-            
+
             if not is_rate_limited:
                 self.logger.info('Rate limit clear.')
                 self.limit.attempt(uuid)
@@ -101,11 +103,7 @@ class VirusTotal():
             'apikey': apikey,
             'resource': sha256hash
         }
-        
-        headers = {
-            "Accept-Encoding": "gzip, deflate",
-            "User-Agent" : "gzip,  lhinds" # set this to a config value!
-        }
+
         rate_limit_clear = self.rate_limit()
         if rate_limit_clear:
             response = requests.post(url, params=params)
@@ -127,7 +125,7 @@ class VirusTotal():
 
         if rate_limit_clear:
             response = requests.post(url, data=params)
-            
+
             if response.status_code == self.HTTP_OK:
                 json_response = response.json()
                 response_code = json_response['response_code']
@@ -136,7 +134,6 @@ class VirusTotal():
                 time.sleep(20)
             else:
                 self.logger.warning("retrieve report: %s, HTTP code: %d", os.path.basename(filename), response.status_code)
-        
 
     def send_ip(self, ipaddr, apikey):
         """
@@ -160,20 +157,16 @@ class VirusTotal():
         """
         Send URLS for list of past malicous associations
         """
-        headers = {
-            "Accept-Encoding": "gzip, deflate",
-            "User-Agent" : "gzip,  My Python requests library example client or username"
-            }
         url = self.base_url + "url/report"
-        params = {"apikey": apikey, 'resource':scan_url}
+        params = {"apikey": apikey, 'resource': scan_url}
         rate_limit_clear = self.rate_limit()
         if rate_limit_clear:
-            response = requests.post(url, params=params, headers=headers)
+            response = requests.post(url, params=params, headers=self.headers)
             if response.status_code == self.HTTP_OK:
                 json_response = response.json()
                 return json_response
             elif response.status_code == self.HTTP_RATE_EXCEEDED:
-                time.sleep(20)    
+                time.sleep(20)
             else:
                 self.logger.error("sent: %s, HTTP: %d", scan_url, response.status_code)
             time.sleep(self.public_api_sleep_time)

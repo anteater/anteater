@@ -38,7 +38,8 @@ reports_dir = config.get('config', 'reports_dir')
 hasher = hashlib.sha256()
 failure = False
 
-def prepare_patchset(project, patchset,  binaries, ips, urls):
+
+def prepare_patchset(project, patchset, binaries, ips, urls):
     """ Create black/white lists and default / project waivers
         and iterates over patchset file """
     # Get Various Lists / Project Waivers
@@ -63,9 +64,9 @@ def prepare_patchset(project, patchset,  binaries, ips, urls):
     ignore_directories = lists.ignore_directories(project)
 
     if binaries or ips or urls:
-        try:  
+        try:
             apikey = os.environ["VT_KEY"]
-        except KeyError: 
+        except KeyError:
             logger.error("Please set your virustotal.com API key as an environment variable")
             sys.exit(1)
         try:
@@ -104,7 +105,7 @@ def scan_patch(project, patch_file, binaries, ips, urls, file_audit_list,
                file_audit_project_list, flag_list, ignore_list, file_ignore,
                ignore_directories, url_ignore, ip_ignore, apikey):
 
-    """ 
+    """
     Scan actions for each commited file in patch set
     """
     global failure
@@ -120,17 +121,17 @@ def scan_patch(project, patch_file, binaries, ips, urls, file_audit_list,
                 buf = afile.read()
                 hasher.update(buf)
                 sha256hash = hasher.hexdigest()
-        
+
             if sha256hash in binary_hash:
-                
+
                 logger.info('Found matching file hash for: %s',
                             patch_file)
             else:
                 logger.info('sha256hash: %s', sha256hash)
                 logger.error('Non Whitelisted Binary file: %s',
                              patch_file)
-                
-                scan_binary(patch_file, project, sha256hash, apikey) 
+
+                scan_binary(patch_file, project, sha256hash, apikey)
 
                 failure = True
 
@@ -169,17 +170,16 @@ def scan_patch(project, patch_file, binaries, ips, urls, file_audit_list,
                             ipaddr = re.findall(r'(?:\d{1,3}\.)+(?:\d{1,3})', line)
                             if ipaddr:
                                 ipaddr = ipaddr[0]
-                                if re.search(ip_ignore,ipaddr):
+                                if re.search(ip_ignore, ipaddr):
                                         logger.info('%s is in IP ignore list.', ipaddr)
                                 else:
                                     try:
                                         ipaddress.ip_address(ipaddr).is_global
                                         scan_ipaddr(ipaddr, apikey)
                                     except:
-                                        pass # Ok to pass here, as this captures 
-                                                # the odd string which is not an IP Address
-                            
-                        # Check for URLs and send for report to Virus Total
+                                        pass  # Ok to pass here, as this captures the odd string which is not an IP Address
+
+                        #  Check for URLs and send for report to Virus Total
                         if urls:
                             url = re.search("(?P<url>https?://[^\s]+)", line) or re.search("(?P<url>www[^\s]+)", line)
                             if url:
@@ -189,8 +189,7 @@ def scan_patch(project, patch_file, binaries, ips, urls, file_audit_list,
                                 else:
                                     scan_url(url, apikey)
 
-
-                        # Perform search within text files
+                        #  Perform search within text files
                         for key, value in flag_list.items():
                             regex = value['regex']
                             desc = value['desc']
@@ -200,16 +199,12 @@ def scan_patch(project, patch_file, binaries, ips, urls, file_audit_list,
                                 logger.error('Flagged Content: %s', line.rstrip())
                                 logger.error('Rationale: %s', desc.rstrip())
                                 failure = True
-                                with open(reports_dir + "contents_" + project + ".log",
-                                        "a") as gate_report:
-                                    gate_report.write('File contains violation: {0}\n'.
-                                                    format(patch_file))
-                                    gate_report.write('Flagged Content: {0}'.
-                                                    format(line))
-                                    gate_report.write('Matched Regular Exp: {0}\n'.
-                                                    format(regex))
-                                    gate_report.write('Rationale: {0}\n'.
-                                                    format(desc.rstrip()))
+                                with open(reports_dir + "contents_" + project + ".log", "a") as gate_report:
+                                    gate_report.write('File contains violation: {0}\n'.format(patch_file))
+                                    gate_report.write('Flagged Content: {0}'.format(line))
+                                    gate_report.write('Matched Regular Exp: {0}\n'.format(regex))
+                                    gate_report.write('Rationale: {0}\n'.format(desc.rstrip()))
+
 
 def scan_binary(patch_file, project, sha256hash, apikey):
     """
@@ -220,7 +215,7 @@ def scan_binary(patch_file, project, sha256hash, apikey):
     while True:
         binary_report = v_api.binary_report(sha256hash, apikey)
         response_code = binary_report['response_code']
-    
+
         # report does not exist, need to scan
         if response_code == 0:
             logger.info('Performing new scan of %s.', patch_file)
@@ -240,41 +235,39 @@ def scan_binary(patch_file, project, sha256hash, apikey):
     positives = binary_report['positives']
 
     if positives == 0:
-        negative_report(binary_report,sha256hash, project, patch_file)
+        negative_report(binary_report, sha256hash, project, patch_file)
     else:
-        positive_report(binary_report,sha256hash, project, patch_file)
+        positive_report(binary_report, sha256hash, project, patch_file)
 
-def negative_report(binary_report,sha256hash, project, patch_file):
+
+def negative_report(binary_report, sha256hash, project, patch_file):
     """
     If no match is made and file is clean
     """
     report_url = binary_report['permalink']
-    scan_date = binary_report['scan_date'] # build conditional
+    scan_date = binary_report['scan_date']
     logger.info('File scan date for %s shows a clean status on: %s', patch_file, scan_date)
     logger.info('Full report avaliable here: %s', report_url)
     logger.info('The following sha256 hash can be used in your %s.yaml file to suppress this scan:', project)
     logger.info('%s', sha256hash)
-    with open(reports_dir + "binaries-" + project + ".log",
-                    "a") as gate_report:
-                gate_report.write('Non Whitelisted Binary: {}\n'.
-                                    format(patch_file))
-                gate_report.write('File scan date for {} shows a clean status on {}\n'.
-                                    format(patch_file, scan_date))
-                gate_report.write('The following sha256 hash can be used in your {}.yaml file to suppress this scan:\n'.
-                                    format(project))
-                gate_report.write('{}\n'.
-                                    format(sha256hash))
+    with open(reports_dir + "binaries-" + project + ".log", "a") as gate_report:
+                gate_report.write('Non Whitelisted Binary: {}\n'.format(patch_file))
+                gate_report.write('File scan date for {} shows a clean status on {}\n'.format(patch_file, scan_date))
+                gate_report.write('The following sha256 hash can be used in your {}.yaml file to suppress this scan:\n'.format(project))
+                gate_report.write('{}\n'.format(sha256hash))
 
-def positive_report(binary_report,sha256hash, project, patch_file):
+
+def positive_report(binary_report, sha256hash, project, patch_file):
     """
     If a Positive match is found
-    """ 
+    """
     failure = True
     report_url = binary_report['permalink']
-    scan_date = binary_report['scan_date'] # build conditional
+    scan_date = binary_report['scan_date']
     logger.error("Virus Found!")
     logger.info('File scan date for %s shows a infected status on: %s', patch_file, scan_date)
     logger.info('Full report avaliable here: %s', report_url)
+
 
 def scan_ipaddr(ipaddr, apikey):
     """
@@ -294,6 +287,7 @@ def scan_ipaddr(ipaddr, apikey):
             logger.error('%s on date: %s', url['url'], url['scan_date'])
     else:
         logger.info('%s has no record of resolving to malicious urls', ipaddr)
+
 
 def scan_url(url, apikey):
     """
@@ -331,7 +325,8 @@ def scan_url(url, apikey):
             logger.info("%s is recorded as a clean", url)
     except:
         pass
-    
+
+
 def process_failure():
     """
     If any scan operations register a failure, sys.exit(1) is called
