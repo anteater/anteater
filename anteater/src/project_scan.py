@@ -13,6 +13,7 @@
     Accepts the --path argument and iterates the root directory using os.walk
     If a file is a binary, or contains a blacklisted string. If any violations
     are found, the script adds the violation to a log file.
+    test travis <- remove
 """
 
 from __future__ import division, print_function, absolute_import
