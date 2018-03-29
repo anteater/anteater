@@ -37,8 +37,12 @@ ip_ignore:
 ignore_directories:
   - .git/
 
-
 # Add your project exception file into here.
 project_exceptions:
   - testproject: anteater_files/testproject.yaml
   - functest: anteater_files/functest.yaml
+
+# Report URL that is displayed at the end of the job. If set in this file,
+# it will be global for all projects.
+# To set for an individual project, use the project_exception file
+report_url: 'http://anteater.readthedocs.io/en/latest'

@@ -292,3 +292,27 @@ class GetLists(object):
         except KeyError:
             logger.error('Key Error processing file_ignore list values')
         return file_ignore
+
+    def report_url(self, project):
+        project_report_url = False
+        report_url = False
+        try:
+            project_exceptions = il.get('project_exceptions')
+            for item in project_exceptions:
+                if project in item:
+                    exception_file = item.get(project)
+                    with open(exception_file, 'r') as f:
+                        report_list = yaml.safe_load(f)
+                        project_report_url = report_list['report_url']
+        except KeyError:
+            logger.info('No ip_ignore for %s', project)
+
+        try:
+            report_url = il['report_url']
+        except KeyError:
+            logger.error('Key Error processing ip_ignore list values')
+
+        if project_report_url:
+            return project_report_url
+        elif report_url:
+            return report_url

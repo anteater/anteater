@@ -98,7 +98,7 @@ def prepare_patchset(project, patchset, binaries, ips, urls):
                    file_ignore, ignore_directories, url_ignore, ip_ignore, apikey)
 
     # Process final result
-    process_failure()
+    process_failure(project)
 
 
 def scan_patch(project, patch_file, binaries, ips, urls, file_audit_list,
@@ -327,10 +327,14 @@ def scan_url(url, apikey):
         pass
 
 
-def process_failure():
+def process_failure(project):
     """
     If any scan operations register a failure, sys.exit(1) is called
     to allow build to register a failure
     """
     if failure:
+        lists = get_lists.GetLists()
+        report_url = lists.report_url(project)
+        if report_url:
+            print(report_url)
         sys.exit(1)

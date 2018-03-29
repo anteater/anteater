@@ -21,7 +21,7 @@ file_audits:
 
 ip_ignore:
   - '192.0.43.8'
-  
+
 url_ignore:
   - 'www.iana.org'
 
@@ -35,3 +35,5 @@ file_ignore:
 # delimiter, but don't start with one!
 ignore_directories:
   - .git/
+
+report_url: 'http://anteater.readthedocs.io/en/latest/'
