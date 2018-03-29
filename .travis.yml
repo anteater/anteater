@@ -9,9 +9,10 @@ python:
 
 before_install:
   - pip install pycodestyle
+  - pip install tox-travis
 
 before_script:
   -  pycodestyle --exclude ./buildroot,tests,.git,build .
 
 script:
-  - python setup.py test
+  - tox
