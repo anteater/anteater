@@ -5,6 +5,8 @@
 [![Build Status](https://travis-ci.org/anteater/anteater.svg?branch=master)](https://travis-ci.org/anteater/anteater)
 [![Documentation Status](https://readthedocs.org/projects/anteater/badge/?version=latest)](http://anteater.readthedocs.io/en/latest/?badge=latest)
 
+[![asciicast](https://asciinema.org/a/eZViK9M7yd0gD3asEVQIDi8DV.png)](https://asciinema.org/a/eZViK9M7yd0gD3asEVQIDi8DV)
+
 
 Description
 -----------
