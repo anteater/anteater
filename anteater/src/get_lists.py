@@ -316,4 +316,3 @@ class GetLists(object):
             return project_report_url
         elif report_url:
             return report_url
-
