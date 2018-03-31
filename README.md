@@ -38,6 +38,9 @@ public IP addresses or URL's found by anteater, will be sent to the Virus Total
 API and a report will be returned. If any object is reported as malicous,
 it will fail the CI build job.
 
+Example content is provided for those unsure of what to start with and its
+encouraged and welcomed to you share any Anteater filter strings you find useful.
+
 Why would I want to use this?
 -----------------------------
 
