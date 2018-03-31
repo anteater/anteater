@@ -11,17 +11,20 @@
 Description
 -----------
 
-Anteater is an open framework that uses standard regular expression that we all
-know (and love?) to ensure unwanted strings, filenames, binaries, depreciated
-functions or staging enviroment code / credentials etc, are not included in any
-patch or pull request to any of your git repositories.
+Anteater is an open framework to prevent the unwanted merging of nominated strings,
+filenames, binaries, depreciated functions, staging enviroment code / credentials
+etc. Anything that can be specified with regular expression syntax, can be
+sniffed out by anteater.
 
 You tell anteater exactly what you don't want to get merged, and anteater looks
 after the rest.
 
 If anteater finds something, it exits with a non-zero code which in turn fails
-the build of your CI tool. Any false positives are easily negated by using the
+the build of your CI tool, with the idea that it would prevent a pull request
+merging. Any false positives are easily negated by using the
 same RegExp framework to cancel out the false match.
+
+Entire projects may also be scanned also, using a recursive directory walk.
 
 With a few simple steps it can be easily implemented into a CI / CD workflow
 with tooling such as [Travis CI](https://travis-ci.org/), [CircleCI](https://circleci.com/), [Gitlab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/) and [Jenkins](https://jenkins.io/).
@@ -30,9 +33,13 @@ It is currently used in the Linux Foundations project ['OPNFV'](https://opnfv.or
 as means to provide automated security checks at gate, but as shown in the
 examples below, it can be used for other scenarios.
 
-Anteater also provides a Virus Total API, so any binaries, public IP addresses
-or URL's found by anteater, will be sent to the Virus Total API and a report
-will be returned. If any object is reported as malicous, it will fail the build.
+Anteater also provides integrates with the Virus Total API, so any binaries,
+public IP addresses or URL's found by anteater, will be sent to the Virus Total
+API and a report will be returned. If any object is reported as malicous,
+it will fail the CI build job.
+
+Example content is provided for those unsure of what to start with and its
+encouraged and welcomed to share any Anteater filter strings you find useful.
 
 Why would I want to use this?
 -----------------------------
