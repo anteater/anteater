@@ -13,5 +13,5 @@ pyparsing==2.2.0
 PyYAML==3.12
 ratelimit==1.4.1
 redis==2.10.6
-requests==2.18.4
+requests==2.20.0
 six==1.10.0
