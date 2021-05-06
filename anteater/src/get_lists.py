@@ -23,7 +23,7 @@ import yaml
 import sys
 
 
-config = six.moves.configparser.SafeConfigParser()
+config = six.moves.configparser.ConfigParser()
 config.read('anteater.conf')
 logger = logging.getLogger(__name__)
 anteater_files = config.get('config', 'anteater_files')

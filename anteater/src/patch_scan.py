@@ -31,7 +31,7 @@ from . import get_lists
 from . import virus_total
 
 logger = logging.getLogger(__name__)
-config = six.moves.configparser.SafeConfigParser()
+config = six.moves.configparser.ConfigParser()
 config.read('anteater.conf')
 anteater_files = config.get('config', 'anteater_files')
 reports_dir = config.get('config', 'reports_dir')
