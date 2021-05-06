@@ -108,14 +108,9 @@ def scan_file(project, project_dir, binaries, ips, urls, file_audit_list,
                     match = file_audit_list.search(full_path)
                     logger.error('Blacklisted filename: %s', full_path)
                     logger.error('Matched String: %s', match.group())
-                    with open(reports_dir + "file-names_" + project + ".log",
-                              "a") as gate_report:
-                                gate_report. \
-                                    write('Blacklisted filename: {0}\n'.
-                                          format(full_path))
-                                gate_report. \
-                                    write('Matched String: {0}'.
-                                          format(match.group()))
+                    with open(reports_dir + "file-names_" + project + ".log", "a") as gate_report:
+                        gate_report.write('Blacklisted filename: {0}\n'.format(full_path))
+                        gate_report.write('Matched String: {0}'.format(match.group()))
 
                 # Check if Binary is whitelisted
                 if is_binary(full_path) and binaries:

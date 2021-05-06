@@ -110,7 +110,7 @@ class VirusTotal():
             if response.status_code == self.HTTP_OK:
                 self.logger.info("sent: %s, HTTP: %d, content: %s", os.path.basename(filename), response.status_code, response.text)
             elif response.status_code == self.HTTP_RATE_EXCEEDED:
-                    time.sleep(20)
+                time.sleep(20)
             else:
                 self.logger.error("sent: %s, HTTP: %d", os.path.basename(filename), response.status_code)
             return response
@@ -148,7 +148,7 @@ class VirusTotal():
                 json_response = response.json()
                 return json_response
             elif response.status_code == self.HTTP_RATE_EXCEEDED:
-                    time.sleep(20)
+                time.sleep(20)
             else:
                 self.logger.error("sent: %s, HTTP: %d", ipaddr, response.status_code)
             time.sleep(self.public_api_sleep_time)

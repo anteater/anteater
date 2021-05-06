@@ -261,6 +261,7 @@ def positive_report(binary_report, sha256hash, project, patch_file):
     """
     If a Positive match is found
     """
+    global failure
     failure = True
     report_url = binary_report['permalink']
     scan_date = binary_report['scan_date']
@@ -273,6 +274,7 @@ def scan_ipaddr(ipaddr, apikey):
     """
     If an IP Address is found, scan it
     """
+    global failure
     logger.info('Query VirusTotal API for Public IP Found: %s', ipaddr)
     v_api = virus_total.VirusTotal()
     scan_ip = v_api.send_ip(ipaddr, apikey)
@@ -293,6 +295,7 @@ def scan_url(url, apikey):
     """
     If URL is found, scan it
     """
+    global failure
     logger.info('Found what I believe is a URL: %s', url)
     v_api = virus_total.VirusTotal()
     while True:
