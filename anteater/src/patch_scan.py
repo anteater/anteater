@@ -181,7 +181,7 @@ def scan_patch(project, patch_file, binaries, ips, urls, file_audit_list,
 
                         #  Check for URLs and send for report to Virus Total
                         if urls:
-                            url = re.search("(?P<url>https?://[^\s]+)", line) or re.search("(?P<url>www[^\s]+)", line)
+                            url = re.search(r"(?P<url>https?://\S+)", line) or re.search(r"(?P<url>www\S+)", line)
                             if url:
                                 url = url.group("url")
                                 if re.search(url_ignore, url):
