@@ -35,7 +35,6 @@ config = six.moves.configparser.ConfigParser()
 config.read('anteater.conf')
 anteater_files = config.get('config', 'anteater_files')
 reports_dir = config.get('config', 'reports_dir')
-hasher = hashlib.sha256()
 failure = False
 
 
