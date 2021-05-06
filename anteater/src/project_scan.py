@@ -66,6 +66,7 @@ def prepare_project(project, project_dir, binaries, ips, urls):
     # Get Binary Ignore Lists
     hashlist = get_lists.GetLists()
 
+    apikey = ""
     if binaries or ips or urls:
         try:
             apikey = os.environ["VT_KEY"]
@@ -141,6 +142,7 @@ def scan_file(project, project_dir, binaries, ips, urls, file_audit_list,
                             lines = fo.readlines()
                         except IOError:
                             logger.error('%s does not exist', full_path)
+                            lines = []
 
                         for line in lines:
                             # Find IP Addresses and send for report to Virus Total
@@ -228,10 +230,10 @@ def negative_report(binary_report, sha256hash, split_path, project, full_path):
     logger.info('The following sha256 hash can be used in your %s.yaml file to suppress this scan:', project)
     logger.info('%s:', sha256hash)
     with open(reports_dir + "binaries-" + project + ".log", "a") as gate_report:
-                gate_report.write('Non Whitelisted Binary: {}\n'.format(full_path))
-                gate_report.write('File scan date for {} shows a clean status on {}\n'.format(split_path, scan_date))
-                gate_report.write('The following sha256 hash can be used in your {}.yaml file to suppress this scan:\n'.format(project))
-                gate_report.write('{}\n'.format(sha256hash))
+        gate_report.write('Non Whitelisted Binary: {}\n'.format(full_path))
+        gate_report.write('File scan date for {} shows a clean status on {}\n'.format(split_path, scan_date))
+        gate_report.write('The following sha256 hash can be used in your {}.yaml file to suppress this scan:\n'.format(project))
+        gate_report.write('{}\n'.format(sha256hash))
 
 
 def positive_report(binary_report, sha256hash, split_path, project, full_path):
@@ -244,9 +246,9 @@ def positive_report(binary_report, sha256hash, split_path, project, full_path):
     logger.info('File scan date for %s shows a infected status on: %s', split_path, scan_date)
     logger.info('Full report available here: %s', report_url)
     with open(reports_dir + "binaries-" + project + ".log", "a") as gate_report:
-                gate_report.write('Virus Found!: {}\n'.format(full_path))
-                gate_report.write('File scan date for {} shows a infected status on: {}\n'.format(split_path, scan_date))
-                gate_report.write('Full report avaliable here: {}\n'.format(report_url))
+        gate_report.write('Virus Found!: {}\n'.format(full_path))
+        gate_report.write('File scan date for {} shows a infected status on: {}\n'.format(split_path, scan_date))
+        gate_report.write('Full report avaliable here: {}\n'.format(report_url))
 
 
 def scan_ipaddr(ipaddr, line, project, split_path, apikey):

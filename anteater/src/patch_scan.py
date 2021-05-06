@@ -162,6 +162,7 @@ def scan_patch(project, patch_file, binaries, ips, urls, file_audit_list,
                     file_exists = True
                 except IOError:
                     file_exists = False
+                    lines = []
 
                 if file_exists and not patch_file.endswith(tuple(file_ignore)):
                     for line in lines:
@@ -171,7 +172,7 @@ def scan_patch(project, patch_file, binaries, ips, urls, file_audit_list,
                             if ipaddr:
                                 ipaddr = ipaddr[0]
                                 if re.search(ip_ignore, ipaddr):
-                                        logger.info('%s is in IP ignore list.', ipaddr)
+                                    logger.info('%s is in IP ignore list.', ipaddr)
                                 else:
                                     try:
                                         ipaddress.ip_address(ipaddr).is_global
@@ -251,10 +252,10 @@ def negative_report(binary_report, sha256hash, project, patch_file):
     logger.info('The following sha256 hash can be used in your %s.yaml file to suppress this scan:', project)
     logger.info('%s', sha256hash)
     with open(reports_dir + "binaries-" + project + ".log", "a") as gate_report:
-                gate_report.write('Non Whitelisted Binary: {}\n'.format(patch_file))
-                gate_report.write('File scan date for {} shows a clean status on {}\n'.format(patch_file, scan_date))
-                gate_report.write('The following sha256 hash can be used in your {}.yaml file to suppress this scan:\n'.format(project))
-                gate_report.write('{}\n'.format(sha256hash))
+        gate_report.write('Non Whitelisted Binary: {}\n'.format(patch_file))
+        gate_report.write('File scan date for {} shows a clean status on {}\n'.format(patch_file, scan_date))
+        gate_report.write('The following sha256 hash can be used in your {}.yaml file to suppress this scan:\n'.format(project))
+        gate_report.write('{}\n'.format(sha256hash))
 
 
 def positive_report(binary_report, sha256hash, project, patch_file):
@@ -314,6 +315,7 @@ def scan_url(url, apikey):
     try:
         positives = url_report['positives']
         if positives > 0:
+            detected = False
             for site, results in url_report['scans'].items():
                 if results['detected']:
                     detected = True
