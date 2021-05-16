@@ -135,6 +135,9 @@ def scan_file(project, project_dir, binaries, ips, urls, file_audit_list,
                         except IOError:
                             logger.error('%s does not exist', full_path)
                             lines = []
+                        except UnicodeDecodeError:
+                            logger.error('%s is not valid utf-8', full_path)
+                            lines = []
 
                         for line in lines:
                             # Find IP Addresses and send for report to Virus Total
