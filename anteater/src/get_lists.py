@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 anteater_files = config.get('config', 'anteater_files')
 flag_list = config.get('config', 'flag_list')
 ignore_list = config.get('config', 'ignore_list')
-ignore_dirs = ['.git', 'examples', anteater_files]
+ignore_dirs = ['.git', anteater_files]
 
 try:
     with open(flag_list, 'r') as f:
@@ -230,9 +230,7 @@ class GetLists(object):
 
         if project_list:
             ignore_directories = ignore_directories + project_list
-            return ignore_directories
-        else:
-            return ignore_directories
+        return ignore_directories + ignore_dirs
 
     def url_ignore(self, project):
         """ Gathers a list of URLs to ignore """

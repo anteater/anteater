@@ -32,9 +32,7 @@ from . import virus_total
 logger = logging.getLogger(__name__)
 config = six.moves.configparser.ConfigParser()
 config.read('anteater.conf')
-anteater_files = config.get('config', 'anteater_files')
 reports_dir = config.get('config', 'reports_dir')
-ignore_dirs = ['.git', 'examples', anteater_files]
 
 
 def prepare_project(project, project_dir, binaries, ips, urls):
