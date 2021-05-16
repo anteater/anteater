@@ -19,7 +19,6 @@ from __future__ import division, print_function, absolute_import
 import ipaddress
 import logging
 import hashlib
-import json
 import six.moves.configparser
 import os
 import re
@@ -82,9 +81,11 @@ def prepare_project(project, project_dir, binaries, ips, urls):
             sys.exit(1)
 
     # Perform rudimentary scans
-    scan_file(project, project_dir, binaries, ips, urls, file_audit_list,
-              file_audit_project_list, flag_list, ignore_list, hashlist,
-              file_ignore, ignore_directories, url_ignore, ip_ignore, apikey)
+    issues_found = scan_file(project, project_dir, binaries, ips, urls, file_audit_list,
+                             file_audit_project_list, flag_list, ignore_list, hashlist,
+                             file_ignore, ignore_directories, url_ignore, ip_ignore, apikey)
+    if issues_found:
+        sys.exit(1)
 
 
 def scan_file(project, project_dir, binaries, ips, urls, file_audit_list,
@@ -94,6 +95,7 @@ def scan_file(project, project_dir, binaries, ips, urls, file_audit_list,
     Main scan tasks begin
     """
     logger.info("Commencing scan tasks..")
+    issues_found = False
     for root, dirs, files in os.walk(project_dir):
         # Filter out ignored directories from list.
         for items in files:
@@ -106,6 +108,7 @@ def scan_file(project, project_dir, binaries, ips, urls, file_audit_list,
                     match = file_audit_list.search(full_path)
                     logger.error('Blacklisted filename: %s', full_path)
                     logger.error('Matched String: %s', match.group())
+                    issues_found = True
                     with open(reports_dir + "file-names_" + project + ".log", "a") as gate_report:
                         gate_report.write('Blacklisted filename: {0}\n'.format(full_path))
                         gate_report.write('Matched String: {0}'.format(match.group()))
@@ -125,7 +128,8 @@ def scan_file(project, project_dir, binaries, ips, urls, file_audit_list,
                         logger.info('No further action needed for: %s', full_path)
                     else:
                         logger.info('Non Whitelisted Binary file: %s', full_path)
-                        scan_binary(full_path, split_path, project, sha256hash, apikey)
+                        binary_issues_found = scan_binary(full_path, split_path, project, sha256hash, apikey)
+                        issues_found = issues_found or binary_issues_found
 
                 else:
                     if not items.endswith(tuple(file_ignore)) and not is_binary(full_path):
@@ -150,7 +154,8 @@ def scan_file(project, project_dir, binaries, ips, urls, file_audit_list,
                                     else:
                                         try:
                                             ipaddress.ip_address(ipaddr).is_global
-                                            scan_ipaddr(ipaddr, line, project, split_path, apikey)
+                                            ipaddr_issues_found = scan_ipaddr(ipaddr, line, project, split_path, apikey)
+                                            issues_found = issues_found or ipaddr_issues_found
                                         except:
                                             pass  # Ok to pass here, as this captures the odd string which is nt an IP Address
 
@@ -162,7 +167,8 @@ def scan_file(project, project_dir, binaries, ips, urls, file_audit_list,
                                     if re.search(url_ignore, url):
                                         logger.info('%s is in URL ignore list.', url)
                                     else:
-                                        scan_url(url, line, project, split_path, apikey)
+                                        url_issues_found = scan_url(url, line, project, split_path, apikey)
+                                        issues_found = issues_found or url_issues_found
 
                             # Check flagged content in files
                             for key, value in flag_list.items():
@@ -173,11 +179,14 @@ def scan_file(project, project_dir, binaries, ips, urls, file_audit_list,
                                     logger.error('Flagged Content: %s', line.rstrip())
                                     logger.error('Matched Regular Exp: %s', regex)
                                     logger.error('Rationale: %s', desc.rstrip())
+                                    issues_found = True
                                     with open(reports_dir + "contents-" + project + ".log", "a") as gate_report:
                                         gate_report.write('File contains violation: {0}\n'.format(full_path))
                                         gate_report.write('Flagged Content: {0}'.format(line))
                                         gate_report.write('Matched Regular Exp: {0}'.format(regex))
                                         gate_report.write('Rationale: {0}\n'.format(desc.rstrip()))
+
+    return issues_found
 
 
 def scan_binary(full_path, split_path, project, sha256hash, apikey):
@@ -210,8 +219,10 @@ def scan_binary(full_path, split_path, project, sha256hash, apikey):
 
     if positives == 0:
         negative_report(binary_report, sha256hash, split_path, project, full_path)
+        return False
     else:
         positive_report(binary_report, sha256hash, split_path, project, full_path)
+        return True
 
 
 def negative_report(binary_report, sha256hash, split_path, project, full_path):
@@ -268,9 +279,11 @@ def scan_ipaddr(ipaddr, line, project, split_path, apikey):
                 logger.info('%s on date: %s', url['url'], url['scan_date'])
                 gate_report.write('{} on {}\n'.format(url['url'], url['scan_date']))
                 sleep(0.2)
+            return True
         else:
             logger.info('No malicious DNS history found for: %s', ipaddr)
             gate_report.write('No malicious DNS history found for: {}\n'.format(ipaddr))
+            return False
 
 
 def scan_url(url, line, project, split_path, apikey):
@@ -313,12 +326,14 @@ def scan_url(url, line, project, split_path, apikey):
                 with open(reports_dir + "urls-" + project + ".log", "a") as gate_report:
                     logger.error("Full report available here: %s", url_report['permalink'])
                     gate_report.write('Full report available here: {}\n'.format(url_report['permalink']))
+            return True
 
         else:
             logger.info("%s is recorded as a clean", url)
             with open(reports_dir + "urls-" + project + ".log", "a") as gate_report:
                 gate_report.write('{} is recorded as a clean\n'.format(url))
+            return False
 
     except:
         # No positives so we can pass this
-        pass
+        return False
