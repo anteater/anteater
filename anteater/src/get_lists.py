@@ -23,13 +23,13 @@ import yaml
 import sys
 
 
-config = six.moves.configparser.SafeConfigParser()
+config = six.moves.configparser.ConfigParser()
 config.read('anteater.conf')
 logger = logging.getLogger(__name__)
 anteater_files = config.get('config', 'anteater_files')
 flag_list = config.get('config', 'flag_list')
 ignore_list = config.get('config', 'ignore_list')
-ignore_dirs = ['.git', 'examples', anteater_files]
+ignore_dirs = ['.git', anteater_files]
 
 try:
     with open(flag_list, 'r') as f:
@@ -117,11 +117,11 @@ class GetLists(object):
     def binary_hash(self, project, patch_file):
         """ Gathers sha256 hashes from binary lists """
         global il
-        exception_file = None
         try:
             project_exceptions = il.get('project_exceptions')
         except KeyError:
             logger.info('project_exceptions missing in %s for %s', ignore_list, project)
+            project_exceptions = []
 
         for project_files in project_exceptions:
             if project in project_files:
@@ -151,17 +151,18 @@ class GetLists(object):
 
     def file_audit_list(self, project):
         """ Gathers file name lists """
-        project_list = False
         self.load_project_flag_list_file(il.get('project_exceptions'), project)
         try:
             default_list = set((fl['file_audits']['file_names']))
         except KeyError:
-            logger.error('Key Error processing file_names list values')
+            logger.warning('No file_names found')
+            default_list = set()
         try:
             project_list = set((fl['file_audits'][project]['file_names']))
             logger.info('Loaded %s specific file_audits entries', project)
         except KeyError:
             logger.info('No project specific file_names section for project %s', project)
+            project_list = set()
 
         file_names_re = re.compile("|".join(default_list),
                                    flags=re.IGNORECASE)
@@ -176,24 +177,25 @@ class GetLists(object):
 
     def file_content_list(self, project):
         """ gathers content strings """
-        project_list = False
         self.load_project_flag_list_file(il.get('project_exceptions'), project)
         try:
             flag_list = (fl['file_audits']['file_contents'])
         except KeyError:
-            logger.error('Key Error processing file_contents list values')
+            logger.warning('No file_contents found')
+            flag_list = {}
 
         try:
             ignore_list = il['file_audits']['file_contents']
         except KeyError:
-            logger.error('Key Error processing file_contents list values')
+            logger.warning('No file_contents ignore list found')
+            ignore_list = []
 
         try:
             project_list = fl['file_audits'][project]['file_contents']
             logger.info('Loaded %s specific file_contents entries', project)
-
         except KeyError:
             logger.info('No project specific file_contents section for project %s', project)
+            project_list = []
 
         if project_list:
             ignore_list_merge = project_list + ignore_list
@@ -208,11 +210,12 @@ class GetLists(object):
 
     def ignore_directories(self, project):
         """ Gathers a list of directories to ignore """
-        project_list = False
+        project_list = []
         try:
             ignore_directories = il['ignore_directories']
         except KeyError:
-            logger.error('Key Error processing ignore_directories list values')
+            logger.warning('No ignore_directories found')
+            ignore_directories = []
 
         try:
             project_exceptions = il.get('project_exceptions')
@@ -227,17 +230,16 @@ class GetLists(object):
 
         if project_list:
             ignore_directories = ignore_directories + project_list
-            return ignore_directories
-        else:
-            return ignore_directories
+        return ignore_directories + ignore_dirs
 
     def url_ignore(self, project):
         """ Gathers a list of URLs to ignore """
-        project_list = False
+        project_list = []
         try:
             url_ignore = il['url_ignore']
         except KeyError:
-            logger.error('Key Error processing url_ignore list values')
+            logger.warning('No url_ignore found')
+            url_ignore = []
 
         try:
             project_exceptions = il.get('project_exceptions')
@@ -260,11 +262,12 @@ class GetLists(object):
 
     def ip_ignore(self, project):
         """ Gathers a list of URLs to ignore """
-        project_list = False
+        project_list = []
         try:
             ip_ignore = il['ip_ignore']
         except KeyError:
-            logger.error('Key Error processing ip_ignore list values')
+            logger.warning('No ip_ignore found')
+            ip_ignore = []
 
         try:
             project_exceptions = il.get('project_exceptions')
@@ -290,7 +293,8 @@ class GetLists(object):
         try:
             file_ignore = (il['file_ignore'])
         except KeyError:
-            logger.error('Key Error processing file_ignore list values')
+            logger.warning('No file_ignore found')
+            return {}
         return file_ignore
 
     def report_url(self, project):
@@ -305,12 +309,12 @@ class GetLists(object):
                         report_list = yaml.safe_load(f)
                         project_report_url = report_list['report_url']
         except KeyError:
-            logger.info('No ip_ignore for %s', project)
+            logger.info('No report_url for %s', project)
 
         try:
             report_url = il['report_url']
         except KeyError:
-            logger.error('Key Error processing ip_ignore list values')
+            logger.warning('No report_url found')
 
         if project_report_url:
             return project_report_url

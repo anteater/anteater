@@ -31,11 +31,9 @@ from . import get_lists
 from . import virus_total
 
 logger = logging.getLogger(__name__)
-config = six.moves.configparser.SafeConfigParser()
+config = six.moves.configparser.ConfigParser()
 config.read('anteater.conf')
-anteater_files = config.get('config', 'anteater_files')
 reports_dir = config.get('config', 'reports_dir')
-hasher = hashlib.sha256()
 failure = False
 
 
@@ -162,6 +160,7 @@ def scan_patch(project, patch_file, binaries, ips, urls, file_audit_list,
                     file_exists = True
                 except IOError:
                     file_exists = False
+                    lines = []
 
                 if file_exists and not patch_file.endswith(tuple(file_ignore)):
                     for line in lines:
@@ -171,7 +170,7 @@ def scan_patch(project, patch_file, binaries, ips, urls, file_audit_list,
                             if ipaddr:
                                 ipaddr = ipaddr[0]
                                 if re.search(ip_ignore, ipaddr):
-                                        logger.info('%s is in IP ignore list.', ipaddr)
+                                    logger.info('%s is in IP ignore list.', ipaddr)
                                 else:
                                     try:
                                         ipaddress.ip_address(ipaddr).is_global
@@ -181,7 +180,7 @@ def scan_patch(project, patch_file, binaries, ips, urls, file_audit_list,
 
                         #  Check for URLs and send for report to Virus Total
                         if urls:
-                            url = re.search("(?P<url>https?://[^\s]+)", line) or re.search("(?P<url>www[^\s]+)", line)
+                            url = re.search(r"(?P<url>https?://\S+)", line) or re.search(r"(?P<url>www\S+)", line)
                             if url:
                                 url = url.group("url")
                                 if re.search(url_ignore, url):
@@ -251,16 +250,17 @@ def negative_report(binary_report, sha256hash, project, patch_file):
     logger.info('The following sha256 hash can be used in your %s.yaml file to suppress this scan:', project)
     logger.info('%s', sha256hash)
     with open(reports_dir + "binaries-" + project + ".log", "a") as gate_report:
-                gate_report.write('Non Whitelisted Binary: {}\n'.format(patch_file))
-                gate_report.write('File scan date for {} shows a clean status on {}\n'.format(patch_file, scan_date))
-                gate_report.write('The following sha256 hash can be used in your {}.yaml file to suppress this scan:\n'.format(project))
-                gate_report.write('{}\n'.format(sha256hash))
+        gate_report.write('Non Whitelisted Binary: {}\n'.format(patch_file))
+        gate_report.write('File scan date for {} shows a clean status on {}\n'.format(patch_file, scan_date))
+        gate_report.write('The following sha256 hash can be used in your {}.yaml file to suppress this scan:\n'.format(project))
+        gate_report.write('{}\n'.format(sha256hash))
 
 
 def positive_report(binary_report, sha256hash, project, patch_file):
     """
     If a Positive match is found
     """
+    global failure
     failure = True
     report_url = binary_report['permalink']
     scan_date = binary_report['scan_date']
@@ -273,6 +273,7 @@ def scan_ipaddr(ipaddr, apikey):
     """
     If an IP Address is found, scan it
     """
+    global failure
     logger.info('Query VirusTotal API for Public IP Found: %s', ipaddr)
     v_api = virus_total.VirusTotal()
     scan_ip = v_api.send_ip(ipaddr, apikey)
@@ -293,6 +294,7 @@ def scan_url(url, apikey):
     """
     If URL is found, scan it
     """
+    global failure
     logger.info('Found what I believe is a URL: %s', url)
     v_api = virus_total.VirusTotal()
     while True:
@@ -314,6 +316,7 @@ def scan_url(url, apikey):
     try:
         positives = url_report['positives']
         if positives > 0:
+            detected = False
             for site, results in url_report['scans'].items():
                 if results['detected']:
                     detected = True
