@@ -5,9 +5,6 @@
 [![Build Status](https://travis-ci.org/anteater/anteater.svg?branch=master)](https://travis-ci.org/anteater/anteater)
 [![Documentation Status](https://readthedocs.org/projects/anteater/badge/?version=latest)](http://anteater.readthedocs.io/en/latest/?badge=latest)
 
-[![asciicast](https://asciinema.org/a/eZViK9M7yd0gD3asEVQIDi8DV.png)](https://asciinema.org/a/eZViK9M7yd0gD3asEVQIDi8DV)
-
-
 Description
 -----------
 
@@ -194,7 +191,7 @@ As mentioned, Binaries will be sent to Virus Total and verified as clean / infec
 
 For more details and indepth documentation, please visit [readthedocs](http://anteater.readthedocs.io/en/latest/)
 
-Last of all, if you do use anteater, I would love to know (twitter: @lukeahinds)
+Last of all, if you do use anteater, I would love to know (twitter: @decodebytes)
 and pull requests / issues are welcome!
 
 Contribute
