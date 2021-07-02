@@ -56,7 +56,7 @@ def read(fname):
 
 setup(
     name='anteater',
-    version="0.22",
+    version="0.3.0",
     description='Anteater - CI Validation Framework',
     long_description_content_type='text/markdown',
     long_description=read("README.md"),
