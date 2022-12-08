@@ -1,6 +1,6 @@
 appdirs==1.4.3
 binaryornot==0.4.4
-certifi==2018.1.18
+certifi==2022.12.7
 chardet==3.0.2
 docopt==0.6.2
 idna==2.6
